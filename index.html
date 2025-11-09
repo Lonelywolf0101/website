@@ -1,12 +1,184 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hüseyin Sedat | Portföy</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hüseyin Sedat | Portfolio</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
+    body {
+      background: radial-gradient(circle at 20% 20%, #0d0d16, #01010a);
+      color: white;
+      overflow-x: hidden;
+    }
+
+    canvas#bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    header {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      color: #00e0ff;
+      text-shadow: 0 0 15px #00e0ff;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #00e0ff; }
+      to { text-shadow: 0 0 25px #00e0ff, 0 0 45px #0077ff; }
+    }
+
+    h2 {
+      margin-top: 10px;
+      font-weight: 300;
+      font-size: 1.3rem;
+      color: #aaa;
+      animation: fadeIn 2s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    section {
+      padding: 80px 10%;
+      text-align: center;
+    }
+
+    section h3 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #00bfff;
+    }
+
+    .projects, .skills {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 12px;
+      transition: 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 20px #00bfff33;
+    }
+
+    footer {
+      padding: 40px 0;
+      text-align: center;
+      background: #050511;
+    }
+
+    footer a {
+      color: #00bfff;
+      margin: 0 10px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    footer a:hover {
+      color: #00ffff;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Merhaba! 👋</h1>
-  <p>Bu benim ilk portföy sitem. Yakında içerik eklenecek!</p>
+  <canvas id="bg"></canvas>
+
+  <header>
+    <h1>Hüseyin Sedat</h1>
+    <h2>Full Stack Developer | Tech Enthusiast 💻</h2>
+  </header>
+
+  <section id="projects">
+    <h3>🚀 Projelerim</h3>
+    <div class="projects">
+      <div class="card">Proje 1 – Kısa açıklama</div>
+      <div class="card">Proje 2 – Kısa açıklama</div>
+      <div class="card">Proje 3 – Kısa açıklama</div>
+    </div>
+  </section>
+
+  <section id="about">
+    <h3>🧠 Hakkımda</h3>
+    <p>Merhaba! Ben Hüseyin Sedat. Teknolojiye, yazılıma ve yaratıcı fikirlere tutkuyla bağlı bir geliştiriciyim. Modern web teknolojileriyle yenilikçi çözümler üretmeyi seviyorum.</p>
+  </section>
+
+  <section id="contact">
+    <h3>📫 İletişim</h3>
+    <footer>
+      <a href="mailto:huseyin@huseyinsedat.com">📧 E-posta</a>
+      <a href="https://github.com/Lonelywolf0101" target="_blank">💻 GitHub</a>
+      <a href="https://linkedin.com" target="_blank">🔗 LinkedIn</a>
+    </footer>
+  </section>
+
+  <script>
+    // Basit partikül arka plan efekti
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
+    const particles = [];
+    for (let i = 0; i < 70; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 1,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = '#00bfff';
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fill();
+        p.x += p.dx;
+        p.y += p.dy;
+        if(p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if(p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    window.addEventListener('resize', () => {
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+    });
+  </script>
 </body>
 </html>
+
+
