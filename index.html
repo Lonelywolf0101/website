@@ -5,105 +5,135 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hüseyin Sedat | Portfolio</title>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
   <style>
-    * {margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif;}
+    :root {
+      --neon: #00eaff;
+      --bg: #06070d;
+      --glass: rgba(255,255,255,0.05);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins", sans-serif; }
     body {
-      background: radial-gradient(circle at 20% 20%, #0d0d16, #01010a);
-      color: white;
+      background: var(--bg);
+      color:white;
       overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
+    /* ======= BACKGROUND PARTICLES ====== */
     canvas#bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
+      position:fixed;
+      top:0;
+      left:0;
+      width:100vw;
+      height:100vh;
+      z-index:-1;
+      background: radial-gradient(circle at 20% 20%, #0d0d16, #000);
     }
 
+    /* ======= HEADER ====== */
     header {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      text-align:center;
+      padding: 0 10px;
     }
 
-    h1 {
-      font-size: 3.5rem;
-      color: #00e0ff;
-      text-shadow: 0 0 15px #00e0ff;
-      animation: glow 2s infinite alternate;
+    header h1 {
+      font-size:3.8rem;
+      font-weight:700;
+      color: var(--neon);
+      text-shadow:0 0 18px var(--neon);
+      animation: glow 1.8s infinite alternate;
     }
 
     @keyframes glow {
-      from { text-shadow: 0 0 5px #00e0ff; }
-      to { text-shadow: 0 0 25px #00e0ff, 0 0 45px #0077ff; }
+      from { text-shadow:0 0 8px var(--neon); }
+      to { text-shadow:0 0 24px var(--neon), 0 0 40px #0070ff; }
     }
 
-    h2 {
-      margin-top: 10px;
-      font-weight: 300;
-      font-size: 1.3rem;
-      color: #aaa;
-      animation: fadeIn 2s ease-in;
+    .typewriter {
+      margin-top:14px;
+      font-size:1.5rem;
+      color:#eaeaea;
+      border-right:2px solid var(--neon);
+      width:fit-content;
+      padding-right:8px;
+      white-space:nowrap;
+      overflow:hidden;
+      animation:typing 3s steps(25), blink .6s infinite;
     }
 
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(10px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
+    @keyframes typing { from { width:0 } }
+    @keyframes blink { to { border-color: transparent } }
 
+    /* ====== SECTIONS ====== */
     section {
-      padding: 80px 10%;
-      text-align: center;
+      padding:80px 12%;
     }
 
-    section h3 {
-      font-size: 2rem;
-      margin-bottom: 30px;
-      color: #00bfff;
+    section h2 {
+      font-size:2.2rem;
+      margin-bottom:30px;
+      color:var(--neon);
+      text-shadow:0 0 12px var(--neon);
     }
 
-    .projects, .skills {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 25px;
+    /* ===== PROJECT CARDS ===== */
+    .projects {
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+      gap:25px;
     }
 
     .card {
-      background: rgba(255,255,255,0.05);
-      padding: 20px;
-      border-radius: 12px;
-      transition: 0.3s;
-      backdrop-filter: blur(10px);
+      background:var(--glass);
+      padding:25px;
+      border-radius:14px;
+      backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,0.08);
+      transition:0.3s;
+      cursor:pointer;
     }
 
     .card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 0 20px #00bfff33;
+      transform:translateY(-10px);
+      box-shadow:0 0 20px var(--neon);
+      border:1px solid var(--neon);
     }
 
+    .card h3 {
+      margin-bottom:10px;
+      color:var(--neon);
+      font-size:1.3rem;
+    }
+
+    /* ===== FOOTER ===== */
     footer {
-      padding: 40px 0;
-      text-align: center;
-      background: #050511;
+      text-align:center;
+      padding:40px 0;
+      background:#05060b;
     }
 
     footer a {
-      color: #00bfff;
-      margin: 0 10px;
-      text-decoration: none;
-      transition: 0.3s;
+      color:var(--neon);
+      font-size:1.5rem;
+      margin:10px;
+      transition:0.3s;
     }
 
     footer a:hover {
-      color: #00ffff;
+      color:white;
+      text-shadow:0 0 15px var(--neon);
     }
   </style>
 </head>
@@ -113,72 +143,72 @@
 
   <header>
     <h1>Hüseyin Sedat</h1>
-    <h2>Full Stack Developer | Tech Enthusiast 💻</h2>
+    <div class="typewriter">Full Stack Developer | Tech Enthusiast 🚀</div>
   </header>
 
   <section id="projects">
-    <h3>🚀 Projelerim</h3>
+    <h2>🚀 Projelerim</h2>
     <div class="projects">
-      <div class="card">Proje 1 – Kısa açıklama</div>
-      <div class="card">Proje 2 – Kısa açıklama</div>
-      <div class="card">Proje 3 – Kısa açıklama</div>
+      <div class="card">
+        <h3>Proje 1</h3>
+        <p>Kısa açıklama...</p>
+      </div>
+
+      <div class="card">
+        <h3>Proje 2</h3>
+        <p>Kısa açıklama...</p>
+      </div>
+
+      <div class="card">
+        <h3>Proje 3</h3>
+        <p>Kısa açıklama...</p>
+      </div>
     </div>
   </section>
 
   <section id="about">
-    <h3>🧠 Hakkımda</h3>
-    <p>Merhaba! Ben Hüseyin Sedat. Teknolojiye, yazılıma ve yaratıcı fikirlere tutkuyla bağlı bir geliştiriciyim. Modern web teknolojileriyle yenilikçi çözümler üretmeyi seviyorum.</p>
+    <h2>👤 Hakkımda</h2>
+    <p>Merhaba! Ben Hüseyin Sedat. Modern web teknolojileri ile üretmeyi, yeni fikirler geliştirmeyi seviyorum. Tasarım + yazılım düşüncesiyle hareket ederek etkili çözümler üretmeye çalışıyorum.</p>
   </section>
 
   <section id="contact">
-    <h3>📫 İletişim</h3>
+    <h2>📬 İletişim</h2>
+
     <footer>
-      <a href="mailto:huseyin@huseyinsedat.com">📧 E-posta</a>
-      <a href="https://github.com/Lonelywolf0101" target="_blank">💻 GitHub</a>
-      <a href="https://linkedin.com" target="_blank">🔗 LinkedIn</a>
+      <a href="mailto:example@example.com"><i class="fa-solid fa-envelope"></i></a>
+      <a href="https://github.com/Lonelywolf0101" target="_blank"><i class="fa-brands fa-github"></i></a>
+      <a href="#" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
     </footer>
   </section>
 
   <script>
-    // Basit partikül arka plan efekti
-    const canvas = document.getElementById('bg');
-    const ctx = canvas.getContext('2d');
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-
-    const particles = [];
-    for (let i = 0; i < 70; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 2 + 1,
-        dx: (Math.random() - 0.5) * 0.5,
-        dy: (Math.random() - 0.5) * 0.5
-      });
+    // Simple particles
+    const c=document.getElementById("bg"),x=c.getContext("2d");
+    c.width=innerWidth;c.height=innerHeight;
+    let p=[];
+    for(let i=0;i<70;i++){
+      p.push({
+        x:Math.random()*c.width,
+        y:Math.random()*c.height,
+        r:Math.random()*2+1,
+        dx:(Math.random()-.5)*.5,
+        dy:(Math.random()-.5)*.5
+      })
     }
-
-    function draw() {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = '#00bfff';
-      particles.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-        ctx.fill();
-        p.x += p.dx;
-        p.y += p.dy;
-        if(p.x < 0 || p.x > canvas.width) p.dx *= -1;
-        if(p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    function draw(){
+      x.clearRect(0,0,c.width,c.height);
+      x.fillStyle="#00eaff";
+      p.forEach(o=>{
+        x.beginPath();
+        x.arc(o.x,o.y,o.r,0,Math.PI*2);
+        x.fill();
+        o.x+=o.dx;o.y+=o.dy;
+        if(o.x<0||o.x>c.width)o.dx*=-1;
+        if(o.y<0||o.y>c.height)o.dy*=-1;
       });
       requestAnimationFrame(draw);
-    }
-    draw();
-
-    window.addEventListener('resize', () => {
-      canvas.width = innerWidth;
-      canvas.height = innerHeight;
-    });
+    } draw();
+    onresize=()=>{c.width=innerWidth;c.height=innerHeight;}
   </script>
 </body>
 </html>
-
-
