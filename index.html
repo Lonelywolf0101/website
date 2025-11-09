@@ -2,213 +2,363 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hüseyin Sedat | Portfolio</title>
-
-  <!-- Google Font -->
+  <meta name="description" content="Hüseyin Sedat | Modern, teknolojik, animasyonlu geliştirici portföyü">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <style>
-    :root {
-      --neon: #00eaff;
-      --bg: #06070d;
-      --glass: rgba(255,255,255,0.05);
+    :root{
+      --bg:#05060b;
+      --bg2:#0c0f1a;
+      --text:#eaeaea;
+      --muted:#a8b3bd;
+      --neon:#00eaff;
+      --accent:#7c4dff; /* mor neon */
+      --glass: rgba(255,255,255,.06);
+      --br:14px;
+      --max:1200px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed;
+      color:var(--text);
+      overflow-x:hidden;
+      scroll-behavior:smooth;
+    }
+    a{color:var(--neon);text-decoration:none}
+    img{max-width:100%;display:block}
+
+    /* CANVAS BG */
+    #bg{
+      position:fixed;inset:0;z-index:-1;
+      width:100vw;height:100vh;display:block;
     }
 
-    * { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins", sans-serif; }
-    body {
-      background: var(--bg);
-      color:white;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
+    /* NAV */
+    nav{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(5,6,11,.8), rgba(5,6,11,.3));
+      border-bottom:1px solid rgba(255,255,255,.06);
     }
-
-    /* ======= BACKGROUND PARTICLES ====== */
-    canvas#bg {
-      position:fixed;
-      top:0;
-      left:0;
-      width:100vw;
-      height:100vh;
-      z-index:-1;
-      background: radial-gradient(circle at 20% 20%, #0d0d16, #000);
+    .nav-wrap{
+      max-width:var(--max);margin:auto;
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 20px;
     }
-
-    /* ======= HEADER ====== */
-    header {
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      text-align:center;
-      padding: 0 10px;
+    .brand{font-weight:700;letter-spacing:.4px;color:var(--neon)}
+    .menu{display:flex;gap:18px;align-items:center}
+    .menu a{
+      color:var(--text);opacity:.85;padding:6px 10px;border-radius:8px;transition:.25s;
     }
+    .menu a:hover{opacity:1;background:var(--glass)}
+    .menu a.active{color:var(--neon);background:linear-gradient(90deg, rgba(0,234,255,.15), rgba(124,77,255,.15));}
 
-    header h1 {
-      font-size:3.8rem;
-      font-weight:700;
-      color: var(--neon);
-      text-shadow:0 0 18px var(--neon);
-      animation: glow 1.8s infinite alternate;
+    /* HERO */
+    header.hero{
+      min-height:82vh;display:grid;place-items:center;text-align:center;padding:100px 20px 60px;
     }
-
-    @keyframes glow {
-      from { text-shadow:0 0 8px var(--neon); }
-      to { text-shadow:0 0 24px var(--neon), 0 0 40px #0070ff; }
+    .hero-inner{max-width:900px;margin:auto}
+    .title{
+      font-size:clamp(32px,6vw,56px);
+      font-weight:700;color:var(--neon);
+      text-shadow:0 0 18px rgba(0,234,255,.8);
+      margin-bottom:12px;
     }
-
-    .typewriter {
-      margin-top:14px;
-      font-size:1.5rem;
-      color:#eaeaea;
+    .typewriter{
+      margin:6px auto 20px;
+      font-size:clamp(16px,3.5vw,22px);
+      color:var(--muted);
       border-right:2px solid var(--neon);
-      width:fit-content;
-      padding-right:8px;
-      white-space:nowrap;
-      overflow:hidden;
-      animation:typing 3s steps(25), blink .6s infinite;
+      white-space:nowrap;overflow:hidden;width:0;
+      animation:typing 3s steps(28) forwards, caret .7s step-end infinite;
     }
-
-    @keyframes typing { from { width:0 } }
-    @keyframes blink { to { border-color: transparent } }
-
-    /* ====== SECTIONS ====== */
-    section {
-      padding:80px 12%;
+    @keyframes typing{to{width:100%}}
+    @keyframes caret{50%{border-color:transparent}}
+    .cta{
+      display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap;
     }
+    .btn{
+      padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
+      background:linear-gradient(90deg, rgba(0,234,255,.12), rgba(124,77,255,.12));
+      color:#fff;transition:.25s
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(0,234,255,.25)}
+    .ghost{background:transparent}
+    .ghost:hover{background:var(--glass)}
 
-    section h2 {
-      font-size:2.2rem;
-      margin-bottom:30px;
+    /* SECTIONS */
+    section{padding:80px 20px}
+    .container{max-width:var(--max);margin:auto}
+
+    h2.sec-title{
+      font-size:clamp(22px,3.8vw,30px);
       color:var(--neon);
-      text-shadow:0 0 12px var(--neon);
+      text-shadow:0 0 12px rgba(0,234,255,.5);
+      margin:0 0 26px 0;
     }
 
-    /* ===== PROJECT CARDS ===== */
-    .projects {
-      display:grid;
+    /* PROJECTS */
+    .grid{
+      display:grid;gap:22px;
       grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
-      gap:25px;
+    }
+    .card{
+      background:var(--glass);border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--br);padding:18px;transition:.25s;cursor:pointer;
+      position:relative;overflow:hidden;
+    }
+    .card:before{
+      content:"";position:absolute;inset:-2px;
+      background:conic-gradient(from 180deg, transparent, rgba(0,234,255,.25), transparent 30%);
+      filter:blur(20px);opacity:0;transition:.35s;
+    }
+    .card:hover{transform:translateY(-6px);border-color:var(--neon);box-shadow:0 10px 30px rgba(0,234,255,.18)}
+    .card:hover:before{opacity:1}
+    .chip{display:inline-block;margin-top:10px;margin-right:8px;padding:4px 10px;border-radius:999px;background:rgba(124,77,255,.18);border:1px solid rgba(124,77,255,.35);font-size:12px;color:#d9ccff}
+
+    /* SKILLS */
+    .skills{display:grid;gap:16px;grid-template-columns:repeat(auto-fit, minmax(240px,1fr));}
+    .skill{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--br);padding:16px}
+    .bar{height:10px;background:#0b0f19;border-radius:999px;overflow:hidden;margin-top:10px}
+    .bar-in{height:100%;background:linear-gradient(90deg, var(--neon), var(--accent));width:70%;}
+
+    /* TIMELINE */
+    .timeline{position:relative;margin-left:8px;padding-left:18px}
+    .timeline:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(var(--neon), transparent 85%)}
+    .tl-item{margin-bottom:22px}
+    .tl-title{color:#fff;font-weight:600}
+    .tl-sub{color:var(--muted);font-size:14px}
+
+    /* CONTACT */
+    form{max-width:640px;margin:auto;display:grid;gap:12px}
+    input,textarea{
+      background:#0b0f19;color:#fff;border:1px solid rgba(255,255,255,.08);border-radius:10px;
+      padding:12px 14px;outline:none
+    }
+    textarea{min-height:120px;resize:vertical}
+    .submit{background:linear-gradient(90deg, rgba(0,234,255,.2), rgba(124,77,255,.2));cursor:pointer}
+    .submit:hover{box-shadow:0 0 18px rgba(0,234,255,.2)}
+
+    /* REVEAL */
+    .reveal{opacity:0;transform:translateY(16px);transition: all .6s ease}
+    .reveal.visible{opacity:1;transform:none}
+
+    /* BACK TO TOP */
+    #toTop{
+      position:fixed;right:16px;bottom:20px;z-index:40;
+      padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);
+      background:var(--glass);color:#fff;display:none
+    }
+    #toTop.show{display:block}
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .typewriter{animation:none;width:auto;border:none}
+      .reveal{opacity:1;transform:none}
+      .card:hover{transform:none}
     }
 
-    .card {
-      background:var(--glass);
-      padding:25px;
-      border-radius:14px;
-      backdrop-filter:blur(10px);
-      border:1px solid rgba(255,255,255,0.08);
-      transition:0.3s;
-      cursor:pointer;
-    }
-
-    .card:hover {
-      transform:translateY(-10px);
-      box-shadow:0 0 20px var(--neon);
-      border:1px solid var(--neon);
-    }
-
-    .card h3 {
-      margin-bottom:10px;
-      color:var(--neon);
-      font-size:1.3rem;
-    }
-
-    /* ===== FOOTER ===== */
-    footer {
-      text-align:center;
-      padding:40px 0;
-      background:#05060b;
-    }
-
-    footer a {
-      color:var(--neon);
-      font-size:1.5rem;
-      margin:10px;
-      transition:0.3s;
-    }
-
-    footer a:hover {
-      color:white;
-      text-shadow:0 0 15px var(--neon);
+    /* Responsive menu (basit) */
+    @media (max-width:780px){
+      .menu{gap:10px}
     }
   </style>
 </head>
-
 <body>
-  <canvas id="bg"></canvas>
+  <canvas id="bg" aria-hidden="true"></canvas>
 
-  <header>
-    <h1>Hüseyin Sedat</h1>
-    <div class="typewriter">Full Stack Developer | Tech Enthusiast 🚀</div>
+  <nav aria-label="Primary">
+    <div class="nav-wrap">
+      <div class="brand">Hüseyin Sedat</div>
+      <div class="menu" id="menu">
+        <a href="#home" class="active">Ana Sayfa</a>
+        <a href="#projects">Projeler</a>
+        <a href="#skills">Yetenekler</a>
+        <a href="#timeline">Zaman Çizelgesi</a>
+        <a href="#contact">İletişim</a>
+      </div>
+    </div>
+  </nav>
+
+  <header id="home" class="hero">
+    <div class="hero-inner">
+      <h1 class="title">Hüseyin Sedat</h1>
+      <div class="typewriter" aria-live="polite">Modern & Teknolojik Geliştirici Portföyü</div>
+      <div class="cta">
+        <a class="btn" href="#projects">Projelerimi Gör</a>
+        <a class="btn ghost" href="#contact">İletişime Geç</a>
+      </div>
+    </div>
   </header>
 
   <section id="projects">
-    <h2>🚀 Projelerim</h2>
-    <div class="projects">
-      <div class="card">
-        <h3>Proje 1</h3>
-        <p>Kısa açıklama...</p>
-      </div>
+    <div class="container">
+      <h2 class="sec-title">🚀 Projeler</h2>
+      <div class="grid">
+        <article class="card reveal" data-modal="p1">
+          <h3>Proje 1</h3>
+          <p>Kısa açıklama…</p>
+          <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JS</span>
+        </article>
 
-      <div class="card">
-        <h3>Proje 2</h3>
-        <p>Kısa açıklama...</p>
-      </div>
+        <article class="card reveal" data-modal="p2">
+          <h3>Proje 2</h3>
+          <p>Kısa açıklama…</p>
+          <span class="chip">React</span><span class="chip">API</span>
+        </article>
 
-      <div class="card">
-        <h3>Proje 3</h3>
-        <p>Kısa açıklama...</p>
+        <article class="card reveal" data-modal="p3">
+          <h3>Proje 3</h3>
+          <p>Kısa açıklama…</p>
+          <span class="chip">Node</span><span class="chip">Express</span>
+        </article>
       </div>
     </div>
   </section>
 
-  <section id="about">
-    <h2>👤 Hakkımda</h2>
-    <p>Merhaba! Ben Hüseyin Sedat. Modern web teknolojileri ile üretmeyi, yeni fikirler geliştirmeyi seviyorum. Tasarım + yazılım düşüncesiyle hareket ederek etkili çözümler üretmeye çalışıyorum.</p>
+  <section id="skills">
+    <div class="container">
+      <h2 class="sec-title">🛠️ Yetenekler</h2>
+      <div class="skills">
+        <div class="skill reveal">
+          <div>JavaScript / TypeScript</div>
+          <div class="bar"><div class="bar-in" style="width:85%"></div></div>
+        </div>
+        <div class="skill reveal">
+          <div>React / Next.js</div>
+          <div class="bar"><div class="bar-in" style="width:80%"></div></div>
+        </div>
+        <div class="skill reveal">
+          <div>Node.js</div>
+          <div class="bar"><div class="bar-in" style="width:75%"></div></div>
+        </div>
+        <div class="skill reveal">
+          <div>UI/UX & CSS</div>
+          <div class="bar"><div class="bar-in" style="width:70%"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="timeline">
+    <div class="container">
+      <h2 class="sec-title">⏱️ Zaman Çizelgesi</h2>
+      <div class="timeline">
+        <div class="tl-item reveal">
+          <div class="tl-title">2025 — Portföy Yayında</div>
+          <div class="tl-sub">GitHub Pages + Özel Alan Adı</div>
+        </div>
+        <div class="tl-item reveal">
+          <div class="tl-title">2024 — Örnek Deneyim</div>
+          <div class="tl-sub">Frontend / Backend çalışmaları…</div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section id="contact">
-    <h2>📬 İletişim</h2>
-
-    <footer>
-      <a href="mailto:example@example.com"><i class="fa-solid fa-envelope"></i></a>
-      <a href="https://github.com/Lonelywolf0101" target="_blank"><i class="fa-brands fa-github"></i></a>
-      <a href="#" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
-    </footer>
+    <div class="container">
+      <h2 class="sec-title">📬 İletişim</h2>
+      <form action="mailto:example@example.com" method="post" enctype="text/plain" aria-label="İletişim Formu">
+        <input name="name" type="text" placeholder="Ad Soyad" required />
+        <input name="email" type="email" placeholder="E-posta" required />
+        <textarea name="message" placeholder="Mesajın" required></textarea>
+        <button class="submit" type="submit">Gönder</button>
+      </form>
+      <p style="text-align:center;color:var(--muted);margin-top:10px">Daha sonra bunu Formspree / Cloudflare Turnstile + Worker ile güvenli forma çevirebiliriz.</p>
+    </div>
   </section>
 
+  <button id="toTop" aria-label="Başa dön">↑</button>
+
+  <!-- Basit Modaller -->
+  <dialog id="p1">
+    <article style="max-width:680px">
+      <h3>Proje 1</h3>
+      <p>Detay açıklama. Canlı link ve GitHub linki buraya.</p>
+      <form method="dialog"><button class="btn" style="margin-top:10px">Kapat</button></form>
+    </article>
+  </dialog>
+  <dialog id="p2">
+    <article style="max-width:680px">
+      <h3>Proje 2</h3>
+      <p>Detay açıklama…</p>
+      <form method="dialog"><button class="btn" style="margin-top:10px">Kapat</button></form>
+    </article>
+  </dialog>
+  <dialog id="p3">
+    <article style="max-width:680px">
+      <h3>Proje 3</h3>
+      <p>Detay açıklama…</p>
+      <form method="dialog"><button class="btn" style="margin-top:10px">Kapat</button></form>
+    </article>
+  </dialog>
+
   <script>
-    // Simple particles
-    const c=document.getElementById("bg"),x=c.getContext("2d");
-    c.width=innerWidth;c.height=innerHeight;
-    let p=[];
-    for(let i=0;i<70;i++){
-      p.push({
-        x:Math.random()*c.width,
-        y:Math.random()*c.height,
-        r:Math.random()*2+1,
-        dx:(Math.random()-.5)*.5,
-        dy:(Math.random()-.5)*.5
-      })
-    }
-    function draw(){
-      x.clearRect(0,0,c.width,c.height);
-      x.fillStyle="#00eaff";
-      p.forEach(o=>{
-        x.beginPath();
-        x.arc(o.x,o.y,o.r,0,Math.PI*2);
-        x.fill();
-        o.x+=o.dx;o.y+=o.dy;
-        if(o.x<0||o.x>c.width)o.dx*=-1;
-        if(o.y<0||o.y>c.height)o.dy*=-1;
+    // ===== Particles (lightweight)
+    const cnv=document.getElementById('bg'),ctx=cnv.getContext('2d');
+    function rs(){cnv.width=innerWidth;cnv.height=innerHeight}
+    rs();addEventListener('resize',rs);
+    const nodes=Array.from({length:75},()=>({
+      x:Math.random()*cnv.width,y:Math.random()*cnv.height,
+      vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5
+    }));
+    function loop(){
+      ctx.clearRect(0,0,cnv.width,cnv.height);
+      ctx.fillStyle="#00eaff";
+      nodes.forEach(n=>{
+        n.x+=n.vx; n.y+=n.vy;
+        if(n.x<0||n.x>cnv.width) n.vx*=-1;
+        if(n.y<0||n.y>cnv.height) n.vy*=-1;
+        ctx.beginPath();ctx.arc(n.x,n.y,1.8,0,Math.PI*2);ctx.fill();
       });
-      requestAnimationFrame(draw);
-    } draw();
-    onresize=()=>{c.width=innerWidth;c.height=innerHeight;}
+      requestAnimationFrame(loop);
+    } loop();
+
+    // ===== Active menu highlight
+    const links=[...document.querySelectorAll('.menu a')];
+    const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+    const io=new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          links.forEach(l=>l.classList.toggle('active', l.getAttribute('href')==='#'+e.target.id));
+        }
+      });
+    },{rootMargin:'-40% 0px -55% 0px',threshold:0});
+    secs.forEach(s=>s&&io.observe(s));
+
+    // ===== Scroll reveal
+    const rev=[...document.querySelectorAll('.reveal')];
+    const ro=new IntersectionObserver((ents)=>{
+      ents.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('visible'); ro.unobserve(en.target);} });
+    },{threshold:.2});
+    rev.forEach(el=>ro.observe(el));
+
+    // ===== Cards -> modal
+    document.querySelectorAll('.card[data-modal]').forEach(c=>{
+      c.addEventListener('click',()=>{
+        const d=document.getElementById(c.dataset.modal);
+        if(d) d.showModal();
+      });
+    });
+
+    // ===== Back to top
+    const toTop=document.getElementById('toTop');
+    addEventListener('scroll',()=>{
+      if(scrollY>600) toTop.classList.add('show'); else toTop.classList.remove('show');
+    });
+    toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+    // Respect reduced motion for typewriter
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      const tw=document.querySelector('.typewriter');
+      if(tw){ tw.style.animation='none'; tw.style.width='auto'; tw.style.border='none'; }
+    }
   </script>
 </body>
 </html>
