@@ -21,6 +21,7 @@
       --max:1200px;
     }
     *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
     body{
       font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed;
@@ -31,13 +32,10 @@
     a{color:var(--neon);text-decoration:none}
     img{max-width:100%;display:block}
 
-    /* CANVAS BG */
-    #bg{
-      position:fixed;inset:0;z-index:-1;
-      width:100vw;height:100vh;display:block;
-    }
+    /* === CANVAS BG === */
+    #bg{position:fixed;inset:0;z-index:-1;width:100vw;height:100vh;display:block;}
 
-    /* NAV */
+    /* === NAV (desktop + hamburger) === */
     nav{
       position:sticky;top:0;z-index:50;
       backdrop-filter: blur(10px);
@@ -49,104 +47,150 @@
       display:flex;align-items:center;justify-content:space-between;
       padding:14px 20px;
     }
-    .brand{
-      font-weight:700;letter-spacing:.4px;color:var(--neon)
-    }
+    .brand{font-weight:700;letter-spacing:.4px;color:var(--neon)}
 
-    /* DESKTOP MENU */
-    .desktop-menu {
-      display:flex;
-      gap:18px;
-      align-items:center;
+    /* Desktop menu */
+    .desktop-menu{display:flex;gap:18px;align-items:center}
+    .desktop-menu a{
+      color:var(--text);opacity:.85;padding:6px 10px;border-radius:8px;transition:.25s;
     }
-    .desktop-menu a {
-      color:var(--text);opacity:.85;
-      padding:6px 10px;border-radius:8px;
-      transition:.25s;
-    }
-    .desktop-menu a:hover {
-      opacity:1;background:var(--glass);
-    }
+    .desktop-menu a:hover{opacity:1;background:var(--glass)}
+    .desktop-menu a.active{color:var(--neon);background:linear-gradient(90deg, rgba(0,234,255,.15), rgba(124,77,255,.15));}
 
-    /* HAMBURGER */
-    .hamburger {
-      width:28px;
-      height:22px;
-      display:none;
-      flex-direction:column;
-      justify-content:space-between;
-      cursor:pointer;
-    }
-    .hamburger span {
-      display:block;
-      height:3px;
-      background:var(--neon);
-      border-radius:5px;
-      transition:.3s;
-    }
-    .hamburger.active span:nth-child(1){
-      transform: translateY(9px) rotate(45deg);
-    }
-    .hamburger.active span:nth-child(2){
-      opacity:0;
-    }
-    .hamburger.active span:nth-child(3){
-      transform: translateY(-9px) rotate(-45deg);
-    }
+    /* Hamburger icon */
+    .hamburger{width:28px;height:22px;display:none;flex-direction:column;justify-content:space-between;cursor:pointer}
+    .hamburger span{display:block;height:3px;background:var(--neon);border-radius:5px;transition:.3s}
+    .hamburger.active span:nth-child(1){transform: translateY(9px) rotate(45deg)}
+    .hamburger.active span:nth-child(2){opacity:0}
+    .hamburger.active span:nth-child(3){transform: translateY(-9px) rotate(-45deg)}
 
-    /* MOBILE MENU */
-    .mobile-menu {
-      position:fixed;
-      top:0;
-      right:-100%;
-      width:240px;
-      height:100vh;
-      background:rgba(10,13,20,0.95);
-      backdrop-filter:blur(8px);
+    /* Slide-out mobile menu */
+    .mobile-menu{
+      position:fixed;top:0;right:-100%;width:260px;height:100vh;
+      background:rgba(10,13,20,0.95);backdrop-filter:blur(8px);
       border-left:1px solid rgba(255,255,255,.08);
-      display:flex;
-      flex-direction:column;
-      padding:90px 25px;
-      gap:20px;
-      transition:.35s ease;
-      z-index:45;
+      display:flex;flex-direction:column;gap:20px;padding:90px 25px;transition:.35s ease;z-index:45;
     }
-    .mobile-menu a {
-      font-size:1.1rem;
-      color:var(--neon);
-      padding-bottom:6px;
-      border-bottom:1px solid rgba(255,255,255,.08);
+    .mobile-menu a{
+      font-size:1.1rem;color:var(--neon);padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.08);
       text-shadow:0 0 10px var(--neon);
     }
-    .mobile-menu.open {
-      right:0;
-    }
+    .mobile-menu.open{right:0}
 
     @media (max-width:780px){
       .desktop-menu{display:none}
       .hamburger{display:flex}
+    }
+
+    /* === HERO === */
+    header.hero{min-height:82vh;display:grid;place-items:center;text-align:center;padding:100px 20px 60px;}
+    .hero-inner{max-width:900px;margin:auto}
+    .title{
+      font-size:clamp(32px,6vw,56px);font-weight:700;color:var(--neon);
+      text-shadow:0 0 18px rgba(0,234,255,.8);margin-bottom:12px;
+      animation: glow 1.8s infinite alternate;
+    }
+    @keyframes glow{from{ text-shadow:0 0 8px var(--neon)} to{ text-shadow:0 0 24px var(--neon), 0 0 40px #0070ff}}
+    .typewriter{
+      margin:6px auto 20px;font-size:clamp(16px,3.5vw,22px);color:var(--muted);
+      border-right:2px solid var(--neon);white-space:nowrap;overflow:hidden;width:0;
+      animation:typing 3s steps(28) forwards, caret .7s step-end infinite;
+    }
+    @keyframes typing{to{width:100%}}
+    @keyframes caret{50%{border-color:transparent}}
+    .cta{display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+    .btn{
+      padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
+      background:linear-gradient(90deg, rgba(0,234,255,.12), rgba(124,77,255,.12));color:#fff;transition:.25s
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(0,234,255,.25)}
+    .ghost{background:transparent}.ghost:hover{background:var(--glass)}
+
+    /* === SECTIONS === */
+    section{padding:80px 20px}
+    .container{max-width:var(--max);margin:auto}
+    h2.sec-title{
+      font-size:clamp(22px,3.8vw,30px);color:var(--neon);
+      text-shadow:0 0 12px rgba(0,234,255,.5);margin:0 0 26px 0;
+    }
+
+    /* === PROJECTS GRID === */
+    .grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fit, minmax(260px,1fr))}
+    .card{
+      background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--br);padding:18px;transition:.25s;cursor:pointer;
+      position:relative;overflow:hidden;
+    }
+    .card:before{
+      content:"";position:absolute;inset:-2px;background:conic-gradient(from 180deg, transparent, rgba(0,234,255,.25), transparent 30%);
+      filter:blur(20px);opacity:0;transition:.35s;
+    }
+    .card:hover{transform:translateY(-6px);border-color:var(--neon);box-shadow:0 10px 30px rgba(0,234,255,.18)}
+    .card:hover:before{opacity:1}
+    .card h3{margin-bottom:10px;color:var(--neon);font-size:1.2rem}
+    .chip{display:inline-block;margin-top:10px;margin-right:8px;padding:4px 10px;border-radius:999px;background:rgba(124,77,255,.18);border:1px solid rgba(124,77,255,.35);font-size:12px;color:#d9ccff}
+
+    /* === SKILLS === */
+    .skills{display:grid;gap:16px;grid-template-columns:repeat(auto-fit, minmax(240px,1fr))}
+    .skill{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--br);padding:16px}
+    .bar{height:10px;background:#0b0f19;border-radius:999px;overflow:hidden;margin-top:10px}
+    .bar-in{height:100%;background:linear-gradient(90deg, var(--neon), var(--accent));width:70%;}
+
+    /* === TIMELINE === */
+    .timeline{position:relative;margin-left:8px;padding-left:18px}
+    .timeline:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(var(--neon), transparent 85%)}
+    .tl-item{margin-bottom:22px}
+    .tl-title{color:#fff;font-weight:600}
+    .tl-sub{color:var(--muted);font-size:14px}
+
+    /* === CONTACT === */
+    form{max-width:640px;margin:auto;display:grid;gap:12px}
+    input,textarea{background:#0b0f19;color:#fff;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;outline:none}
+    textarea{min-height:120px;resize:vertical}
+    .submit{background:linear-gradient(90deg, rgba(0,234,255,.2), rgba(124,77,255,.2));cursor:pointer}
+    .submit:hover{box-shadow:0 0 18px rgba(0,234,255,.2)}
+
+    /* === REVEAL === */
+    .reveal{opacity:0;transform:translateY(16px);transition: all .6s ease}
+    .reveal.visible{opacity:1;transform:none}
+
+    /* === BACK TO TOP === */
+    #toTop{
+      position:fixed;right:16px;bottom:20px;z-index:40;
+      padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.08);
+      background:var(--glass);color:#fff;display:none
+    }
+    #toTop.show{display:block}
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .typewriter{animation:none;width:auto;border:none}
+      .reveal{opacity:1;transform:none}
+      .card:hover{transform:none}
     }
   </style>
 </head>
 <body>
   <canvas id="bg" aria-hidden="true"></canvas>
 
-  <!-- ✅ NAV ----------------------------------------------------------- -->
-  <nav>
+  <!-- === NAV (desktop + hamburger) === -->
+  <nav aria-label="Primary">
     <div class="nav-wrap">
       <div class="brand">Hüseyin Sedat</div>
 
-      <div class="desktop-menu">
+      <!-- Masaüstü -->
+      <div class="desktop-menu" id="desktopMenu">
         <a href="#games">Oyunlar</a>
         <a href="#designs">Tasarımlar</a>
         <a href="#projects">Projeler</a>
       </div>
 
-      <div class="hamburger" id="hamburger">
+      <!-- Hamburger -->
+      <div class="hamburger" id="hamburger" aria-label="Menüyü aç/kapat" aria-expanded="false" aria-controls="mobileMenu">
         <span></span><span></span><span></span>
       </div>
     </div>
 
+    <!-- Mobil slide-out -->
     <div class="mobile-menu" id="mobileMenu">
       <a href="#games">Oyunlar</a>
       <a href="#designs">Tasarımlar</a>
@@ -154,77 +198,221 @@
     </div>
   </nav>
 
-  <!-- ✅ MAIN SECTIONS ------------------------------------------------ -->
-  <header id="home" style="min-height:80vh;display:grid;place-items:center;text-align:center;">
-    <div>
-      <h1 style="color:var(--neon);text-shadow:0 0 18px var(--neon);font-size:3rem;margin-bottom:15px">Hüseyin Sedat</h1>
-      <p>Modern & Teknolojik Geliştirici Portföyü</p>
+  <!-- === HERO === -->
+  <header id="home" class="hero">
+    <div class="hero-inner">
+      <h1 class="title">Hüseyin Sedat</h1>
+      <div class="typewriter" aria-live="polite">Modern & Teknolojik Geliştirici Portföyü</div>
+      <div class="cta">
+        <a class="btn" href="#projects">Projelerimi Gör</a>
+        <a class="btn ghost" href="#contact">İletişime Geç</a>
+      </div>
     </div>
   </header>
 
+  <!-- === MENÜ BAŞLIKLARI (İstediğin içerikleri sonra ekleriz) === -->
   <section id="games">
-    <h2 style="color:var(--neon);padding:20px;">🎮 Oyunlar</h2>
+    <div class="container">
+      <h2 class="sec-title">🎮 Oyunlar</h2>
+      <p class="reveal">Buraya oyun projelerini/görsellerini ekleyeceğiz.</p>
+    </div>
   </section>
 
   <section id="designs">
-    <h2 style="color:var(--neon);padding:20px;">🎨 Tasarımlar</h2>
+    <div class="container">
+      <h2 class="sec-title">🎨 Tasarımlar</h2>
+      <p class="reveal">Buraya tasarım galerini ekleyeceğiz.</p>
+    </div>
   </section>
 
+  <!-- === PROJELER === -->
   <section id="projects">
-    <h2 style="color:var(--neon);padding:20px;">🚀 Projeler</h2>
+    <div class="container">
+      <h2 class="sec-title">🚀 Projeler</h2>
+      <div class="grid">
+        <article class="card reveal" data-modal="p1">
+          <h3>Proje 1</h3>
+          <p>Kısa açıklama…</p>
+          <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JS</span>
+        </article>
+
+        <article class="card reveal" data-modal="p2">
+          <h3>Proje 2</h3>
+          <p>Kısa açıklama…</p>
+          <span class="chip">React</span><span class="chip">API</span>
+        </article>
+
+        <article class="card reveal" data-modal="p3">
+          <h3>Proje 3</h3>
+          <p>Kısa açıklama…</p>
+          <span class="chip">Node</span><span class="chip">Express</span>
+        </article>
+      </div>
+    </div>
   </section>
 
-  <!-- ✅ JS ------------------------------------------------------------- -->
+  <!-- === YETENEKLER === -->
+  <section id="skills">
+    <div class="container">
+      <h2 class="sec-title">🛠️ Yetenekler</h2>
+      <div class="skills">
+        <div class="skill reveal">
+          <div>JavaScript / TypeScript</div>
+          <div class="bar"><div class="bar-in" style="width:85%"></div></div>
+        </div>
+        <div class="skill reveal">
+          <div>React / Next.js</div>
+          <div class="bar"><div class="bar-in" style="width:80%"></div></div>
+        </div>
+        <div class="skill reveal">
+          <div>Node.js</div>
+          <div class="bar"><div class="bar-in" style="width:75%"></div></div>
+        </div>
+        <div class="skill reveal">
+          <div>UI/UX & CSS</div>
+          <div class="bar"><div class="bar-in" style="width:70%"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === ZAMAN ÇİZELGESİ === -->
+  <section id="timeline">
+    <div class="container">
+      <h2 class="sec-title">⏱️ Zaman Çizelgesi</h2>
+      <div class="timeline">
+        <div class="tl-item reveal">
+          <div class="tl-title">2025 — Portföy Yayında</div>
+          <div class="tl-sub">GitHub Pages + Özel Alan Adı</div>
+        </div>
+        <div class="tl-item reveal">
+          <div class="tl-title">2024 — Örnek Deneyim</div>
+          <div class="tl-sub">Frontend / Backend çalışmaları…</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === İLETİŞİM === -->
+  <section id="contact">
+    <div class="container">
+      <h2 class="sec-title">📬 İletişim</h2>
+      <form action="mailto:example@example.com" method="post" enctype="text/plain" aria-label="İletişim Formu">
+        <input name="name" type="text" placeholder="Ad Soyad" required />
+        <input name="email" type="email" placeholder="E-posta" required />
+        <textarea name="message" placeholder="Mesajın" required></textarea>
+        <button class="submit" type="submit">Gönder</button>
+      </form>
+      <p style="text-align:center;color:var(--muted);margin-top:10px">Daha sonra bunu Formspree / Cloudflare Turnstile + Worker ile güvenli forma çevirebiliriz.</p>
+    </div>
+  </section>
+
+  <button id="toTop" aria-label="Başa dön">↑</button>
+
+  <!-- === Basit Modaller === -->
+  <dialog id="p1">
+    <article style="max-width:680px">
+      <h3>Proje 1</h3>
+      <p>Detay açıklama. Canlı link ve GitHub linki buraya.</p>
+      <form method="dialog"><button class="btn" style="margin-top:10px">Kapat</button></form>
+    </article>
+  </dialog>
+  <dialog id="p2">
+    <article style="max-width:680px">
+      <h3>Proje 2</h3>
+      <p>Detay açıklama…</p>
+      <form method="dialog"><button class="btn" style="margin-top:10px">Kapat</button></form>
+    </article>
+  </dialog>
+  <dialog id="p3">
+    <article style="max-width:680px">
+      <h3>Proje 3</h3>
+      <p>Detay açıklama…</p>
+      <form method="dialog"><button class="btn" style="margin-top:10px">Kapat</button></form>
+    </article>
+  </dialog>
+
   <script>
-    const hamburger = document.getElementById("hamburger");
-    const mobileMenu = document.getElementById("mobileMenu");
-
-    hamburger.addEventListener("click", () => {
-      hamburger.classList.toggle("active");
-      mobileMenu.classList.toggle("open");
-    });
-
-    // Menü dışına tıklayınca kapanır
-    document.addEventListener("click", (e) => {
-      if (
-        !mobileMenu.contains(e.target) &&
-        !hamburger.contains(e.target)
-      ) {
-        hamburger.classList.remove("active");
-        mobileMenu.classList.remove("open");
-      }
-    });
-
-    // Linke tıklayınca kapanır
-    mobileMenu.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        hamburger.classList.remove("active");
-        mobileMenu.classList.remove("open");
-      });
-    });
-
-    /* PARTICLES */
+    /* ===== Particles ===== */
     const cnv=document.getElementById('bg'),ctx=cnv.getContext('2d');
     function rs(){cnv.width=innerWidth;cnv.height=innerHeight}
     rs();addEventListener('resize',rs);
     const nodes=Array.from({length:75},()=>({
-      x:Math.random()*cnv.width,
-      y:Math.random()*cnv.height,
-      vx:(Math.random()-.5)*.5,
-      vy:(Math.random()-.5)*.5
+      x:Math.random()*cnv.width,y:Math.random()*cnv.height,
+      vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5
     }));
-    function loop(){
+    (function loop(){
       ctx.clearRect(0,0,cnv.width,cnv.height);
       ctx.fillStyle="#00eaff";
-      nodes.forEach(p=>{
-        p.x+=p.vx;p.y+=p.vy;
-        if(p.x<0||p.x>cnv.width) p.vx*=-1;
-        if(p.y<0||p.y>cnv.height) p.vy*=-1;
-        ctx.beginPath();ctx.arc(p.x,p.y,1.8,0,Math.PI*2);ctx.fill();
+      nodes.forEach(n=>{
+        n.x+=n.vx;n.y+=n.vy;
+        if(n.x<0||n.x>cnv.width) n.vx*=-1;
+        if(n.y<0||n.y>cnv.height) n.vy*=-1;
+        ctx.beginPath();ctx.arc(n.x,n.y,1.8,0,Math.PI*2);ctx.fill();
       });
       requestAnimationFrame(loop);
-    } loop();
-  </script>
+    })();
 
+    /* ===== Hamburger ===== */
+    const hamburger=document.getElementById("hamburger");
+    const mobileMenu=document.getElementById("mobileMenu");
+    hamburger.addEventListener("click", ()=>{
+      const open = !hamburger.classList.contains("active");
+      hamburger.classList.toggle("active");
+      mobileMenu.classList.toggle("open");
+      hamburger.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    // Dışarı tıklayınca kapan
+    document.addEventListener("click", (e)=>{
+      if(!mobileMenu.contains(e.target) && !hamburger.contains(e.target)){
+        hamburger.classList.remove("active");
+        mobileMenu.classList.remove("open");
+        hamburger.setAttribute("aria-expanded","false");
+      }
+    });
+    // Linke tıklayınca kapan
+    mobileMenu.querySelectorAll("a").forEach(a=>{
+      a.addEventListener("click", ()=>{
+        hamburger.classList.remove("active");
+        mobileMenu.classList.remove("open");
+        hamburger.setAttribute("aria-expanded","false");
+      });
+    });
+
+    /* ===== Active menu highlight (desktop) ===== */
+    const dLinks=[...document.querySelectorAll('.desktop-menu a')];
+    const dSecs=dLinks.map(a=>document.querySelector(a.getAttribute('href')));
+    const io=new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          dLinks.forEach(l=>l.classList.toggle('active', l.getAttribute('href')==='#'+e.target.id));
+        }
+      });
+    },{rootMargin:'-40% 0px -55% 0px',threshold:0});
+    dSecs.forEach(s=>s&&io.observe(s));
+
+    /* ===== Scroll reveal ===== */
+    const rev=[...document.querySelectorAll('.reveal')];
+    const ro=new IntersectionObserver((ents)=>{
+      ents.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('visible'); ro.unobserve(en.target);} });
+    },{threshold:.2});
+    rev.forEach(el=>ro.observe(el));
+
+    /* ===== Cards -> modal ===== */
+    document.querySelectorAll('.card[data-modal]').forEach(c=>{
+      c.addEventListener('click',()=>{ const d=document.getElementById(c.dataset.modal); if(d) d.showModal(); });
+    });
+
+    /* ===== Back to top ===== */
+    const toTop=document.getElementById('toTop');
+    addEventListener('scroll',()=>{ if(scrollY>600) toTop.classList.add('show'); else toTop.classList.remove('show');});
+    toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+    /* Reduced motion for typewriter */
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      const tw=document.querySelector('.typewriter');
+      if(tw){ tw.style.animation='none'; tw.style.width='auto'; tw.style.border='none'; }
+    }
+  </script>
 </body>
 </html>
