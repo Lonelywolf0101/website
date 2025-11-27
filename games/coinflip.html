@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Coinflip | Oyun</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+        background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, #05060b 40%) fixed;
+        color: #eaeaea;
+        text-align: center;
+        padding: 40px 10px;
+    }
+
+    h1 {
+        color: #00eaff;
+        text-shadow: 0 0 16px #00eaff;
+        margin-bottom: 10px;
+    }
+
+    .coin {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #222, #444);
+        margin: 30px auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 32px;
+        font-weight: bold;
+        color: #fff;
+        box-shadow: 0 0 25px rgba(0,234,255,0.3);
+        transition: transform 0.6s;
+    }
+
+    button {
+        padding: 12px 26px;
+        font-size: 18px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        margin: 10px;
+        transition: 0.25s;
+        background: rgba(0, 234, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    button:hover {
+        background: rgba(0, 234, 255, 0.35);
+        box-shadow: 0 0 15px rgba(0,234,255,0.4);
+    }
+
+    #back {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 18px;
+        color: #fff;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 10px;
+    }
+
+    #back:hover {
+        background: rgba(0,234,255,0.2);
+    }
+
+    .box {
+        max-width: 420px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 20px;
+        margin: 0 auto;
+        margin-top: 20px;
+    }
+
+</style>
+
+</head>
+<body>
+
+<h1>🪙 Coinflip Oyunu</h1>
+<p>Bir tur: <b>5 jeton</b></p>
+
+<div class="box">
+    <h3>Jeton: <span id="tokens">100</span></h3>
+
+    <button onclick="startGame('Yazı')">Yazı</button>
+    <button onclick="startGame('Tura')">Tura</button>
+
+    <div class="coin" id="coin">?</div>
+
+    <h2 id="result"></h2>
+</div>
+
+<a id="back" href="/games">← Oyun Lobisine Dön</a>
+
+<script>
+let tokens = 100;
+const TOKEN_COST = 5;
+
+function startGame(choice) {
+    if (tokens < TOKEN_COST) {
+        document.getElementById("result").innerText = "Jetonun yetersiz!";
+        return;
+    }
+
+    tokens -= TOKEN_COST;
+    document.getElementById("tokens").innerText = tokens;
+
+    const coin = document.getElementById("coin");
+    const resultText = document.getElementById("result");
+
+    coin.style.transform = "rotateY(720deg)";
+    resultText.innerText = "Dönüyor...";
+
+    setTimeout(() => {
+        const random = Math.random() < 0.5 ? "Yazı" : "Tura";
+        coin.style.transform = "rotateY(0deg)";
+        coin.innerText = random;
+
+        if (random === choice) {
+            resultText.innerText = "Doğru bildin! (Jeton kazanılmaz)";
+        } else {
+            resultText.innerText = "Bilemedin!";
+        }
+
+    }, 900);
+}
+</script>
+
+</body>
+</html>
