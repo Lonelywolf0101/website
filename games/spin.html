@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Spin Oyunu</title>
+<title>Spin Renk Çarkı</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -13,98 +13,192 @@
         background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, #05060b 40%) fixed;
         color: #eaeaea;
         text-align: center;
-        padding: 40px 10px;
+        padding: 30px 10px;
     }
 
-    h1 {
-        color: #00eaff;
-        text-shadow: 0 0 16px #00eaff;
-    }
-
-    .box {
-        max-width: 480px;
+    .game-header {
+        max-width: 600px;
+        margin: 0 auto 25px;
+        padding: 18px;
         background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.1);
+        border: 1px solid rgba(0,234,255,0.25);
         border-radius: 14px;
-        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        justify-content: center;
+        box-shadow: 0 0 18px rgba(0,234,255,0.2);
+    }
+
+    .game-header .game-icon {
+        font-size: 48px;
+    }
+
+    .game-header .game-title {
+        font-size: 28px;
+        color: #00eaff;
+        font-weight: 600;
+    }
+
+    .wheel-box {
+        position: relative;
+        width: 300px;
+        height: 300px;
         margin: 25px auto;
     }
 
-    .wheel {
-        width: 260px;
-        height: 260px;
-        border-radius: 50%;
-        border: 10px solid rgba(255,255,255,0.4);
-        margin: 20px auto;
-        position: relative;
-        overflow: hidden;
-        transition: transform 4s cubic-bezier(.17,.67,.45,1);
-        box-shadow: 0 0 20px rgba(0,234,255,0.4);
+    /* Ok (pointer) */
+    .pointer {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 18px solid transparent;
+        border-right: 18px solid transparent;
+        border-bottom: 30px solid #ffeb3b;
+        filter: drop-shadow(0 0 8px #ffeb3b);
+        z-index: 10;
     }
 
-    .segment {
-        position: absolute;
+    /* Çark */
+    .wheel {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 8px solid rgba(255,255,255,0.15);
+        overflow: hidden;
+        transition: transform 4s cubic-bezier(.1,.6,.1,1);
+    }
+
+    /* Dilimler */
+    .slice {
         width: 50%;
         height: 50%;
-        transform-origin: 100% 100%;
-        clip-path: polygon(0 0, 100% 0, 100% 100%);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform-origin: 0 0;
     }
 
     button {
         padding: 12px 20px;
         font-size: 18px;
         border-radius: 10px;
-        background: rgba(0,234,255,0.18);
-        color: #fff;
-        border: 1px solid rgba(255,255,255,0.15);
-        cursor: pointer;
+        border: none;
         margin: 10px;
-        transition: 0.3s;
+        cursor: pointer;
+        background: rgba(0,234,255,0.2);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.18);
+        transition: .25s;
     }
-
     button:hover {
         background: rgba(0,234,255,0.35);
-        box-shadow: 0 0 18px rgba(0,234,255,0.4);
     }
 
     #back {
         display: inline-block;
-        margin-top: 18px;
+        margin-top: 20px;
         padding: 10px 18px;
         color: #fff;
+        text-decoration: none;
         border: 1px solid rgba(255,255,255,0.2);
         border-radius: 10px;
-        text-decoration: none;
-    }
-
-    #back:hover {
-        background: rgba(0,234,255,0.2);
     }
 </style>
-</head>
 
+</head>
 <body>
 
-<h1>🎰 Spin / Çark Oyunu</h1>
-<p>Bir spin: <b>10 jeton</b></p>
+<div class="game-header">
+    <div class="game-icon">🎡</div>
+    <div class="game-title">Renkli Spin Çarkı</div>
+</div>
 
-<div class="box">
+<h3>Jeton: <span id="tokens">100</span></h3>
+<p>Bir tur: <b>10 jeton</b></p>
 
-    <h3>Jeton: <span id="tokens">100</span></h3>
+<h3>Tahmin Et:</h3>
+<select id="guess">
+    <option value="kırmızı">Kırmızı</option>
+    <option value="mavi">Mavi</option>
+    <option value="yeşil">Yeşil</option>
+    <option value="sarı">Sarı</option>
+    <option value="mor">Mor</option>
+    <option value="turuncu">Turuncu</option>
+</select>
 
-    <button onclick="setGuess('Kırmızı')">🔴 Kırmızı</button>
-    <button onclick="setGuess('Mavi')">🔵 Mavi</button>
+<div class="wheel-box">
+    <div class="pointer"></div>
 
-    <p>Seçilen: <b id="guessText">Yok</b></p>
+    <div class="wheel" id="wheel"></div>
+</div>
 
-    <div class="wheel" id="wheel">
-        <!-- 4 Dilim (2 kırmızı, 2 mavi) -->
-        <div class="segment" style="background:red; transform: rotate(0deg) skewY(-30deg);"></div>
-        <div class="segment" style="background:blue; transform: rotate(90deg) skewY(-30deg);"></div>
-        <div class="segment" style="background:red; transform: rotate(180deg) skewY(-30deg);"></div>
-        <div class="segment" style="background:blue; transform: rotate(270deg) skewY(-30deg);"></div>
-    </div>
+<button onclick="spin()">🎲 Çevir</button>
 
-    <button onclick="spin()">🎲 SPİN</button>
+<h2 id="result"></h2>
 
-    <
+<a id="back" href="/games">← Oyun Lobisine Dön</a>
+
+<script>
+let tokens = 100;
+const COST = 10;
+let spinning = false;
+
+// Çark renkleri
+const colors = [
+    "kırmızı",
+    "mavi",
+    "yeşil",
+    "sarı",
+    "mor",
+    "turuncu"
+];
+
+// Çarkı oluşturalım
+const wheel = document.getElementById("wheel");
+
+for (let i = 0; i < 6; i++) {
+    const slice = document.createElement("div");
+    slice.className = "slice";
+    slice.style.background = colors[i];
+    slice.style.transform = `rotate(${i * 60}deg) skewY(-30deg)`;
+    wheel.appendChild(slice);
+}
+
+function spin() {
+    if (spinning) return;
+    if (tokens < COST) {
+        document.getElementById("result").innerText = "Jetonun yetersiz!";
+        return;
+    }
+
+    spinning = true;
+    tokens -= COST;
+    document.getElementById("tokens").innerText = tokens;
+
+    let randomRotation = 3600 + Math.floor(Math.random() * 360);
+    wheel.style.transform = `rotate(${randomRotation}deg)`;
+
+    setTimeout(() => {
+        let normalized = randomRotation % 360;
+        let index = Math.floor(normalized / 60);
+        const resultColor = colors[index];
+
+        const guess = document.getElementById("guess").value;
+
+        if (resultColor === guess) {
+            document.getElementById("result").innerText = `Tebrikler! Doğru: ${resultColor}`;
+        } else {
+            document.getElementById("result").innerText = `Bilemedin! Çıkan: ${resultColor}`;
+        }
+
+        spinning = false;
+    }, 4100);
+}
+</script>
+
+</body>
+</html>
