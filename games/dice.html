@@ -16,9 +16,31 @@
         padding: 40px 10px;
     }
 
-    h1 {
+    /* === GAME HEADER === */
+    .game-header {
+        max-width: 600px;
+        margin: 0 auto 25px auto;
+        padding: 18px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(0,234,255,0.25);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        justify-content: center;
+        box-shadow: 0 0 18px rgba(0,234,255,0.2);
+    }
+
+    .game-header .game-icon {
+        font-size: 48px;
+        text-shadow: 0 0 16px rgba(0,234,255,0.5);
+    }
+
+    .game-header .game-title {
+        font-size: 28px;
         color: #00eaff;
-        text-shadow: 0 0 16px #00eaff;
+        font-weight: 600;
+        text-shadow: 0 0 12px rgba(0,234,255,0.5);
     }
 
     .box {
@@ -31,18 +53,11 @@
     }
 
     .dice {
-        width: 120px;
-        height: 120px;
+        font-size: 100px;
         margin: 20px auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 50px;
-        border-radius: 14px;
-        background: #0b0f19;
-        text-shadow: 0 0 22px rgba(0,234,255,0.6);
-        box-shadow: 0 0 22px rgba(0,234,255,0.2);
-        transition: transform 0.8s ease;
+        color: #fff;
+        text-shadow: 0 0 22px rgba(0,234,255,0.5);
+        transition: transform 0.3s;
     }
 
     select, button {
@@ -76,13 +91,17 @@
     #back:hover {
         background: rgba(0,234,255,0.2);
     }
-
 </style>
 </head>
 
 <body>
 
-<h1>🎲 Zar Tahmin Oyunu</h1>
+<!-- HEADER -->
+<div class="game-header">
+    <div class="game-icon">🎲</div>
+    <div class="game-title">Zar Tahmin Oyunu</div>
+</div>
+
 <p>Bir tur: <b>5 jeton</b></p>
 
 <div class="box">
@@ -102,7 +121,7 @@
 
     <div class="dice" id="dice">🎲</div>
 
-    <h2 id="result" style="transition:opacity .3s;">Sonuç bekleniyor...</h2>
+    <h2 id="result"></h2>
 </div>
 
 <a id="back" href="/games">← Oyun Lobisine Dön</a>
@@ -124,36 +143,28 @@ function rollDice() {
     const dice = document.getElementById("dice");
     const resultText = document.getElementById("result");
 
-    // Sonucu gizle
-    resultText.style.opacity = "0";
     resultText.innerText = "Zar atılıyor...";
-
-    // Zar animasyonunu sıfırla
-    dice.style.transition = "none";
-    dice.style.transform = "rotate(0deg)";
     dice.innerText = "🎲";
 
-    // Sonra dönüş animasyonunu başlat
-    setTimeout(() => {
-        dice.style.transition = "transform 0.8s ease";
-        dice.style.transform = "rotate(720deg)"; // 2 tur dönsün
-    }, 25);
+    let spinCount = 0;
+    const spinning = setInterval(() => {
+        dice.style.transform = "rotate(" + (spinCount * 120) + "deg)";
+        spinCount++;
+    }, 120);
 
-    // Animasyon bittiğinde sonucu göster
     setTimeout(() => {
+        clearInterval(spinning);
+
         const roll = Math.floor(Math.random() * 6) + 1;
+        dice.style.transform = "rotate(0deg)";
         dice.innerText = roll;
 
         if (roll === guess) {
-            resultText.innerText = "🎉 Doğru bildin! (Jeton verilmez)";
+            resultText.innerText = "Doğru bildin! (Jeton kazanılmaz)";
         } else {
-            resultText.innerText = "❌ Bilemedin!";
+            resultText.innerText = "Bilemedin!";
         }
-
-        resultText.style.opacity = "1";
-
-    }, 850); // animasyon bitiş süresi
-
+    }, 1000);
 }
 </script>
 
