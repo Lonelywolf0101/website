@@ -416,3 +416,88 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Basit Bahis Oyunu (Demo)</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #111;
+        color: white;
+        text-align: center;
+        padding-top: 60px;
+    }
+
+    h1 {
+        margin-bottom: 30px;
+    }
+
+    .btn {
+        padding: 15px 40px;
+        font-size: 24px;
+        margin: 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: none;
+        transition: 0.2s;
+    }
+
+    .red { background: #d62828; }
+    .blue { background: #0077b6; }
+
+    .btn:hover {
+        opacity: 0.8;
+    }
+
+    #result {
+        margin-top: 40px;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    #history {
+        margin-top: 40px;
+        font-size: 18px;
+        opacity: 0.8;
+    }
+</style>
+</head>
+<body>
+
+<h1>Renk Tahmin Oyunu (DEMO)</h1>
+
+<button class="btn red" onclick="play('red')">Kırmızı</button>
+<button class="btn blue" onclick="play('blue')">Mavi</button>
+
+<div id="result"></div>
+
+<div id="history"></div>
+
+<script>
+function play(playerChoice) {
+    const colors = ["red", "blue"];
+    const systemChoice = colors[Math.floor(Math.random() * colors.length)];
+
+    let resultText = "";
+    if (playerChoice === systemChoice) {
+        resultText = "🎉 Kazandın! (" + systemChoice.toUpperCase() + ")";
+        document.getElementById("result").style.color = "lime";
+    } else {
+        resultText = "❌ Kaybettin! (" + systemChoice.toUpperCase() + ")";
+        document.getElementById("result").style.color = "red";
+    }
+
+    document.getElementById("result").innerHTML = resultText;
+
+    // geçmiş
+    let h = document.getElementById("history").innerHTML;
+    document.getElementById("history").innerHTML = 
+        "Sonuç: " + systemChoice.toUpperCase() + "<br>" + h;
+}
+</script>
+
+</body>
+</html>
+
