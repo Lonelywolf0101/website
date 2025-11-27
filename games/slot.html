@@ -164,9 +164,8 @@ function spin() {
         r2.style.transform = "rotateX(0deg)";
         r3.style.transform = "rotateX(0deg)";
 
-        if (s1 === s2 && s2 === s3) {
-            result.innerText = `⭐ JACKPOT! (${s1} ${s2} ${s3})`;
-        } else if (s1 === s2 && s2 === s3 && s1 === s3) {
+      
+        if (s1 === s2 && s2 === s3 && s1 === s3) {
             result.innerText = `Kazandın! (Ama jeton verilmiyor)`;
         } else {
             result.innerText = "Kaybettin!";
