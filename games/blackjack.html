@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Blackjack</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+        background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, #05060b 40%) fixed;
+        color: #eaeaea;
+        text-align: center;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #00eaff;
+        text-shadow: 0 0 18px #00eaff;
+        margin-bottom: 10px;
+    }
+
+    .box {
+        max-width: 700px;
+        margin: 20px auto;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 20px;
+    }
+
+    .hand {
+        margin: 15px 0;
+        padding: 10px;
+        font-size: 20px;
+    }
+
+    .cards {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .card {
+        width: 55px;
+        height: 80px;
+        background: #0b0f19;
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        color: #fff;
+        text-shadow: 0 0 10px #00eaff;
+        box-shadow: 0 0 14px rgba(0,234,255,0.25);
+    }
+
+    button {
+        padding: 12px 18px;
+        margin: 10px;
+        background: rgba(0,234,255,0.22);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 10px;
+        color: #fff;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    button:hover {
+        background: rgba(0,234,255,0.4);
+        box-shadow: 0 0 16px rgba(0,234,255,0.4);
+    }
+
+    #back {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 18px;
+        color: #fff;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 10px;
+    }
+
+    #back:hover {
+        background: rgba(0,234,255,0.2);
+    }
+
+</style>
+</head>
+
+<body>
+
+<h1>🂡 Blackjack</h1>
+<p>Bu oyuna giriş: <b>10 jeton</b></p>
+
+<div class="box">
+
+    <h3>Jeton: <span id="tokens">100</span></h3>
+
+    <div class="hand">
+        <h3>Senin Elin (<span id="playerTotal">0</span>)</h3>
+        <div class="cards" id="playerCards"></div>
+    </div>
+
+    <div class="hand">
+        <h3>Krupiye (<span id="dealerTotal">0</span>)</h3>
+        <div class="cards" id="dealerCards"></div>
+    </div>
+
+    <h2 id="status"></h2>
+
+    <button id="btnStart" onclick="startGame()">🎮 Oyuna Başla</button>
+    <button id="btnHit" onclick="hit()" style="display:none;">➕ Kart Çek</button>
+    <button id="btnStand" onclick="stand()" style="display:none;">✋ Yeter</button>
+
+</div>
+
+<a id="back" href="/games">← Oyun Lobisine Dön</a>
+
+<script>
+let tokens = 100;
+const ENTRY_COST = 10;
+
+let deck = [];
+let playerHand = [];
+let dealerHand = [];
+let gameOver = false;
+
+function createDeck() {
+    const values = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+    const suits = ["♠","♥","♦","♣"];
+    let d = [];
+
+    for (let v of values) {
+        for (let s of suits) {
+            d.push(v + s);
+        }
+    }
+
+    return shuffle(d);
+}
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function cardValue(card) {
+    const v = card.slice(0, -1);
+    if (v === "A") return 11;
+    if (["K","Q","J"].includes(v)) return 10;
+    return parseInt(v);
+}
+
+function total(hand) {
+    let sum = hand.reduce((acc, c) => acc + cardValue(c), 0);
+    let aces = hand.filter(c => c.startsWith("A")).length;
+
+    while (sum > 21 && aces > 0) {
+        sum -= 10;
+        aces--;
+    }
+    return sum;
+}
+
+function render() {
+    document.getElementById("tokens").innerText = tokens;
+
+    document.getElementById("playerCards").innerHTML =
+        playerHand.map(c => `<div class="card">${c}</div>`).join("");
+
+    document.getElementById("dealerCards").innerHTML =
+        dealerHand.map(c => `<div class="card">${c}</div>`).join("");
+
+    document.getElementById("playerTotal").innerText = total(playerHand);
+    document.getElementById("dealerTotal").innerText = total(dealerHand);
+}
+
+function startGame() {
+    if (tokens < ENTRY_COST) {
+        alert("Yeterli jeton yok!");
+        return;
+    }
+
+    tokens -= ENTRY_COST;
+
+    deck = createDeck();
+    playerHand = [deck.pop(), deck.pop()];
+    dealerHand = [deck.pop(), deck.pop()];
+    gameOver = false;
+
+    document.getElementById("status").innerText = "";
+
+    document.getElementById("btnHit").style.display = "inline-block";
+    document.getElementById("btnStand").style.display = "inline-block";
+
+    render();
+
+    if (total(playerHand) === 21) {
+        endGame("Blackjack!");
+    }
+}
+
+function hit() {
+    if (gameOver) return;
+    playerHand.push(deck.pop());
+    render();
+
+    if (total(playerHand) > 21) {
+        endGame("Battın!");
+    }
+}
+
+function stand() {
+    if (gameOver) return;
+
+    while (total(dealerHand) < 17) {
+        dealerHand.push(deck.pop());
+    }
+
+    const p = total(playerHand);
+    const d = total(dealerHand);
+
+    if (d > 21) endGame("Krupiye battı! (Ödül yok)");
+    else if (p > d) endGame("Kazandın! (Jeton verilmez)");
+    else if (p < d) endGame("Kaybettin!");
+    else endGame("Berabere!");
+}
+
+function endGame(msg) {
+    document.getElementById("status").innerText = msg;
+    gameOver = true;
+
+    document.getElementById("btnHit").style.display = "none";
+    document.getElementById("btnStand").style.display = "none";
+}
+
+</script>
+
+</body>
+</html>
