@@ -40,17 +40,17 @@
         margin: 30px auto;
     }
 
-    /* Aşağı bakan pointer */
+    /* ÇARKIN ÜSTÜNDE, AŞAĞI BAKAN OK */
     .pointer {
         position: absolute;
-        bottom: -35px;
+        top: -20px;              /* çarkın tam üst yanı */
         left: 50%;
         transform: translateX(-50%);
         width: 0;
         height: 0;
         border-left: 22px solid transparent;
         border-right: 22px solid transparent;
-        border-top: 35px solid yellow;
+        border-bottom: 35px solid yellow;  /* aşağı bakan üçgen */
         filter: drop-shadow(0 0 10px yellow);
         z-index: 10;
     }
@@ -136,7 +136,7 @@ let tokens = 100;
 const COST = 10;
 let spinning = false;
 
-// Renk sıralaması (0–360 derecelik alanlar)
+// Dilimlerin renk aralıkları (0–360)
 const slices = [
   { color: "red",    start:   0, end:  60 },
   { color: "blue",   start:  60, end: 120 },
@@ -147,7 +147,8 @@ const slices = [
 ];
 
 function getColorByAngle(angle) {
-    angle = (360 - angle + 360) % 360;  
+    // çark saat yönünde döndüğü için açı tersine çevrilir
+    angle = (360 - angle + 360) % 360;
     for (let slice of slices) {
         if (angle >= slice.start && angle < slice.end) return slice.color;
     }
@@ -167,25 +168,36 @@ function spin() {
     document.getElementById("tokens").innerText = tokens;
 
     const wheel = document.getElementById("wheel");
-    const randomRotation = 3600 + Math.floor(Math.random() * 360);
-    wheel.style.transform = `rotate(${randomRotation}deg)`;
+    document.getElementById("result").innerText = "Çark dönüyor...";
 
+    // 1) Her seferinde çarkı 0°'ye resetle (aynı hız/mesafe hissi)
+    wheel.style.transition = "none";
+    wheel.style.transform = "rotate(0deg)";
+
+    // 2) Sonraki frame'de animasyonlu dönüşü başlat
     setTimeout(() => {
-        const normalized = randomRotation % 360;
-        const resultColor = getColorByAngle(normalized);
-        const guess = document.getElementById("guess").value;
+        // 10 tam tur + 0–360 arası rastgele
+        const randomRotation = 360 * 10 + Math.floor(Math.random() * 360);
 
-        if (resultColor === guess) {
-            document.getElementById("result").innerText = 
-                `Tebrikler! Doğru bildin → ${resultColor}`;
-        } else {
-            document.getElementById("result").innerText = 
-                `Bilemedin! Çıkan: ${resultColor}`;
-        }
+        wheel.style.transition = "transform 4s cubic-bezier(.1,.6,.1,1)";
+        wheel.style.transform = `rotate(${randomRotation}deg)`;
 
-        spinning = false;
+        setTimeout(() => {
+            const normalized = randomRotation % 360;
+            const resultColor = getColorByAngle(normalized);
+            const guess = document.getElementById("guess").value;
 
-    }, 4200);
+            if (resultColor === guess) {
+                document.getElementById("result").innerText =
+                    `Tebrikler! Doğru bildin → ${resultColor}`;
+            } else {
+                document.getElementById("result").innerText =
+                    `Bilemedin! Çıkan: ${resultColor}`;
+            }
+
+            spinning = false;
+        }, 4100);
+    }, 20);
 }
 </script>
 
