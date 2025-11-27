@@ -466,38 +466,123 @@
 </head>
 <body>
 
-<h1>Renk Tahmin Oyunu (DEMO)</h1>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<title>Spin Tahmin Oyunu</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #222;
+        color: #fff;
+        text-align: center;
+        padding: 40px;
+    }
+    .wheel {
+        width: 200px;
+        height: 200px;
+        border: 8px solid #fff;
+        border-radius: 50%;
+        margin: 20px auto;
+        position: relative;
+        overflow: hidden;
+        transform: rotate(0deg);
+        transition: transform 4s ease-out;
+    }
+    .segment {
+        position: absolute;
+        width: 50%;
+        height: 50%;
+        background: red;
+        transform-origin: 100% 100%;
+        clip-path: polygon(0 0, 100% 0, 100% 100%);
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 18px;
+        margin: 10px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
 
-<button class="btn red" onclick="play('red')">Kırmızı</button>
-<button class="btn blue" onclick="play('blue')">Mavi</button>
+<h1>🎰 Spin Tahmin Oyunu</h1>
+<h3>Jeton: <span id="coins">100</span></h3>
 
-<div id="result"></div>
+<h3>Tahmin Et:</h3>
+<button onclick="setGuess('Kırmızı')">🔴 Kırmızı</button>
+<button onclick="setGuess('Mavi')">🔵 Mavi</button>
 
-<div id="history"></div>
+<p>Seçilen Tahmin: <b id="guessText">Yok</b></p>
+
+<div class="wheel" id="wheel">
+    <!-- 4 parça: 2 kırmızı, 2 mavi -->
+    <div class="segment" style="background:red; transform: rotate(0deg) skewY(-30deg);"></div>
+    <div class="segment" style="background:blue; transform: rotate(90deg) skewY(-30deg);"></div>
+    <div class="segment" style="background:red; transform: rotate(180deg) skewY(-30deg);"></div>
+    <div class="segment" style="background:blue; transform: rotate(270deg) skewY(-30deg);"></div>
+</div>
+
+<button onclick="spin()">🎲 SPİN</button>
+
+<h2 id="result"></h2>
 
 <script>
-function play(playerChoice) {
-    const colors = ["red", "blue"];
-    const systemChoice = colors[Math.floor(Math.random() * colors.length)];
+let coins = 100;
+let guess = null;
+let spinning = false;
 
-    let resultText = "";
-    if (playerChoice === systemChoice) {
-        resultText = "🎉 Kazandın! (" + systemChoice.toUpperCase() + ")";
-        document.getElementById("result").style.color = "lime";
-    } else {
-        resultText = "❌ Kaybettin! (" + systemChoice.toUpperCase() + ")";
-        document.getElementById("result").style.color = "red";
+function setGuess(color) {
+    guess = color;
+    document.getElementById("guessText").innerText = color;
+}
+
+function spin() {
+    if (spinning) return;
+
+    if (!guess) {
+        alert("Lütfen tahmin yap!");
+        return;
     }
 
-    document.getElementById("result").innerHTML = resultText;
+    if (coins <= 0) {
+        alert("Jetonun bitti!");
+        return;
+    }
 
-    // geçmiş
-    let h = document.getElementById("history").innerHTML;
-    document.getElementById("history").innerHTML = 
-        "Sonuç: " + systemChoice.toUpperCase() + "<br>" + h;
+    spinning = true;
+    coins -= 10; // spin ücreti
+    document.getElementById("coins").innerText = coins;
+
+    const wheel = document.getElementById("wheel");
+
+    // Rastgele dönüş açısı
+    const randomRotation = 3600 + Math.floor(Math.random() * 360);
+    wheel.style.transform = `rotate(${randomRotation}deg)`;
+
+    setTimeout(() => {
+        let normalized = randomRotation % 360;
+
+        let resultColor = "";
+        if (normalized < 90) resultColor = "Kırmızı";
+        else if (normalized < 180) resultColor = "Mavi";
+        else if (normalized < 270) resultColor = "Kırmızı";
+        else resultColor = "Mavi";
+
+        if (resultColor === guess) {
+            coins += 20;
+            document.getElementById("result").innerText = "Kazandın! +" + 20 + " jeton";
+        } else {
+            document.getElementById("result").innerText = "Kaybettin!";
+        }
+
+        document.getElementById("coins").innerText = coins;
+        spinning = false;
+    }, 4100);
 }
 </script>
 
 </body>
 </html>
-
