@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Slot Oyunu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+        background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, #05060b 40%) fixed;
+        color: #eaeaea;
+        text-align: center;
+        padding: 20px;
+    }
+
+    h1 {
+        color: #00eaff;
+        text-shadow: 0 0 18px #00eaff;
+        margin-bottom: 10px;
+    }
+
+    .box {
+        max-width: 500px;
+        margin: 20px auto;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 20px;
+    }
+
+    .slot-row {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .slot-box {
+        width: 90px;
+        height: 90px;
+        background: #0b0f19;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.25);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 36px;
+        color: #fff;
+        text-shadow: 0 0 12px #00eaff;
+        box-shadow: 0 0 18px rgba(0,234,255,0.25);
+        transition: 0.2s;
+    }
+
+    button {
+        padding: 12px 20px;
+        font-size: 18px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(0,234,255,0.22);
+        color: #fff;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    button:hover {
+        background: rgba(0,234,255,0.4);
+        box-shadow: 0 0 16px rgba(0,234,255,0.4);
+    }
+
+    #back {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 18px;
+        color: #fff;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 10px;
+    }
+    #back:hover { background: rgba(0,234,255,0.2); }
+
+</style>
+</head>
+
+<body>
+
+<h1>🎰 Slot Makinesi</h1>
+<p>Her spin 10 jeton!</p>
+
+<div class="box">
+    <h3>Jeton: <span id="tokens">100</span></h3>
+
+    <div class="slot-row">
+        <div class="slot-box" id="s1">🍒</div>
+        <div class="slot-box" id="s2">🍋</div>
+        <div class="slot-box" id="s3">⭐</div>
+    </div>
+
+    <button onclick="spin()">🎲 SPİN</button>
+
+    <h2 id="result"></h2>
+</div>
+
+<a id="back" href="/games">← Oyun Lobisine Dön</a>
+
+<script>
+let tokens = 100;
+const SPIN_COST = 10;
+
+const symbols = ["🍒","🍋","⭐","🔔","🍉","7️⃣"];
+
+function spin() {
+    if (tokens < SPIN_COST) {
+        document.getElementById("result").innerText = "Jetonun yetersiz!";
+        return;
+    }
+
+    tokens -= SPIN_COST;
+    document.getElementById("tokens").innerText = tokens;
+
+    document.getElementById("result").innerText = "Dönüyor...";
+
+    let s1 = document.getElementById("s1");
+    let s2 = document.getElementById("s2");
+    let s3 = document.getElementById("s3");
+
+    let count = 20; // animasyon hız tur sayısı
+    let speed = 80;
+
+    let anim = setInterval(() => {
+        s1.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+        s2.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+        s3.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+
+        count--;
+        if (count <= 0) {
+            clearInterval(anim);
+
+            // Son rastgele sonuç
+            let r1 = symbols[Math.floor(Math.random() * symbols.length)];
+            let r2 = symbols[Math.floor(Math.random() * symbols.length)];
+            let r3 = symbols[Math.floor(Math.random() * symbols.length)];
+
+            s1.innerText = r1;
+            s2.innerText = r2;
+            s3.innerT
