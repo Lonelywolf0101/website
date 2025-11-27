@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Zar Tahmin Oyunu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+        background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, #05060b 40%) fixed;
+        color: #eaeaea;
+        text-align: center;
+        padding: 40px 10px;
+    }
+
+    h1 {
+        color: #00eaff;
+        text-shadow: 0 0 16px #00eaff;
+    }
+
+    .box {
+        max-width: 420px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 20px;
+        margin: 25px auto;
+    }
+
+    .dice {
+        font-size: 100px;
+        margin: 20px auto;
+        color: #fff;
+        text-shadow: 0 0 22px rgba(0,234,255,0.5);
+        transition: transform 0.6s;
+    }
+
+    select, button {
+        padding: 12px 18px;
+        font-size: 18px;
+        border-radius: 10px;
+        border: none;
+        margin: 10px;
+        cursor: pointer;
+        transition: 0.25s;
+        background: rgba(0, 234, 255, 0.18);
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    button:hover {
+        background: rgba(0,234,255,0.35);
+        box-shadow: 0 0 15px rgba(0,234,255,0.4);
+    }
+
+    #back {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 18px;
+        color: #fff;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 10px;
+    }
+
+    #back:hover {
+        background: rgba(0,234,255,0.2);
+    }
+</style>
+</head>
+
+<body>
+
+<h1>🎲 Zar Tahmin Oyunu</h1>
+<p>Bir tur: <b>5 jeton</b></p>
+
+<div class="box">
+    <h3>Jeton: <span id="tokens">100</span></h3>
+
+    <label for="guess">Tahmin (1–6):</label>
+    <select id="guess">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+    </select>
+
+    <button onclick="rollDice()">Zarı At</button>
+
+    <div class="dice" id="dice">🎲</div>
+
+    <h2 id="result"></h2>
+</div>
+
+<a id="back" href="/games">← Oyun Lobisine Dön</a>
+
+<script>
+let tokens = 100;
+const TOKEN_COST = 5;
+
+function rollDice() {
+    if (tokens < TOKEN_COST) {
+        document.getElementById("result").innerText = "Jetonun yetersiz!";
+        return;
+    }
+
+    tokens -= TOKEN_COST;
+    document.getElementById("tokens").innerText = tokens;
+
+    const guess = parseInt(document.getElementById("guess").value);
+    const dice = document.getElementById("dice");
+    const resultText = document.getElementById("result");
+
+    dice.style.transform = "rotate(360deg)";
+    resultText.innerText = "Zar atılıyor...";
+
+    setTimeout(() => {
+        const roll = Math.floor(Math.random() * 6) + 1;
+        dice.style.transform = "rotate(0deg)";
+        dice.innerText = roll;
+
+        if (roll === guess) {
+            resultText.innerText = "Doğru bildin! (Jeton kazanılmaz)";
+        } else {
+            resultText.innerText = "Bilemedin!";
+        }
+
+    }, 900);
+}
+</script>
+
+</body>
+</html>
