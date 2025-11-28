@@ -10,95 +10,86 @@
         margin: 0;
         padding: 0;
         font-family: "Poppins", sans-serif;
-        background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, #05060b 40%) fixed;
+        background: #0c0f1a;
         color: #eaeaea;
         text-align: center;
-        padding: 40px 10px;
+        padding: 30px 10px;
     }
 
     h1 {
         color: #00eaff;
-        text-shadow: 0 0 16px #00eaff;
-        margin-bottom: 20px;
+        font-size: 34px;
     }
 
     .box {
-        max-width: 420px;
+        max-width: 520px;
         background: rgba(255,255,255,0.06);
         border: 1px solid rgba(255,255,255,0.1);
         border-radius: 16px;
         padding: 25px;
-        margin: 25px auto;
-        position: relative;
+        margin: 30px auto;
     }
 
-    /* ========== SLOT MAKİNESİ GÖRSELİ ========== */
+    /* --- SLOT GÖRSELİ KAPSAYICISI --- */
     .machine-wrapper {
         position: relative;
-        width: 270px;
+        width: 350px;      /* Slot görüntüsünün boyutu (responsive) */
         margin: 0 auto;
     }
 
     .slot-machine {
         width: 100%;
-        filter: drop-shadow(0 0 12px rgba(0,234,255,0.25));
         display: block;
     }
 
-    /* ========== MAKİNENİN İÇİNE OTURAN SLOTLAR ========== */
+    /* --- SLOTLARIN GÖRSELİN ÜZERİNE BİNEN KONUMU --- */
     .slots {
         position: absolute;
-        top: 75px;       /* slot penceresinin dikey konumu (görsele göre ayarlanmış) */
+        top: 66%;       /* Yükseklik konumu (görsele göre mükemmel hizalı) */
         left: 50%;
-        transform: translateX(-50%);
-        width: 180px;   /* pencere genişliği */
+        transform: translate(-50%, -50%);
+        width: 70%;     /* Pencere genişliği */
         display: flex;
         justify-content: space-between;
     }
 
     .slot-box {
-        width: 55px;
-        height: 55px;
-        background: rgba(0, 234, 255, 0.15);
-        border-radius: 10px;
-        box-shadow: 0 0 12px rgba(0,234,255,0.25);
-        font-size: 40px;
+        width: 30%;
+        aspect-ratio: 1 / 1; /* Kare kutu */
+        background: rgba(0, 234, 255, 0.18);
+        border-radius: 12px;
+        box-shadow: 0 0 14px rgba(0,234,255,0.25);
         display: flex;
         justify-content: center;
         align-items: center;
-        backdrop-filter: blur(4px);
+        font-size: 42px;
+        backdrop-filter: blur(3px);
     }
 
-    /* ========== BUTON ========== */
+    /* --- BUTON --- */
     button {
-        margin-top: 190px;
-        padding: 12px 22px;
-        font-size: 22px;
-        border-radius: 12px;
+        padding: 12px 24px;
+        font-size: 20px;
+        border-radius: 10px;
         border: none;
         cursor: pointer;
         background: #004a56;
         color: #fff;
-        transition: 0.25s;
+        margin-top: 35px;
     }
 
     button:hover {
-        background: #006d80;
-        box-shadow: 0 0 15px rgba(0,234,255,0.4);
+        background: #007083;
     }
 
     #back {
         display: inline-block;
-        margin-top: 20px;
+        margin-top: 25px;
         padding: 8px 18px;
         color: #fff;
-        text-decoration: none;
         border: 1px solid rgba(255,255,255,0.2);
         border-radius: 10px;
-    }
-
-    #back:hover {
-        background: rgba(0,234,255,0.2);
+        text-decoration: none;
     }
 </style>
 </head>
@@ -111,17 +102,16 @@
     <h2>Jeton: <span id="tokens">100</span></h2>
     <p>Bir tur: <b>10 jeton</b></p>
 
-    <!-- SLOT MAKİNESİ KAPSAYICI -->
     <div class="machine-wrapper">
 
-        <!-- MAKİNE GÖRSELİ -->
+        <!-- SLOT GÖRSELİ -->
         <img src="slot.png" class="slot-machine">
 
-        <!-- MAKİNENİN İÇİNE YERLEŞEN SLOT KUTULARI -->
+        <!-- Slot Pencereleri (Tam Oturan) -->
         <div class="slots">
-            <div class="slot-box" id="s1">🍒</div>
-            <div class="slot-box" id="s2">🍋</div>
-            <div class="slot-box" id="s3">⭐</div>
+            <div class="slot-box" id="s1">🍉</div>
+            <div class="slot-box" id="s2">⭐</div>
+            <div class="slot-box" id="s3">🍒</div>
         </div>
     </div>
 
@@ -135,7 +125,8 @@
 <script>
 let tokens = 100;
 const COST = 10;
-const symbols = ["🍒", "🍋", "🍉", "⭐", "🔔", "🍇"];
+
+const symbols = ["🍒","🍋","🍉","⭐","🔔","🍇"];
 
 function spin() {
     if (tokens < COST) {
@@ -144,13 +135,14 @@ function spin() {
     }
 
     tokens -= COST;
-    document.getElementById("tokens").innerText = tokens;
-    document.getElementById("result").innerText = "Çevriliyor...";
+    tokensEl = document.getElementById("tokens").innerText = tokens;
 
     let s1 = document.getElementById("s1");
     let s2 = document.getElementById("s2");
     let s3 = document.getElementById("s3");
+    let resultText = document.getElementById("result");
 
+    resultText.innerText = "Çevriliyor...";
     s1.style.opacity = s2.style.opacity = s3.style.opacity = "0.3";
 
     setTimeout(() => {
@@ -165,10 +157,11 @@ function spin() {
         s1.style.opacity = s2.style.opacity = s3.style.opacity = "1";
 
         if (r1 === r2 && r2 === r3) {
-            result.innerText = "Kazandın! (Jeton verilmez)";
+            resultText.innerText = "Kazandın!";
         } else {
-            result.innerText = "Kaybettin!";
+            resultText.innerText = "Kaybettin!";
         }
+
     }, 700);
 }
 </script>
