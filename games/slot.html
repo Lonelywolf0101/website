@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Klasik Slot Makinesi</title>
+<title>Slot Makinesi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -13,7 +13,7 @@
         background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, #05060b 40%) fixed;
         color: #eaeaea;
         text-align: center;
-        padding: 30px 10px;
+        padding: 20px 10px;
     }
 
     .game-header {
@@ -30,54 +30,63 @@
         box-shadow: 0 0 18px rgba(0,234,255,0.2);
     }
 
-    .game-header .game-icon {
-        font-size: 48px;
-    }
+    .game-icon { font-size: 48px; }
+    .game-title { font-size: 28px; color: #00eaff; font-weight: 600; }
 
-    .game-header .game-title {
-        font-size: 28px;
-        color: #00eaff;
-        font-weight: 600;
-    }
-
+    /* SLOT MAKİNESİ PNG */
     .machine {
-        margin: 30px auto;
-        padding: 25px;
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 16px;
-        width: 330px;
-        box-shadow: 0 0 18px rgba(0,234,255,0.18);
+        width: 320px;
+        margin: 25px auto;
+        position: relative;
+    }
+    .machine img {
+        width: 100%;
+        pointer-events: none;
+        user-select: none;
     }
 
+    /* DÖNEN ALAN */
     .reels {
+        position: absolute;
+        top: 115px; 
+        left: 51px;
+        width: 220px;
+        height: 90px;
         display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin-bottom: 20px;
+        gap: 8px;
     }
 
     .reel {
-        width: 80px;
-        height: 80px;
-        border-radius: 12px;
-        background: #111;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size: 42px;
-        color: #fff;
-        border: 2px solid rgba(0,234,255,0.35);
-        box-shadow: inset 0 0 12px rgba(0,234,255,0.4);
-        transition: transform 0.2s;
+        width: 66px;
+        height: 90px;
+        background: #000;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid rgba(0,234,255,0.4);
+        box-shadow: 0 0 10px rgba(0,234,255,0.3);
+        position: relative;
+    }
+
+    .symbols {
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+
+    .symbol {
+        font-size: 46px;
+        height: 90px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     button {
-        padding: 12px 20px;
+        padding: 12px 22px;
         font-size: 18px;
         border-radius: 10px;
         border: none;
-        margin: 10px;
+        margin: 20px;
         cursor: pointer;
         background: rgba(0,234,255,0.2);
         color: #fff;
@@ -88,18 +97,24 @@
         background: rgba(0,234,255,0.35);
     }
 
-    #back {
-        display: inline-block;
-        margin-top: 20px;
-        padding: 10px 18px;
-        color: #fff;
-        text-decoration: none;
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 10px;
+    #result {
+        font-size: 26px;
+        margin-top: 10px;
+    }
+
+    .win {
+        color: #00eaff;
+        text-shadow: 0 0 15px #00eaff;
+        animation: glow 1s infinite alternate;
+    }
+
+    @keyframes glow {
+        from { text-shadow: 0 0 10px #00eaff; }
+        to   { text-shadow: 0 0 25px cyan; }
     }
 </style>
-
 </head>
+
 <body>
 
 <div class="game-header">
@@ -110,71 +125,96 @@
 <h3>Jeton: <span id="tokens">100</span></h3>
 <p>Bir tur: <b>10 jeton</b></p>
 
+<!-- SLOT PNG ÇERÇEVE -->
 <div class="machine">
+    <img src="slot.png">
+
     <div class="reels">
-        <div class="reel" id="r1">🍒</div>
-        <div class="reel" id="r2">🍋</div>
-        <div class="reel" id="r3">⭐</div>
+        <div class="reel" id="reel1"></div>
+        <div class="reel" id="reel2"></div>
+        <div class="reel" id="reel3"></div>
     </div>
-
-    <button onclick="spin()">🎲 Çevir</button>
-
-    <h2 id="result"></h2>
 </div>
+
+<button onclick="spin()">🎲 Çevir</button>
+<h2 id="result"></h2>
 
 <a id="back" href="/games">← Oyun Lobisine Dön</a>
 
 <script>
 let tokens = 100;
 const COST = 10;
-const symbols = ["🍒", "🍋", "⭐", "🍉", "🔔", "7️⃣"];
+const icons = ["🍒", "⭐", "🍋", "🍉", "🔔", "🍇"];
+
+function createReelSymbols() {
+    const group = document.createElement("div");
+    group.className = "symbols";
+
+    for (let i = 0; i < 20; i++) {
+        const d = document.createElement("div");
+        d.className = "symbol";
+        d.innerText = icons[Math.floor(Math.random() * icons.length)];
+        group.appendChild(d);
+    }
+    return group;
+}
 
 function spin() {
     if (tokens < COST) {
-        document.getElementById("result").innerText = "Jetonun yetersiz!";
+        result.innerText = "Jeton yetersiz!";
         return;
     }
 
     tokens -= COST;
     document.getElementById("tokens").innerText = tokens;
 
-    const r1 = document.getElementById("r1");
-    const r2 = document.getElementById("r2");
-    const r3 = document.getElementById("r3");
-    const result = document.getElementById("result");
+    const r1 = document.getElementById("reel1");
+    const r2 = document.getElementById("reel2");
+    const r3 = document.getElementById("reel3");
 
-    result.innerText = "Çevriliyor...";
+    r1.innerHTML = "";
+    r2.innerHTML = "";
+    r3.innerHTML = "";
 
-    // Rastgele sonuçlar
-    let s1 = symbols[Math.floor(Math.random()*symbols.length)];
-    let s2 = symbols[Math.floor(Math.random()*symbols.length)];
-    let s3 = symbols[Math.floor(Math.random()*symbols.length)];
+    const s1 = createReelSymbols();
+    const s2 = createReelSymbols();
+    const s3 = createReelSymbols();
 
-    // Animasyon
-    r1.style.transform = "rotateX(360deg)";
-    r2.style.transform = "rotateX(360deg)";
-    r3.style.transform = "rotateX(360deg)";
+    r1.appendChild(s1);
+    r2.appendChild(s2);
+    r3.appendChild(s3);
 
-    setTimeout(()=> r1.innerText = s1, 300);
-    setTimeout(()=> r2.innerText = s2, 600);
-    setTimeout(()=> r3.innerText = s3, 900);
+    s1.style.animation = "spin 1.2s linear forwards";
+    s2.style.animation = "spin 1.6s linear forwards";
+    s3.style.animation = "spin 2s linear forwards";
 
-    setTimeout(()=> {
-        r1.style.transform = "rotateX(0deg)";
-        r2.style.transform = "rotateX(0deg)";
-        r3.style.transform = "rotateX(0deg)";
+    result.innerText = "";
+    result.classList.remove("win");
 
-        if (s1 === s2 && s2 === s3) {
-            result.innerText = `⭐ JACKPOT! (${s1} ${s2} ${s3})`;
-        } else if (s1 === s2 || s2 === s3 || s1 === s3) {
-            result.innerText = `Kazandın! (Ama jeton verilmiyor)`;
-        } else {
-            result.innerText = "Kaybettin!";
-        }
+    setTimeout(() => finishSpin(s1, s2, s3), 2050);
+}
 
-    }, 1100);
+function finishSpin(s1, s2, s3) {
+    const out1 = s1.children[18].innerText;
+    const out2 = s2.children[18].innerText;
+    const out3 = s3.children[18].innerText;
+
+    if (out1 === out2 && out2 === out3) {
+        result.innerText = "Kazandın!";
+        result.classList.add("win");
+    } else {
+        result.innerText = "Kaybettin!";
+    }
 }
 </script>
+
+<!-- Tambur Animasyonu -->
+<style>
+@keyframes spin {
+    from { top: 0px; }
+    to   { top: -1710px; }
+}
+</style>
 
 </body>
 </html>
