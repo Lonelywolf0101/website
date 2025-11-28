@@ -33,7 +33,7 @@
     .game-icon { font-size: 48px; }
     .game-title { font-size: 28px; color: #00eaff; font-weight: 600; }
 
-    /* SLOT KUTULARI PNG YOK — ORTAYA ALINMIŞ */
+    /* Slot kutuları */
     .machine {
         width: 240px;
         margin: 25px auto;
@@ -42,7 +42,6 @@
         background: rgba(255,255,255,0.06);
         border: 1px solid rgba(0,234,255,0.25);
         box-shadow: 0 0 22px rgba(0,234,255,0.18);
-        position: relative;
     }
 
     .reels {
@@ -128,7 +127,6 @@
 <h3>Jeton: <span id="tokens">100</span></h3>
 <p>Bir tur: <b>10 jeton</b></p>
 
-<!-- PNG SİLİNDİ — SADECE KUTULAR -->
 <div class="machine">
     <div class="reels">
         <div class="reel" id="reel1"></div>
@@ -147,16 +145,23 @@ let tokens = 100;
 const COST = 10;
 const icons = ["🍒", "⭐", "🍋", "🍉", "🔔", "🍇"];
 
-function createReelSymbols() {
+function createReelSymbols(finalSymbol) {
     let group = document.createElement("div");
     group.className = "symbols";
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 19; i++) {
         let d = document.createElement("div");
         d.className = "symbol";
         d.innerText = icons[Math.floor(Math.random() * icons.length)];
         group.appendChild(d);
     }
+
+    // Son sembol sabit (kazanma mantığı için)
+    let last = document.createElement("div");
+    last.className = "symbol";
+    last.innerText = finalSymbol;
+    group.appendChild(last);
+
     return group;
 }
 
@@ -177,9 +182,27 @@ function spin() {
     r2.innerHTML = "";
     r3.innerHTML = "";
 
-    const s1 = createReelSymbols();
-    const s2 = createReelSymbols();
-    const s3 = createReelSymbols();
+    // %50 kazanma ihtimali
+    const win = Math.random() < 0.5;
+
+    let final1, final2, final3;
+
+    if (win) {
+        // 3'ü aynı olacak
+        final1 = final2 = final3 = icons[Math.floor(Math.random() * icons.length)];
+    } else {
+        // 3'ü farklı olacak
+        final1 = icons[Math.floor(Math.random() * icons.length)];
+        do { final2 = icons[Math.floor(Math.random() * icons.length)]; }
+        while (final2 === final1);
+
+        do { final3 = icons[Math.floor(Math.random() * icons.length)]; }
+        while (final3 === final2 || final3 === final1);
+    }
+
+    const s1 = createReelSymbols(final1);
+    const s2 = createReelSymbols(final2);
+    const s3 = createReelSymbols(final3);
 
     r1.appendChild(s1);
     r2.appendChild(s2);
@@ -192,16 +215,13 @@ function spin() {
     result.innerText = "";
     result.classList.remove("win");
 
-    setTimeout(() => finishSpin(s1, s2, s3), 2050);
+    setTimeout(() => finishSpin(win), 2050);
 }
 
-function finishSpin(s1, s2, s3) {
-    const out1 = s1.children[18].innerText;
-    const out2 = s2.children[18].innerText;
-    const out3 = s3.children[18].innerText;
-
-    if (out1 === out2 && out2 === out3 && out1 === out3) {
+function finishSpin(win) {
+    if (win) {
         result.innerText = "Kazandın!";
+        result.classList.add("win");
     } else {
         result.innerText = "Kaybettin!";
     }
