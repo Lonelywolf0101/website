@@ -200,7 +200,7 @@ function finishSpin(s1, s2, s3) {
     const out2 = s2.children[18].innerText;
     const out3 = s3.children[18].innerText;
 
-    if (out1 === out2 && out2 === out3) {
+    if (out1 === out2 && out2 === out3 && out1 === out3) {
         result.innerText = "Kazandın!";
         result.classList.add("win");
     } else {
