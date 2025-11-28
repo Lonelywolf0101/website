@@ -13,215 +13,158 @@
         background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, #05060b 40%) fixed;
         color: #eaeaea;
         text-align: center;
-        padding: 20px 10px;
+        padding: 40px 10px;
     }
 
-    .game-header {
-        max-width: 600px;
-        margin: 0 auto 25px;
-        padding: 18px;
+    h1 {
+        color: #00eaff;
+        text-shadow: 0 0 16px #00eaff;
+        font-size: 36px;
+        margin-bottom: 10px;
+    }
+
+    .box {
+        max-width: 420px;
         background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(0,234,255,0.25);
+        border: 1px solid rgba(255,255,255,0.1);
         border-radius: 14px;
+        padding: 25px;
+        margin: 25px auto;
+    }
+
+    /* Slot makinesi görseli */
+    .slot-machine {
+        width: 240px;
+        display: block;
+        margin: 0 auto;
+        margin-bottom: -10px;
+        transform: translateY(10px);
+        filter: drop-shadow(0 0 12px rgba(0,234,255,0.25));
+    }
+
+    /* Sonuç kutuları */
+    .slots {
         display: flex;
-        align-items: center;
-        gap: 14px;
         justify-content: center;
-        box-shadow: 0 0 18px rgba(0,234,255,0.2);
+        gap: 16px;
+        margin-top: 25px;
     }
 
-    .game-icon { font-size: 48px; }
-    .game-title { font-size: 28px; color: #00eaff; font-weight: 600; }
-
-    /* SLOT MAKİNESİ ARKA GÖRSELİ */
-    .machine {
-        width: 320px;
-        margin: 20px auto;
-        position: relative;
-    }
-
-    .machine img {
-        width: 100%;
-        pointer-events: none;
-        user-select: none;
-    }
-
-    /* DÖNEN TAMBURLAR */
-    .reels {
-        position: absolute;
-        top: 115px;     /* png görseline göre ayarlanmış */
-        left: 51px;
-        width: 220px;
-        height: 90px;
+    .slot-box {
+        width: 85px;
+        height: 85px;
+        background: rgba(0, 234, 255, 0.15);
+        border-radius: 14px;
+        box-shadow: 0 0 14px rgba(0,234,255,0.25);
         display: flex;
-        gap: 8px;
-    }
-
-    .reel {
-        width: 66px;
-        height: 90px;
-        background: #000;
-        border-radius: 8px;
-        overflow: hidden;
-        border: 2px solid rgba(0,234,255,0.4);
-        box-shadow: 0 0 10px rgba(0,234,255,0.3);
-        position: relative;
-    }
-
-    /* İçte dönen semboller */
-    .symbols {
-        position: absolute;
-        top: 0;
-        width: 100%;
-        animation-timing-function: linear;
-    }
-
-    .symbol {
+        justify-content: center;
+        align-items: center;
         font-size: 46px;
-        height: 90px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 
+    /* Çevir butonu */
     button {
         padding: 12px 22px;
-        font-size: 18px;
-        border-radius: 10px;
+        font-size: 22px;
+        border-radius: 12px;
         border: none;
-        margin: 20px;
+        margin-top: 25px;
         cursor: pointer;
-        background: rgba(0,234,255,0.2);
+        transition: 0.25s;
+        background: #004a56;
         color: #fff;
-        border: 1px solid rgba(255,255,255,0.18);
-        transition: .25s;
+        border: 1px solid rgba(255,255,255,0.15);
     }
+
     button:hover {
-        background: rgba(0,234,255,0.35);
+        background: #006d80;
+        box-shadow: 0 0 15px rgba(0,234,255,0.4);
     }
 
-    #result {
-        font-size: 26px;
-        margin-top: 10px;
+    #back {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 10px 18px;
+        color: #fff;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 10px;
     }
 
-    .win {
-        color: #00eaff;
-        text-shadow: 0 0 15px #00eaff;
-        animation: glow 1s infinite alternate;
+    #back:hover {
+        background: rgba(0,234,255,0.2);
     }
-
-    @keyframes glow {
-        from { text-shadow: 0 0 10px #00eaff; }
-        to   { text-shadow: 0 0 25px cyan; }
-    }
-
 </style>
 </head>
 
 <body>
 
-<div class="game-header">
-    <div class="game-icon">🎰</div>
-    <div class="game-title">Slot Makinesi</div>
-</div>
+<h1>🎰 Slot Makinesi</h1>
 
-<h3>Jeton: <span id="tokens">100</span></h3>
-<p>Bir tur: <b>10 jeton</b></p>
+<div class="box">
+    <h2>Jeton: <span id="tokens">100</span></h2>
+    <p>Bir tur: <b>10 jeton</b></p>
 
-<!-- SLOT MAKİNESİ GÖRSELİ -->
-<div class="machine">
-    <img src="slot.png">
+    <!-- SLOT MAKİNESİ GÖRSELİ -->
+    <img src="slot.png" class="slot-machine">
 
-    <div class="reels">
-        <div class="reel" id="reel1"></div>
-        <div class="reel" id="reel2"></div>
-        <div class="reel" id="reel3"></div>
+    <!-- SLOT SONUÇLARI -->
+    <div class="slots">
+        <div class="slot-box" id="s1">🍒</div>
+        <div class="slot-box" id="s2">🍋</div>
+        <div class="slot-box" id="s3">⭐</div>
     </div>
-</div>
 
-<button onclick="spin()">🎲 Çevir</button>
-<h2 id="result"></h2>
+    <button onclick="spin()">🎲 Çevir</button>
+
+    <h2 id="result"></h2>
+</div>
 
 <a id="back" href="/games">← Oyun Lobisine Dön</a>
 
 <script>
 let tokens = 100;
 const COST = 10;
-const icons = ["🍒", "⭐", "🍋", "🍉", "🔔", "🍇"];
 
-function createReelSymbols() {
-    const group = document.createElement("div");
-    group.className = "symbols";
-
-    for (let i = 0; i < 20; i++) {
-        const d = document.createElement("div");
-        d.className = "symbol";
-        d.innerText = icons[Math.floor(Math.random() * icons.length)];
-        group.appendChild(d);
-    }
-    return group;
-}
+const symbols = ["🍒", "🍋", "🍉", "⭐", "🔔", "🍇"];
 
 function spin() {
     if (tokens < COST) {
-        result.innerText = "Jeton yetersiz!";
+        document.getElementById("result").innerText = "Jetonun bitti!";
         return;
     }
 
     tokens -= COST;
     document.getElementById("tokens").innerText = tokens;
+    document.getElementById("result").innerText = "Çevriliyor...";
 
-    const r1 = document.getElementById("reel1");
-    const r2 = document.getElementById("reel2");
-    const r3 = document.getElementById("reel3");
+    // Hafif animasyon efekti
+    document.getElementById("s1").style.opacity = "0.3";
+    document.getElementById("s2").style.opacity = "0.3";
+    document.getElementById("s3").style.opacity = "0.3";
 
-    r1.innerHTML = "";
-    r2.innerHTML = "";
-    r3.innerHTML = "";
+    setTimeout(() => {
+        let r1 = symbols[Math.floor(Math.random() * symbols.length)];
+        let r2 = symbols[Math.floor(Math.random() * symbols.length)];
+        let r3 = symbols[Math.floor(Math.random() * symbols.length)];
 
-    const s1 = createReelSymbols();
-    const s2 = createReelSymbols();
-    const s3 = createReelSymbols();
+        document.getElementById("s1").innerText = r1;
+        document.getElementById("s2").innerText = r2;
+        document.getElementById("s3").innerText = r3;
 
-    r1.appendChild(s1);
-    r2.appendChild(s2);
-    r3.appendChild(s3);
+        document.getElementById("s1").style.opacity = "1";
+        document.getElementById("s2").style.opacity = "1";
+        document.getElementById("s3").style.opacity = "1";
 
-    // Reel animasyonları
-    s1.style.animation = "spin 1.2s linear forwards";
-    s2.style.animation = "spin 1.6s linear forwards";
-    s3.style.animation = "spin 2s linear forwards";
+        if (r1 === r2 && r2 === r3) {
+            document.getElementById("result").innerText = "Kazandın! (Jeton verilmez)";
+        } else {
+            document.getElementById("result").innerText = "Kaybettin!";
+        }
 
-    result.innerText = "";
-    result.classList.remove("win");
-
-    setTimeout(() => finishSpin(s1, s2, s3), 2050);
+    }, 700);
 }
-
-function finishSpin(s1, s2, s3) {
-    // Son satırdaki sembol = outcome
-    const out1 = s1.children[18].innerText;
-    const out2 = s2.children[18].innerText;
-    const out3 = s3.children[18].innerText;
-
-    if (out1 === out2 && out2 === out3) {
-        result.innerText = "Kazandın!";
-        result.classList.add("win");
-    } else {
-        result.innerText = "Kaybettin!";
-    }
-}
-
 </script>
-
-<!-- Animasyon -->
-<style>
-@keyframes spin {
-    from { top: 0px; }
-    to   { top: -1710px; }
-}
-</style>
 
 </body>
 </html>
