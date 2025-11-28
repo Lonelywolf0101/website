@@ -19,61 +19,67 @@
     h1 {
         color: #00eaff;
         text-shadow: 0 0 16px #00eaff;
-        font-size: 36px;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
     }
 
     .box {
         max-width: 420px;
         background: rgba(255,255,255,0.06);
         border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 14px;
+        border-radius: 16px;
         padding: 25px;
         margin: 25px auto;
+        position: relative;
     }
 
-    /* Slot makinesi görseli */
-    .slot-machine {
-        width: 240px;
-        display: block;
+    /* ========== SLOT MAKİNESİ GÖRSELİ ========== */
+    .machine-wrapper {
+        position: relative;
+        width: 270px;
         margin: 0 auto;
-        margin-bottom: -10px;
-        transform: translateY(10px);
-        filter: drop-shadow(0 0 12px rgba(0,234,255,0.25));
     }
 
-    /* Sonuç kutuları */
+    .slot-machine {
+        width: 100%;
+        filter: drop-shadow(0 0 12px rgba(0,234,255,0.25));
+        display: block;
+    }
+
+    /* ========== MAKİNENİN İÇİNE OTURAN SLOTLAR ========== */
     .slots {
+        position: absolute;
+        top: 75px;       /* slot penceresinin dikey konumu (görsele göre ayarlanmış) */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 180px;   /* pencere genişliği */
         display: flex;
-        justify-content: center;
-        gap: 16px;
-        margin-top: 25px;
+        justify-content: space-between;
     }
 
     .slot-box {
-        width: 85px;
-        height: 85px;
+        width: 55px;
+        height: 55px;
         background: rgba(0, 234, 255, 0.15);
-        border-radius: 14px;
-        box-shadow: 0 0 14px rgba(0,234,255,0.25);
+        border-radius: 10px;
+        box-shadow: 0 0 12px rgba(0,234,255,0.25);
+        font-size: 40px;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 46px;
+        backdrop-filter: blur(4px);
     }
 
-    /* Çevir butonu */
+    /* ========== BUTON ========== */
     button {
+        margin-top: 190px;
         padding: 12px 22px;
         font-size: 22px;
         border-radius: 12px;
         border: none;
-        margin-top: 25px;
         cursor: pointer;
-        transition: 0.25s;
         background: #004a56;
         color: #fff;
-        border: 1px solid rgba(255,255,255,0.15);
+        transition: 0.25s;
     }
 
     button:hover {
@@ -83,8 +89,8 @@
 
     #back {
         display: inline-block;
-        margin-top: 25px;
-        padding: 10px 18px;
+        margin-top: 20px;
+        padding: 8px 18px;
         color: #fff;
         text-decoration: none;
         border: 1px solid rgba(255,255,255,0.2);
@@ -105,17 +111,21 @@
     <h2>Jeton: <span id="tokens">100</span></h2>
     <p>Bir tur: <b>10 jeton</b></p>
 
-    <!-- SLOT MAKİNESİ GÖRSELİ -->
-    <img src="slot.png" class="slot-machine">
+    <!-- SLOT MAKİNESİ KAPSAYICI -->
+    <div class="machine-wrapper">
 
-    <!-- SLOT SONUÇLARI -->
-    <div class="slots">
-        <div class="slot-box" id="s1">🍒</div>
-        <div class="slot-box" id="s2">🍋</div>
-        <div class="slot-box" id="s3">⭐</div>
+        <!-- MAKİNE GÖRSELİ -->
+        <img src="slot.png" class="slot-machine">
+
+        <!-- MAKİNENİN İÇİNE YERLEŞEN SLOT KUTULARI -->
+        <div class="slots">
+            <div class="slot-box" id="s1">🍒</div>
+            <div class="slot-box" id="s2">🍋</div>
+            <div class="slot-box" id="s3">⭐</div>
+        </div>
     </div>
 
-    <button onclick="spin()">🎲 Çevir</button>
+    <button onclick="spin()">Çevir</button>
 
     <h2 id="result"></h2>
 </div>
@@ -125,12 +135,11 @@
 <script>
 let tokens = 100;
 const COST = 10;
-
 const symbols = ["🍒", "🍋", "🍉", "⭐", "🔔", "🍇"];
 
 function spin() {
     if (tokens < COST) {
-        document.getElementById("result").innerText = "Jetonun bitti!";
+        result.innerText = "Jetonun bitti!";
         return;
     }
 
@@ -138,30 +147,28 @@ function spin() {
     document.getElementById("tokens").innerText = tokens;
     document.getElementById("result").innerText = "Çevriliyor...";
 
-    // Hafif animasyon efekti
-    document.getElementById("s1").style.opacity = "0.3";
-    document.getElementById("s2").style.opacity = "0.3";
-    document.getElementById("s3").style.opacity = "0.3";
+    let s1 = document.getElementById("s1");
+    let s2 = document.getElementById("s2");
+    let s3 = document.getElementById("s3");
+
+    s1.style.opacity = s2.style.opacity = s3.style.opacity = "0.3";
 
     setTimeout(() => {
-        let r1 = symbols[Math.floor(Math.random() * symbols.length)];
-        let r2 = symbols[Math.floor(Math.random() * symbols.length)];
-        let r3 = symbols[Math.floor(Math.random() * symbols.length)];
+        let r1 = symbols[Math.floor(Math.random()*symbols.length)];
+        let r2 = symbols[Math.floor(Math.random()*symbols.length)];
+        let r3 = symbols[Math.floor(Math.random()*symbols.length)];
 
-        document.getElementById("s1").innerText = r1;
-        document.getElementById("s2").innerText = r2;
-        document.getElementById("s3").innerText = r3;
+        s1.innerText = r1;
+        s2.innerText = r2;
+        s3.innerText = r3;
 
-        document.getElementById("s1").style.opacity = "1";
-        document.getElementById("s2").style.opacity = "1";
-        document.getElementById("s3").style.opacity = "1";
+        s1.style.opacity = s2.style.opacity = s3.style.opacity = "1";
 
-        if (r1 === r2 && r2 === r3 && r1 === r3) {
-            document.getElementById("result").innerText = "Kazandın! (Jeton verilmez)";
+        if (r1 === r2 && r2 === r3) {
+            result.innerText = "Kazandın! (Jeton verilmez)";
         } else {
-            document.getElementById("result").innerText = "Kaybettin!";
+            result.innerText = "Kaybettin!";
         }
-
     }, 700);
 }
 </script>
