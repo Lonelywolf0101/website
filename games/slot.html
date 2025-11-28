@@ -51,11 +51,11 @@
 
     .reel-strip {
         position: absolute;
-        top: -360px; /* animasyon başlangıcında aşağı kayacak */
+        top: -720px; /* Baştan hızlı akan pozisyon */
         width: 100%;
         display: flex;
         flex-direction: column;
-        transition: top 1s ease-out;
+        transition: top 0.45s linear; /* SABİT HIZLI ANİMASYON */
     }
 
     .symbol {
@@ -102,7 +102,7 @@
     <h2 id="result"></h2>
 </div>
 
-<a id="back" href="/games" style="color:#9df;">← Oyun Lobisine Dön</a>
+<a href="/games" style="color:#9df;">← Oyun Lobisine Dön</a>
 
 <script>
 let tokens = 100;
@@ -113,7 +113,7 @@ const symbols = ["🍒", "⭐", "🍋", "🍉", "🔔", "🍇"];
 function buildReel(strip) {
     strip.innerHTML = "";
 
-    // Reel’in içinde 5 tur uzunluğunda sembol listesi
+    // Reel içine 12 sembol doldur
     for (let i = 0; i < 12; i++) {
         let sym = document.createElement("div");
         sym.className = "symbol";
@@ -138,7 +138,7 @@ function spin() {
     let resultText = document.getElementById("result");
     resultText.innerText = "";
 
-    // Reel’i yeniden oluştur (her spin farklı)
+    // Reel içeriğini yeniden oluştur
     buildReel(r1);
     buildReel(r2);
     buildReel(r3);
@@ -148,27 +148,26 @@ function spin() {
     let stop2 = -(Math.floor(Math.random() * 6) * 120);
     let stop3 = -(Math.floor(Math.random() * 6) * 120);
 
-    // İlk animasyon (hızlı aşağı akma)
-    r1.style.transition = "top 0s";
-    r2.style.transition = "top 0s";
-    r3.style.transition = "top 0s";
+    // İlk hızlı akış (top 0'a alınır)
+    r1.style.transition = "none";
+    r2.style.transition = "none";
+    r3.style.transition = "none";
 
     r1.style.top = "-720px";
     r2.style.top = "-720px";
     r3.style.top = "-720px";
 
+    // SABİT HIZLA DURMA ANİMASYONU
     setTimeout(() => {
-        // Yavaşlayarak durma animasyonu
-        r1.style.transition = "top 1.2s ease-out";
-        r2.style.transition = "top 1.4s ease-out";
-        r3.style.transition = "top 1.6s ease-out";
+        r1.style.transition = "top 0.45s linear";
+        r2.style.transition = "top 0.45s linear";
+        r3.style.transition = "top 0.45s linear";
 
         r1.style.top = stop1 + "px";
         r2.style.top = stop2 + "px";
         r3.style.top = stop3 + "px";
 
         setTimeout(() => {
-            // Kazanıp kazanmadığını kontrol et
             let s1 = r1.children[Math.abs(stop1 / 120)].innerText;
             let s2 = r2.children[Math.abs(stop2 / 120)].innerText;
             let s3 = r3.children[Math.abs(stop3 / 120)].innerText;
@@ -178,9 +177,10 @@ function spin() {
             } else {
                 resultText.innerText = "Kaybettin!";
             }
-        }, 1700);
 
-    }, 50);
+        }, 470);
+
+    }, 30);
 }
 </script>
 
