@@ -425,3 +425,180 @@
   <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "e3aade8116054ff5a2148c14573e8a2a"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
+  <!-- HERO BÖLÜMÜ SONRASI -->
+
+  <!-- === TASARIMLAR === -->
+  <section id="designs">
+    <div class="container">
+      <h2 class="sec-title">🎨 Tasarımlar</h2>
+      <p class="reveal">Buraya tasarım galerini ekleyeceğiz.</p>
+    </div>
+  </section>
+
+  <!-- === PROJELER === -->
+  <section id="projects">
+    <div class="container">
+      <h2 class="sec-title">🚀 Projeler</h2>
+      <div class="grid">
+        <article class="card reveal" data-modal="p1">
+          <h3>Proje 1</h3>
+          <p>Kısa açıklama…</p>
+          <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">JS</span>
+        </article>
+
+        <article class="card reveal" data-modal="p2">
+          <h3>Proje 2</h3>
+          <p>Kısa açıklama…</p>
+          <span class="chip">React</span><span class="chip">API</span>
+        </article>
+
+        <article class="card reveal" data-modal="p3">
+          <h3>Proje 3</h3>
+          <p>Kısa açıklama…</p>
+          <span class="chip">Node</span><span class="chip">Express</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- === YETENEKLER === -->
+  <section id="skills">
+    <div class="container">
+      <h2 class="sec-title">🛠️ Yetenekler</h2>
+      <div class="skills">
+        <div class="skill reveal">
+          <div>JavaScript / TypeScript</div>
+          <div class="bar"><div class="bar-in" style="width:85%"></div></div>
+        </div>
+        <div class="skill reveal">
+          <div>React / Next.js</div>
+          <div class="bar"><div class="bar-in" style="width:80%"></div></div>
+        </div>
+        <div class="skill reveal">
+          <div>Node.js</div>
+          <div class="bar"><div class="bar-in" style="width:75%"></div></div>
+        </div>
+        <div class="skill reveal">
+          <div>UI/UX & CSS</div>
+          <div class="bar"><div class="bar-in" style="width:70%"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === ZAMAN ÇİZELGESİ === -->
+  <section id="timeline">
+    <div class="container">
+      <h2 class="sec-title">⏱️ Zaman Çizelgesi</h2>
+      <div class="timeline">
+        <div class="tl-item reveal">
+          <div class="tl-title">2025 — Portföy Yayında</div>
+          <div class="tl-sub">GitHub Pages + Özel Alan Adı</div>
+        </div>
+        <div class="tl-item reveal">
+          <div class="tl-title">2024 — Örnek Deneyim</div>
+          <div class="tl-sub">Frontend / Backend çalışmaları…</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- === İLETİŞİM === -->
+  <section id="contact">
+    <div class="container">
+      <h2 class="sec-title">📬 İletişim</h2>
+      <form action="mailto:example@example.com" method="post" enctype="text/plain" aria-label="İletişim Formu">
+        <input name="name" type="text" placeholder="Ad Soyad" required />
+        <input name="email" type="email" placeholder="E-posta" required />
+        <textarea name="message" placeholder="Mesajın" required></textarea>
+        <button class="submit" type="submit">Gönder</button>
+      </form>
+      <p style="text-align:center;color:var(--muted);margin-top:10px">
+        Daha sonra bunu Formspree / Cloudflare Turnstile + Worker ile güvenli forma çevirebiliriz.
+      </p>
+    </div>
+  </section>
+
+  <button id="toTop" aria-label="Başa dön">↑</button>
+
+  <!-- === MODALLER === -->
+  <dialog id="p1">
+    <article style="max-width:680px">
+      <h3>Proje 1</h3>
+      <p>Detay açıklama. Canlı link ve GitHub linki buraya.</p>
+      <form method="dialog"><button class="btn" style="margin-top:10px">Kapat</button></form>
+    </article>
+  </dialog>
+
+  <dialog id="p2">
+    <article style="max-width:680px">
+      <h3>Proje 2</h3>
+      <p>Detay açıklama…</p>
+      <form method="dialog"><button class="btn" style="margin-top:10px">Kapat</button></form>
+    </article>
+  </dialog>
+
+  <dialog id="p3">
+    <article style="max-width:680px">
+      <h3>Proje 3</h3>
+      <p>Detay açıklama…</p>
+      <form method="dialog"><button class="btn" style="margin-top:10px">Kapat</button></form>
+    </article>
+  </dialog>
+
+  <!-- === JAVASCRIPT === -->
+  <script>
+    /* Particles Background */
+    const cnv=document.getElementById('bg'),ctx=cnv.getContext('2d');
+    function rs(){cnv.width=innerWidth;cnv.height=innerHeight}
+    rs();addEventListener('resize',rs);
+    const nodes=Array.from({length:75},()=>({
+      x:Math.random()*cnv.width,y:Math.random()*cnv.height,
+      vx:(Math.random()-.5)*.5,vy:(Math.random()-.5)*.5
+    }));
+    (function loop(){
+      ctx.clearRect(0,0,cnv.width,cnv.height);
+      ctx.fillStyle="#00eaff";
+      nodes.forEach(n=>{
+        n.x+=n.vx;n.y+=n.vy;
+        if(n.x<0||n.x>cnv.width) n.vx*=-1;
+        if(n.y<0||n.y>cnv.height) n.vy*=-1;
+        ctx.beginPath();ctx.arc(n.x,n.y,1.8,0,Math.PI*2);ctx.fill();
+      });
+      requestAnimationFrame(loop);
+    })();
+
+    /* Modal Kartlar */
+    document.querySelectorAll('.card[data-modal]').forEach(c=>{
+      c.addEventListener('click',()=>{
+        const d=document.getElementById(c.dataset.modal);
+        if(d) d.showModal();
+      });
+    });
+
+    /* Scroll Reveal */
+    const rev=[...document.querySelectorAll('.reveal')];
+    const ro=new IntersectionObserver((ents)=>{
+      ents.forEach(en=>{
+        if(en.isIntersecting){
+          en.target.classList.add('visible');
+          ro.unobserve(en.target);
+        }
+      });
+    },{threshold:.2});
+    rev.forEach(el=>ro.observe(el));
+
+    /* Back to top */
+    const toTop=document.getElementById('toTop');
+    addEventListener('scroll',()=>{
+      if(scrollY>600) toTop.classList.add('show');
+      else toTop.classList.remove('show');
+    });
+    toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  </script>
+
+  <!-- Cloudflare Analytics -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "e3aade8116054ff5a2148c14573e8a2a"}'></script>
+
+</body>
+</html>
