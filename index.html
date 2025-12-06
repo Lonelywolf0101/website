@@ -156,24 +156,76 @@ h2.sec-title{
   border-color:var(--neon);
   box-shadow:0 10px 25px rgba(0,234,255,.25);
 }
+    /* HAMBURGER ICON */
+.hamburger {
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--neon);
+  user-select: none;
+}
+
+/* MASAÜSTÜ MENÜYÜ KALDIRIYORUZ */
+.desktop-menu {
+  display: none !important;
+}
+
+/* SLIDE MENÜ TASARIMI */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -250px; 
+  width: 250px;
+  height: 100vh;
+  background: rgba(5, 6, 11, 0.95);
+  backdrop-filter: blur(10px);
+  border-left: 1px solid rgba(255,255,255,0.1);
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  transition: right 0.35s ease;
+  z-index: 999;
+}
+
+.mobile-menu a {
+  color: var(--text);
+  font-size: 20px;
+  text-decoration: none;
+  opacity: 0.85;
+  transition: 0.2s;
+}
+
+.mobile-menu a:hover {
+  opacity: 1;
+  color: var(--neon);
+}
+
 
   </style>
 </head>
 
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <div class="nav-wrap">
-      <div class="brand">HÜSEYİN SEDAT</div>
-      <div class="desktop-menu">
-        <a href="#about">Hakkımda</a>
-        <a href="#projects">Projeler</a>
-        <a href="#shop">Ürünler</a>
-        <a href="#contact">İletişim</a>
-      </div>
+ <!-- NAV -->
+<nav>
+  <div class="nav-wrap">
+    <div class="brand">HÜSEYİN SEDAT</div>
+
+    <!-- HAMBURGER ICON -->
+    <div class="hamburger" onclick="toggleMenu()">
+      ☰
     </div>
-  </nav>
+  </div>
+</nav>
+
+<!-- SLIDE MENU -->
+<div id="mobileMenu" class="mobile-menu">
+  <a href="#about">Hakkımda</a>
+  <a href="#projects">Projeler</a>
+  <a href="#shop">Ürünler</a>
+  <a href="#contact">İletişim</a>
+</div>
+
 
   <!-- HERO -->
   <header class="hero">
@@ -346,6 +398,13 @@ h2.sec-title{
     }
     loop();
   </script>
+  <script>
+function toggleMenu() {
+  const menu = document.getElementById("mobileMenu");
+  menu.style.right = menu.style.right === "0px" ? "-250px" : "0px";
+}
+</script>
+
 
 </body>
 </html>
