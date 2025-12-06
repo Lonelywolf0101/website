@@ -170,6 +170,10 @@ h2.sec-title{
   transition: right 0.35s ease;
   z-index: 999;
 }
+    .mobile-menu.open {
+  right: 0;
+}
+
 
 .mobile-menu a {
   color: var(--text);
@@ -304,8 +308,7 @@ h2.sec-title{
 
       <!-- ÇAM FISTIĞI -->
       <div class="card">
-       <div class="emoji-img">🌰</div>
-        <div class="emoji-img">🌰</div>
+        <div class="emoji-img">🌲</div>
         <h3>Çam Fıstığı</h3>
         <p>Doğal, yüksek kalite, 100 gram paket.</p>
         <strong style="font-size:18px;display:block;margin:8px 0;">450 TL</strong>
@@ -390,10 +393,31 @@ h2.sec-title{
     loop();
   </script>
   <script>
-function toggleMenu() {
+   function toggleMenu() {
   const menu = document.getElementById("mobileMenu");
-  menu.style.right = menu.style.right === "0px" ? "-250px" : "0px";
+  menu.classList.toggle("open");
 }
+
+// Menü dışına tıklayınca kapanması
+document.addEventListener("click", function(e) {
+  const menu = document.getElementById("mobileMenu");
+  const hamburger = document.querySelector(".hamburger");
+
+  // Menü açıksa ve tıklanan yer menü veya hamburger değilse kapa
+  if (menu.classList.contains("open") &&
+      !menu.contains(e.target) &&
+      !hamburger.contains(e.target)) {
+    menu.classList.remove("open");
+  }
+});
+
+// Menüdeki linklere tıklayınca kapanması
+document.querySelectorAll(".mobile-menu a").forEach(a => {
+  a.addEventListener("click", () => {
+    document.getElementById("mobileMenu").classList.remove("open");
+  });
+});
+
 </script>
 
 
