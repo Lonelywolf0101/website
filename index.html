@@ -207,13 +207,16 @@ h2.sec-title{
   border-color:var(--neon);
   box-shadow:0 10px 30px rgba(0,234,255,.15);
 }
-/* Resimlerin taşmasını engelle */
+/* Ürün Resimleri İçin Düzeltilmiş Stil */
 .card img {
   width: 100%;
-  height: 200px;
-  object-fit: cover;
+  height: 250px;       /* Yüksekliği biraz artırdım ki şişeler rahat sığsın */
+  object-fit: contain; /* ÖNEMLİ KISIM: Resmi kesmeden kutuya sığdırır */
   border-radius: 8px;
   margin-bottom: 15px;
+  /* PNG ürünlerin arkasına hafif gölge ekler, havada duruyor gibi olmaz */
+  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); 
+  background: rgba(255,255,255,0.02); /* Ürün arkasına çok hafif bir fon */
 }
 
 /* === FORM STİLİ (DÜZELTİLDİ) === */
