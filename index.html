@@ -151,7 +151,10 @@ h2.sec-title{
   cursor: pointer;
   color: var(--neon);
   user-select: none;
-  z-index: 1001;
+  position: relative; /* EKLENDİ */
+  z-index: 2001;       /* Üste aldık */
+}
+
 }
 
 
@@ -170,7 +173,7 @@ h2.sec-title{
   flex-direction: column;
   gap: 25px;
   transition: right 0.35s ease;
-  z-index: 999;
+  z-index: 1500;
 }
     .mobile-menu.open {
   right: 0;
