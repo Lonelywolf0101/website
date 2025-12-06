@@ -9,126 +9,142 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <style>
-    :root{
-      --bg:#05060b;
-      --bg2:#0c0f1a;
-      --text:#eaeaea;
-      --muted:#a8b3bd;
-      --neon:#00eaff;
-      --accent:#7c4dff;
-      --glass: rgba(255,255,255,.06);
-      --br:14px;
-      --max:1200px;
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      font-family:"Poppins",sans-serif;
-      background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed;
-      color:var(--text);
-      overflow-x:hidden;
-    }
+   :root{
+  --bg:#05060b;
+  --bg2:#0c0f1a;
+  --text:#eaeaea;
+  --muted:#a8b3bd;
+  --neon:#00eaff;
+  --accent:#7c4dff;
+  --glass: rgba(255,255,255,.06);
+  --br:14px;
+  --max:1200px;
+}
 
-    /* === NAV === */
-    nav{
-      position:sticky;top:0;z-index:50;
-      backdrop-filter: blur(10px);
-      background: rgba(5,6,11,.7);
-      border-bottom:1px solid rgba(255,255,255,.05);
-    }
-    .nav-wrap{
-      max-width:var(--max);
-      margin:auto;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:14px 20px;
-    }
-    .brand{
-      font-weight:700;
-      font-size:20px;
-      color:var(--neon);
-    }
+/* GENEL RESET + MOBİL TAŞMA ÇÖZÜMÜ */
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  max-width:100%;
+}
 
-    .desktop-menu{display:flex;gap:20px}
-    .desktop-menu a{
-      color:var(--text);
-      opacity:.8;
-      padding:6px 10px;
-      border-radius:8px;
-      transition:.25s;
-    }
-    .desktop-menu a:hover{
-      opacity:1;
-      background:var(--glass);
-    }
+body{
+  font-family:"Poppins",sans-serif;
+  background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed;
+  color:var(--text);
+  overflow-x:hidden;
+}
 
-    /* HERO */
-    header.hero{
-      height:82vh;
-      display:grid;
-      place-items:center;
-      text-align:center;
-      padding:80px 20px;
-    }
-    .title{
-      font-size:clamp(30px,6vw,55px);
-      color:var(--neon);
-      font-weight:700;
-      text-shadow:0 0 18px rgba(0,234,255,.7);
-    }
-    .typewriter{
-      font-size:20px;
-      margin-top:10px;
-      color:var(--muted);
-    }
-    .cta{margin-top:20px}
-    .btn{
-      padding:12px 18px;
-      border-radius:10px;
-      background:rgba(0,234,255,.15);
-      border:1px solid rgba(255,255,255,.1);
-      color:white;
-      margin:5px;
-      transition:.25s;
-    }
-    .btn:hover{
-      transform:translateY(-3px);
-      box-shadow:0 0 15px rgba(0,234,255,.3);
-    }
+/* === NAV === */
+nav{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter: blur(10px);
+  background: rgba(5,6,11,.7);
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.nav-wrap{
+  max-width:var(--max);
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 20px;
+}
+.brand{
+  font-weight:700;
+  font-size:20px;
+  color:var(--neon);
+}
 
-    /* SECTIONS */
-    section{
-      padding:80px 20px;
-    }
-    .container{
-      max-width:var(--max);
-      margin:auto;
-    }
-    h2.sec-title{
-      font-size:28px;
-      color:var(--neon);
-      margin-bottom:25px;
-      text-shadow:0 0 12px rgba(0,234,255,.4);
-    }
+.desktop-menu{display:flex;gap:20px}
+.desktop-menu a{
+  color:var(--text);
+  opacity:.8;
+  padding:6px 10px;
+  border-radius:8px;
+  transition:.25s;
+}
+.desktop-menu a:hover{
+  opacity:1;
+  background:var(--glass);
+}
 
-    /* PROJECTS */
-    .grid{
-      display:grid;
-      gap:22px;
-      grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
-    }
-    .card{
-      background:var(--glass);
-      padding:20px;
-      border-radius:var(--br);
-      border:1px solid rgba(255,255,255,.08);
-      transition:.25s;
-    }
-    .card:hover{
-      transform:translateY(-5px);
-      border-color:var(--neon);
-      box-shadow:0 10px 25px rgba(0,234,255,.25);
-    }
+/* HERO */
+header.hero{
+  height:82vh;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  padding:80px 20px;
+}
+.title{
+  font-size:clamp(30px,6vw,55px);
+  color:var(--neon);
+  font-weight:700;
+  text-shadow:0 0 18px rgba(0,234,255,.7);
+}
+.typewriter{
+  font-size:20px;
+  margin-top:10px;
+  color:var(--muted);
+}
+.cta{margin-top:20px}
+.btn{
+  padding:12px 18px;
+  border-radius:10px;
+  background:rgba(0,234,255,.15);
+  border:1px solid rgba(255,255,255,.1);
+  color:white;
+  margin:5px;
+  transition:.25s;
+}
+.btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 0 15px rgba(0,234,255,.3);
+}
+
+/* SECTIONS */
+section{
+  padding:80px 20px;
+}
+.container{
+  max-width:var(--max);
+  margin:auto;
+}
+
+/* ⭐ YENİ NEON BAŞLIK TASARIMI ⭐ */
+h2.sec-title{
+  font-size:36px;
+  font-weight:800;
+  margin-bottom:35px;
+  background:linear-gradient(90deg, #00eaff, #7c4dff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  letter-spacing:1px;
+  text-shadow:0 0 12px rgba(0,234,255,.3);
+}
+
+/* PROJECTS */
+.grid{
+  display:grid;
+  gap:22px;
+  grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+  width:100%;
+}
+.card{
+  background:var(--glass);
+  padding:20px;
+  border-radius:var(--br);
+  border:1px solid rgba(255,255,255,.08);
+  transition:.25s;
+}
+.card:hover{
+  transform:translateY(-5px);
+  border-color:var(--neon);
+  box-shadow:0 10px 25px rgba(0,234,255,.25);
+}
+
   </style>
 </head>
 
