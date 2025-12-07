@@ -54,7 +54,6 @@
         box-shadow: 0 0 30px rgba(0,0,0,0.5);
     }
 
-    /* Jeton Göstergesi */
     .token-display {
         font-size: 24px;
         background: rgba(0,0,0,0.3);
@@ -65,49 +64,48 @@
         border: 1px solid rgba(255,255,255,0.1);
     }
 
-    /* Madeni Para Tasarımı */
+    /* === İYİLEŞTİRİLMİŞ PARA TASARIMI === */
     .coin-container {
-        perspective: 1000px;
-        margin: 30px auto;
         width: 150px;
         height: 150px;
-        cursor: pointer;
+        margin: 0 auto 30px auto;
+        perspective: 1000px; /* 3D derinlik hissi için şart */
     }
 
     .coin {
         width: 100%;
         height: 100%;
         position: relative;
-        transform-style: preserve-3d;
-        transition: transform 3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Havalı dönüş efekti */
+        transform-style: preserve-3d; /* Ön ve arka yüzün 3D kalması için */
+        transition: transform 3s cubic-bezier(0.1, 0.7, 0.1, 1); /* Yumuşak duruş */
     }
 
     .side {
+        position: absolute;
         width: 100%;
         height: 100%;
-        position: absolute;
-        backface-visibility: hidden;
         border-radius: 50%;
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 32px;
         font-weight: bold;
+        backface-visibility: hidden; /* Arka yüzeyin görünmemesi için */
         border: 4px solid #ffd700;
-        box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(0,0,0,0.5);
     }
 
     .heads {
         background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
-        color: #4a3b00;
-        transform: rotateY(0deg); /* Ön Yüz */
+        color: #5c4d00;
+        transform: rotateY(0deg); /* Ön taraf */
     }
 
     .tails {
         background: radial-gradient(circle at 30% 30%, #e6e6e6, #999);
         color: #333;
         border-color: #ccc;
-        transform: rotateY(180deg); /* Arka Yüz */
+        transform: rotateY(180deg); /* Arka taraf */
     }
 
     /* Butonlar */
@@ -133,21 +131,16 @@
     button.btn-yazi:hover { background: #ffd700; color: #000; box-shadow: 0 0 15px #ffd700; border-color:#ffd700;}
     button.btn-tura:hover { background: #ccc; color: #000; box-shadow: 0 0 15px #ccc; border-color:#ccc;}
 
-    button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
     #result {
         margin-top: 25px;
         font-size: 20px;
         font-weight: 600;
-        height: 30px; /* Zıplamayı önler */
+        height: 30px;
     }
 
     #back-btn {
         margin-top: 30px;
-        color: var(--muted);
+        color: #a8b3bd;
         text-decoration: none;
         font-size: 14px;
         transition: 0.3s;
@@ -172,7 +165,9 @@
 
             <div class="coin-container">
                 <div class="coin" id="coin">
-                    <div class="side heads">YAZI</div> <div class="side tails">TURA</div> </div>
+                    <div class="side heads">YAZI</div> 
+                    <div class="side tails">TURA</div> 
+                </div>
             </div>
 
             <h2 id="result">Seçimini yap!</h2>
@@ -187,19 +182,33 @@
     </div>
 
 <script>
-    /* ===== KASA AVANTAJI VE OYUN MANTIĞI ===== */
-    let tokens = 100;
+    /* ===== KALICI JETON SİSTEMİ ===== */
+    let tokens = localStorage.getItem("huseyin_bakiye");
+    if (tokens === null) tokens = 100;
+    else tokens = parseInt(tokens);
+
+    function updateBalance(newAmount) {
+        tokens = newAmount;
+        document.getElementById("tokens").innerText = tokens;
+        localStorage.setItem("huseyin_bakiye", tokens);
+    }
+    
+    // Sayfa açılışında göster
+    document.getElementById("tokens").innerText = tokens;
+
+
+    /* ===== OYUN DEĞİŞKENLERİ ===== */
     const COST = 5;
     const REWARD = 10;
-    let playCount = 0; // Kaç el oynandığını sayar
+    let playCount = 0;
     let isSpinning = false;
+    let currentRotation = 0; // Paranın o anki açısını hafızada tutuyoruz!
 
     const coin = document.getElementById("coin");
     const resultText = document.getElementById("result");
-    const tokenDisplay = document.getElementById("tokens");
 
     function playGame(choice) {
-        if(isSpinning) return; // Zaten dönüyorsa basılamasın
+        if(isSpinning) return;
 
         if (tokens < COST) {
             resultText.style.color = "var(--red)";
@@ -207,73 +216,77 @@
             return;
         }
 
-        // 1. Ödemeyi Al
-        tokens -= COST;
-        tokenDisplay.innerText = tokens;
+        // Ödeme Al
+        updateBalance(tokens - COST);
+        
         isSpinning = true;
         resultText.innerText = "Para dönüyor...";
         resultText.style.color = "#eaeaea";
 
-        // 2. HİLE ALGORİTMASI (HOOKING)
+        // --- SONUCU BELİRLE (Hile Sistemi) ---
         playCount++;
-        let winChance = 0.45; // Normalde %45 Kazanma şansı (Kasa %55 kazanır)
-
-        // İlk 4 el oynuyorsa, şansı %75 yap (Müşteriyi içeri çek)
-        if(playCount <= 4) {
-            winChance = 0.75; 
-        }
-
-        // Kazanıp kazanmayacağına karar ver
-        // Math.random() 0 ile 1 arasında sayı üretir.
-        // Eğer sayı winChance'ten küçükse, oyuncu kazanacak şekilde ayarla.
+        let winChance = (playCount <= 4) ? 0.75 : 0.45; // İlk 4 el %75 kazanır, sonra %45
         let playerWillWin = Math.random() < winChance;
-        
-        // Sonucu belirle
-        let finalResult;
+
+        // Hedef yüz ne olacak?
+        // choice: 'heads' (Yazı) veya 'tails' (Tura)
+        let resultFace;
         if (playerWillWin) {
-            finalResult = choice; // Oyuncunun seçtiği gelsin
+            resultFace = choice; 
         } else {
-            // Oyuncunun seçtiğinin tersi gelsin
-            finalResult = (choice === 'heads') ? 'tails' : 'heads'; 
+            resultFace = (choice === 'heads') ? 'tails' : 'heads';
         }
 
-        // 3. ANİMASYON MANTIĞI
-        // Para şu an hangi açıda?
-        // Rastgele çok tur atmasını sağla (en az 5 tur = 1800 derece)
-        let rotation = 1800 + (Math.random() * 200); 
+        // --- DÖNDÜRME MATEMATİĞİ (DÜZELTİLEN KISIM) ---
+        // Parayı en az 5 tam tur (1800 derece) döndür
+        let spinAmount = 1800; 
 
-        // Eğer sonuç TURA (tails) ise 180 derece fazladan döndür
-        // Eğer sonuç YAZI (heads) ise 0 veya 360 katı olmalı
-        if (finalResult === 'tails') {
-            rotation += 180; 
+        // Şu anki açıya ekleme yapacağız.
+        // Hedef açı:
+        // Eğer sonuç YAZI (heads) ise -> 360'ın katı olmalı (0, 360, 720...)
+        // Eğer sonuç TURA (tails) ise -> 360'ın katı + 180 olmalı (180, 540...)
+        
+        // 1. Rastgele bir miktar döndür (Görsel çeşitlilik için)
+        // Ama sonucu bozmamak için bu ekstra da 360'ın katı olmalı ki hesap şaşmasın.
+        // O yüzden burayı sabit tutuyoruz, kafa karıştırmasın.
+
+        if (resultFace === 'heads') {
+            // Hedefimiz 0 dereceye (Yazı) denk gelmek.
+            // Formül: Şu anki açı + Dönüş miktarı + (Gerekirse 180 düzeltmesi)
+            // Eğer şu an Tura'da (180) ise ve Yazı istiyorsak 180 daha eklemeliyiz.
+            if (currentRotation % 360 !== 0) {
+                spinAmount += 180;
+            }
         } else {
-            rotation += 360; // Tam tur tamamla
+            // Hedefimiz 180 dereceye (Tura) denk gelmek.
+            // Eğer şu an Yazı'da (0/360) ise ve Tura istiyorsak 180 eklemeliyiz.
+            if (currentRotation % 360 === 0) {
+                spinAmount += 180;
+            }
         }
 
-        // CSS transform ile döndür
-        coin.style.transform = `rotateY(${rotation}deg)`;
+        // Yeni açıyı hesapla ve kaydet
+        currentRotation += spinAmount;
 
-        // 4. SONUÇ GÖSTERİMİ (3 saniye sonra)
+        // CSS'e uygula
+        coin.style.transform = `rotateY(${currentRotation}deg)`;
+
+        // --- SONUÇ GÖSTERİMİ ---
         setTimeout(() => {
-            // Açıyı sıfırla ama görsel bozulmasın diye modüler aritmetik yapılabilir 
-            // ama basitlik için şimdilik böyle bırakıyoruz.
-            
             if (playerWillWin) {
-                tokens += REWARD;
-                tokenDisplay.innerText = tokens;
+                updateBalance(tokens + REWARD);
                 resultText.style.color = "var(--green)";
                 resultText.innerText = `KAZANDIN! (+${REWARD-COST} Jeton)`;
             } else {
                 resultText.style.color = "var(--red)";
                 resultText.innerText = "KAYBETTİN!";
             }
-
             isSpinning = false;
-        }, 3000); // 3 saniye animasyon süresi
+        }, 3000);
     }
 
 
-    /* ===== ARKA PLAN EFEKTİ (Index ile Aynı) ===== */
+    /* ===== ARKA PLAN EFEKTİ ===== */
     const bg = document.getElementById("bg");
     const ctx = bg.getContext("2d");
     function resize(){ bg.width = window.innerWidth; bg.height = window.innerHeight; }
