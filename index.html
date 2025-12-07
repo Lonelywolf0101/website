@@ -57,20 +57,26 @@ nav{
 }
 .mobile-menu.open { right: 0; }
 
-/* ⭐ GÜNCELLENEN KAPATMA BUTONU ⭐ */
+/* ⭐ DÜZELTİLEN VE BÜYÜTÜLEN KAPATMA BUTONU ⭐ */
 .close-btn {
   position: absolute; 
-  top: 15px;            /* Yukarıya sabitledik */
-  right: 25px;          /* Sağa sabitledik */
-  font-size: 45px;      /* Hamburger kadar büyük */
-  line-height: 0.8;     /* Kaymayı engelle */
-  color: var(--neon);   /* Rengi neon yaptık */
+  top: 20px;            
+  right: 30px;          
+  font-size: 60px !important; /* Kesinlikle büyük olacak */
+  line-height: 0.6;     
+  color: var(--neon);   
   cursor: pointer; 
   transition: 0.3s;
-  font-weight: bold;
+  font-weight: 300;     /* Daha ince ve şık X */
+  z-index: 3001;        /* Her şeyin üstünde */
+  display: block;
+  text-align: center;
+  width: 50px;
+  height: 50px;
 }
 .close-btn:hover { 
-  transform: scale(1.1) rotate(90deg); /* Üzerine gelince dönsün */
+  transform: rotate(90deg); 
+  color: #fff;
 }
 
 .mobile-menu a {
@@ -421,127 +427,4 @@ footer{
   </footer>
 
   <div id="walletModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:5000; align-items:center; justify-content:center;">
-    <div style="background:#0c0f1a; padding:30px; border-radius:15px; border:1px solid #00eaff; max-width:500px; width:90%; text-align:center; position:relative;">
-      <span onclick="closeWallet()" style="position:absolute; top:10px; right:15px; color:#fff; cursor:pointer; font-size:30px;">&times;</span>
-      
-      <h2 style="color:#00eaff; margin-bottom:20px;">💰 Cüzdan & Market</h2>
-      
-      <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px;">
-        <button onclick="showTab('load')" style="padding:10px 20px; background:#00eaff; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Jeton Yükle</button>
-        <button onclick="showTab('spend')" style="padding:10px 20px; background:#7c4dff; border:none; border-radius:5px; color:#fff; cursor:pointer;">Kupon Al</button>
-      </div>
-
-      <div id="tab-load">
-        <p style="color:#ccc; font-size:14px;">Shopier kodunu buraya gir:</p>
-        <input type="text" id="epinInput" placeholder="KODU GİRİN (Örn: JETON1000)" style="width:100%; padding:12px; margin:15px 0; background:rgba(255,255,255,0.1); border:1px solid #333; color:#fff; text-align:center; border-radius:5px;">
-        <button onclick="redeemCode()" style="width:100%; padding:12px; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer; font-size:16px;">KODU KULLAN</button>
-        <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-          <a href="#" target="_blank" style="color:#00eaff; text-decoration:underline; font-size:14px;">Shopier Mağazasından Satın Al</a>
-        </div>
-      </div>
-
-      <div id="tab-spend" style="display:none;">
-        <p style="color:#ccc; margin-bottom:15px;">Jetonlarınla indirim al.</p>
-        <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
-          <div style="text-align:left;">
-            <h4 style="color:#fff; margin:0;">%10 İndirim</h4>
-            <span style="color:#00eaff; font-size:12px;">5.000 Jeton</span>
-          </div>
-          <button onclick="buyCoupon(5000, 'INDIRIM10')" style="padding:5px 15px; background:rgba(0,234,255,0.2); border:1px solid #00eaff; color:#fff; border-radius:5px; cursor:pointer;">AL</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
-
-  <script>
-    /* ARKA PLAN */
-    const bg = document.getElementById("bg");
-    const ctx = bg.getContext("2d");
-    function resize(){ bg.width = window.innerWidth; bg.height = window.innerHeight; }
-    resize(); window.addEventListener("resize", resize);
-    const dots = Array.from({length:60}, () => ({
-      x: Math.random()*bg.width, y: Math.random()*bg.height,
-      vx: (Math.random()-.5)*0.5, vy: (Math.random()-.5)*0.5
-    }));
-    function loop(){
-      ctx.clearRect(0,0,bg.width,bg.height); ctx.fillStyle = "#00eaff";
-      dots.forEach(d => {
-        d.x += d.vx; d.y += d.vy;
-        if (d.x < 0 || d.x > bg.width) d.vx *= -1;
-        if (d.y < 0 || d.y > bg.height) d.vy *= -1;
-        ctx.beginPath(); ctx.arc(d.x, d.y, 1.5, 0, Math.PI*2); ctx.fill();
-      });
-      requestAnimationFrame(loop);
-    }
-    loop();
-
-    /* MENÜ */
-    function toggleMenu() { document.getElementById("mobileMenu").classList.toggle("open"); }
-    document.addEventListener("click", function(e) {
-      const menu = document.getElementById("mobileMenu");
-      const hamburger = document.querySelector(".hamburger");
-      if (menu.classList.contains("open") && !menu.contains(e.target) && !hamburger.contains(e.target)) {
-        menu.classList.remove("open");
-      }
-    });
-
-    /* OYUN KATEGORİ SİSTEMİ + HASH KONTROL */
-    function openGameCategory(categoryId) {
-      document.getElementById('category-selector').style.display = 'none';
-      document.getElementById(categoryId).style.display = 'block';
-    }
-    function closeGameCategory() {
-      document.querySelectorAll('.game-container').forEach(el => el.style.display = 'none');
-      document.getElementById('category-selector').style.display = 'grid';
-    }
-
-    // Sayfa açılınca URL'de #chance varsa direkt orayı aç
-    window.addEventListener('load', function() {
-      if (window.location.hash === '#chance') {
-        openGameCategory('chance');
-        document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
-      }
-      
-      // Bakiye göster
-      let t = localStorage.getItem("huseyin_bakiye");
-      if(t===null) { t=100; localStorage.setItem("huseyin_bakiye", 100); }
-      document.getElementById("tokens").innerText = t;
-    });
-
-    /* MARKET SİSTEMİ */
-    const validCodes = { "JETON1000": 1000, "JETON5000": 5000, "HOSGELDIN": 500 };
-    function openWallet() { document.getElementById("walletModal").style.display = "flex"; }
-    function closeWallet() { document.getElementById("walletModal").style.display = "none"; }
-    function showTab(tab) {
-      document.getElementById("tab-load").style.display = "none";
-      document.getElementById("tab-spend").style.display = "none";
-      document.getElementById("tab-"+tab).style.display = "block";
-    }
-    function redeemCode() {
-      const c = document.getElementById("epinInput").value.toUpperCase().trim();
-      if(localStorage.getItem("used_"+c)){ alert("Bu kod kullanıldı!"); return; }
-      if(validCodes[c]){
-        let cur = parseInt(localStorage.getItem("huseyin_bakiye"))||0;
-        let add = validCodes[c];
-        localStorage.setItem("huseyin_bakiye", cur+add);
-        document.getElementById("tokens").innerText = cur+add;
-        localStorage.setItem("used_"+c, "true");
-        alert(add + " Jeton yüklendi!");
-        closeWallet();
-      } else { alert("Geçersiz Kod!"); }
-    }
-    function buyCoupon(cost, code){
-      let cur = parseInt(localStorage.getItem("huseyin_bakiye"))||0;
-      if(cur>=cost){
-        if(confirm(cost+" Jeton harcansın mı?")){
-          localStorage.setItem("huseyin_bakiye", cur-cost);
-          document.getElementById("tokens").innerText = cur-cost;
-          alert("Kodun: " + code);
-        }
-      } else { alert("Yetersiz Jeton!"); }
-    }
-  </script>
-</body>
-</html>
+    <div style="background:#0c0f1a; padding:30px; border-radius:15px; border:1px solid #00eaff; max-width:500px; width:90%; text-align:center
