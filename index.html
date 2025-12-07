@@ -45,7 +45,7 @@ nav{
 }
 .brand{ font-weight:700; font-size:20px; color:var(--neon); }
 
-/* HAMBURGER ICON (28px) */
+/* HAMBURGER ICON */
 .hamburger { font-size: 28px; cursor: pointer; color: var(--neon); user-select: none; z-index: 2001; }
 
 /* === SLIDE MENÜ === */
@@ -59,23 +59,25 @@ nav{
 }
 .mobile-menu.open { right: 0; }
 
-/* ⭐ DÜZELTİLEN KAPATMA BUTONU (DENGELİ BOYUT) ⭐ */
+/* ⭐ SABİT KAPATMA BUTONU ⭐ */
 .close-btn {
   position: absolute; 
   top: 20px;            
   right: 25px;          
-  font-size: 32px;      /* Hamburger (28px) ile orantılı */
+  font-size: 32px;      /* Hamburger ile uyumlu boyut */
   line-height: 1;     
   color: var(--neon);   
   cursor: pointer; 
-  transition: 0.3s;
+  transition: 0.3s;     /* Sadece renk değişimi için geçiş */
   font-weight: 300;     
   z-index: 3001;        
   display: block;
 }
+
+/* Üzerine gelince sadece rengi değişir, hareket etmez */
 .close-btn:hover { 
-  transform: rotate(90deg); 
   color: #fff;
+  transform: none;      /* Dönme iptal edildi */
 }
 
 .mobile-menu a {
