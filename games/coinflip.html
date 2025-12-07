@@ -2,137 +2,297 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Coinflip | Oyun</title>
+<title>Yazı Tura | Hüseyin Sedat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
+    :root{
+      --bg:#05060b;
+      --neon:#00eaff;
+      --glass: rgba(255,255,255,.06);
+      --red: #ff4d4d;
+      --green: #00ff88;
+    }
+
     body {
         margin: 0;
         padding: 0;
         font-family: "Poppins", sans-serif;
-        background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, #05060b 40%) fixed;
+        background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed;
         color: #eaeaea;
         text-align: center;
-        padding: 40px 10px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
     }
 
     h1 {
-        color: #00eaff;
-        text-shadow: 0 0 16px #00eaff;
-        margin-bottom: 10px;
+        color: var(--neon);
+        text-shadow: 0 0 20px rgba(0, 234, 255, 0.6);
+        margin-bottom: 5px;
+        font-size: 2.5rem;
+    }
+
+    .container {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
+    }
+
+    .box {
+        background: var(--glass);
+        border: 1px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px 20px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    /* Jeton Göstergesi */
+    .token-display {
+        font-size: 24px;
+        background: rgba(0,0,0,0.3);
+        padding: 10px 20px;
+        border-radius: 50px;
+        display: inline-block;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Madeni Para Tasarımı */
+    .coin-container {
+        perspective: 1000px;
+        margin: 30px auto;
+        width: 150px;
+        height: 150px;
+        cursor: pointer;
     }
 
     .coin {
-        width: 180px;
-        height: 180px;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Havalı dönüş efekti */
+    }
+
+    .side {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        backface-visibility: hidden;
         border-radius: 50%;
-        background: linear-gradient(145deg, #222, #444);
-        margin: 30px auto;
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 32px;
         font-weight: bold;
-        color: #fff;
-        box-shadow: 0 0 25px rgba(0,234,255,0.3);
-        transition: transform 0.6s;
+        border: 4px solid #ffd700;
+        box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
+    }
+
+    .heads {
+        background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
+        color: #4a3b00;
+        transform: rotateY(0deg); /* Ön Yüz */
+    }
+
+    .tails {
+        background: radial-gradient(circle at 30% 30%, #e6e6e6, #999);
+        color: #333;
+        border-color: #ccc;
+        transform: rotateY(180deg); /* Arka Yüz */
+    }
+
+    /* Butonlar */
+    .controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
     }
 
     button {
-        padding: 12px 26px;
+        padding: 15px 30px;
         font-size: 18px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        margin: 10px;
-        transition: 0.25s;
-        background: rgba(0, 234, 255, 0.2);
-        color: white;
-        border: 1px solid rgba(255,255,255,0.15);
-    }
-
-    button:hover {
-        background: rgba(0, 234, 255, 0.35);
-        box-shadow: 0 0 15px rgba(0,234,255,0.4);
-    }
-
-    #back {
-        display: inline-block;
-        margin-top: 20px;
-        padding: 10px 18px;
-        color: #fff;
-        text-decoration: none;
+        font-weight: 600;
+        border-radius: 12px;
         border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        color: white;
+        background: rgba(255,255,255,0.05);
     }
 
-    #back:hover {
-        background: rgba(0,234,255,0.2);
+    button.btn-yazi:hover { background: #ffd700; color: #000; box-shadow: 0 0 15px #ffd700; border-color:#ffd700;}
+    button.btn-tura:hover { background: #ccc; color: #000; box-shadow: 0 0 15px #ccc; border-color:#ccc;}
+
+    button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 
-    .box {
-        max-width: 420px;
-        background: rgba(255,255,255,0.06);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 14px;
-        padding: 20px;
-        margin: 0 auto;
-        margin-top: 20px;
+    #result {
+        margin-top: 25px;
+        font-size: 20px;
+        font-weight: 600;
+        height: 30px; /* Zıplamayı önler */
     }
+
+    #back-btn {
+        margin-top: 30px;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 14px;
+        transition: 0.3s;
+        display: inline-block;
+    }
+    #back-btn:hover { color: var(--neon); }
 
 </style>
-
 </head>
 <body>
 
-<h1>🪙 Coinflip Oyunu</h1>
-<p>Bir tur: <b>5 jeton</b></p>
+    <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
 
-<div class="box">
-    <h3>Jeton: <span id="tokens">100</span></h3>
+    <div class="container">
+        <h1>Yazı - Tura</h1>
+        <p style="color:#aaa; margin-bottom:20px;">Giriş: <span style="color:var(--red)">5 Jeton</span> | Kazanç: <span style="color:var(--green)">10 Jeton</span></p>
 
-    <button onclick="startGame('Yazı')">Yazı</button>
-    <button onclick="startGame('Tura')">Tura</button>
+        <div class="box">
+            <div class="token-display">
+                🪙 <span id="tokens">100</span>
+            </div>
 
-    <div class="coin" id="coin">?</div>
+            <div class="coin-container">
+                <div class="coin" id="coin">
+                    <div class="side heads">YAZI</div> <div class="side tails">TURA</div> </div>
+            </div>
 
-    <h2 id="result"></h2>
-</div>
+            <h2 id="result">Seçimini yap!</h2>
 
-<a id="back" href="/games">← Oyun Lobisine Dön</a>
+            <div class="controls">
+                <button class="btn-yazi" onclick="playGame('heads')">YAZI</button>
+                <button class="btn-tura" onclick="playGame('tails')">TURA</button>
+            </div>
+        </div>
+
+        <a id="back-btn" href="../index.html#games">← Oyun Lobisine Dön</a>
+    </div>
 
 <script>
-let tokens = 100;
-const TOKEN_COST = 5;
-
-function startGame(choice) {
-    if (tokens < TOKEN_COST) {
-        document.getElementById("result").innerText = "Jetonun yetersiz!";
-        return;
-    }
-
-    tokens -= TOKEN_COST;
-    document.getElementById("tokens").innerText = tokens;
+    /* ===== KASA AVANTAJI VE OYUN MANTIĞI ===== */
+    let tokens = 100;
+    const COST = 5;
+    const REWARD = 10;
+    let playCount = 0; // Kaç el oynandığını sayar
+    let isSpinning = false;
 
     const coin = document.getElementById("coin");
     const resultText = document.getElementById("result");
+    const tokenDisplay = document.getElementById("tokens");
 
-    coin.style.transform = "rotateY(720deg)";
-    resultText.innerText = "Dönüyor...";
+    function playGame(choice) {
+        if(isSpinning) return; // Zaten dönüyorsa basılamasın
 
-    setTimeout(() => {
-        const random = Math.random() < 0.5 ? "Yazı" : "Tura";
-        coin.style.transform = "rotateY(0deg)";
-        coin.innerText = random;
-
-        if (random === choice) {
-            resultText.innerText = "Doğru bildin! (Jeton kazanılmaz)";
-        } else {
-            resultText.innerText = "Bilemedin!";
+        if (tokens < COST) {
+            resultText.style.color = "var(--red)";
+            resultText.innerText = "Yetersiz Jeton! Marketten satın al.";
+            return;
         }
 
-    }, 900);
-}
+        // 1. Ödemeyi Al
+        tokens -= COST;
+        tokenDisplay.innerText = tokens;
+        isSpinning = true;
+        resultText.innerText = "Para dönüyor...";
+        resultText.style.color = "#eaeaea";
+
+        // 2. HİLE ALGORİTMASI (HOOKING)
+        playCount++;
+        let winChance = 0.45; // Normalde %45 Kazanma şansı (Kasa %55 kazanır)
+
+        // İlk 4 el oynuyorsa, şansı %75 yap (Müşteriyi içeri çek)
+        if(playCount <= 4) {
+            winChance = 0.75; 
+        }
+
+        // Kazanıp kazanmayacağına karar ver
+        // Math.random() 0 ile 1 arasında sayı üretir.
+        // Eğer sayı winChance'ten küçükse, oyuncu kazanacak şekilde ayarla.
+        let playerWillWin = Math.random() < winChance;
+        
+        // Sonucu belirle
+        let finalResult;
+        if (playerWillWin) {
+            finalResult = choice; // Oyuncunun seçtiği gelsin
+        } else {
+            // Oyuncunun seçtiğinin tersi gelsin
+            finalResult = (choice === 'heads') ? 'tails' : 'heads'; 
+        }
+
+        // 3. ANİMASYON MANTIĞI
+        // Para şu an hangi açıda?
+        // Rastgele çok tur atmasını sağla (en az 5 tur = 1800 derece)
+        let rotation = 1800 + (Math.random() * 200); 
+
+        // Eğer sonuç TURA (tails) ise 180 derece fazladan döndür
+        // Eğer sonuç YAZI (heads) ise 0 veya 360 katı olmalı
+        if (finalResult === 'tails') {
+            rotation += 180; 
+        } else {
+            rotation += 360; // Tam tur tamamla
+        }
+
+        // CSS transform ile döndür
+        coin.style.transform = `rotateY(${rotation}deg)`;
+
+        // 4. SONUÇ GÖSTERİMİ (3 saniye sonra)
+        setTimeout(() => {
+            // Açıyı sıfırla ama görsel bozulmasın diye modüler aritmetik yapılabilir 
+            // ama basitlik için şimdilik böyle bırakıyoruz.
+            
+            if (playerWillWin) {
+                tokens += REWARD;
+                tokenDisplay.innerText = tokens;
+                resultText.style.color = "var(--green)";
+                resultText.innerText = `KAZANDIN! (+${REWARD-COST} Jeton)`;
+            } else {
+                resultText.style.color = "var(--red)";
+                resultText.innerText = "KAYBETTİN!";
+            }
+
+            isSpinning = false;
+        }, 3000); // 3 saniye animasyon süresi
+    }
+
+
+    /* ===== ARKA PLAN EFEKTİ (Index ile Aynı) ===== */
+    const bg = document.getElementById("bg");
+    const ctx = bg.getContext("2d");
+    function resize(){ bg.width = window.innerWidth; bg.height = window.innerHeight; }
+    resize(); window.addEventListener("resize", resize);
+    const dots = Array.from({length:40}, () => ({
+      x: Math.random()*bg.width, y: Math.random()*bg.height,
+      vx: (Math.random()-.5)*0.3, vy: (Math.random()-.5)*0.3
+    }));
+    function loop(){
+      ctx.clearRect(0,0,bg.width,bg.height); ctx.fillStyle = "#00eaff";
+      dots.forEach(d => {
+        d.x += d.vx; d.y += d.vy;
+        if (d.x < 0 || d.x > bg.width) d.vx *= -1;
+        if (d.y < 0 || d.y > bg.height) d.vy *= -1;
+        ctx.beginPath(); ctx.arc(d.x, d.y, 1.5, 0, Math.PI*2); ctx.fill();
+      });
+      requestAnimationFrame(loop);
+    }
+    loop();
 </script>
 
 </body>
