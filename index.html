@@ -4,9 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hüseyin Sedat | Portfolio</title>
-  <meta name="description" content="Hüseyin Sedat | Geliştirici, Tasarımcı, Üretici">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  
   <style>
    :root{
   --bg:#05060b;
@@ -83,7 +80,7 @@ header.hero{
 .btn{
   display: inline-block; padding:12px 24px; border-radius:10px;
   background:rgba(0,234,255,.1); border:1px solid rgba(0,234,255,.3);
-  color:white; font-weight: 600; transition:.3s; white-space: nowrap;
+  color:white; font-weight: 600; transition:.3s; white-space: nowrap; cursor: pointer;
 }
 .btn:hover{
   background: var(--neon); color: #000;
@@ -99,9 +96,6 @@ h2.sec-title{
   background:linear-gradient(90deg, #00eaff, #7c4dff);
   -webkit-background-clip:text; -webkit-text-fill-color:transparent;
   text-shadow:0 0 15px rgba(0,234,255,.2);
-}
-h3.sub-title {
-  color: var(--muted); margin-bottom: 20px; font-size: 20px; border-left: 3px solid var(--neon); padding-left: 10px;
 }
 
 /* === GRID & CARDS === */
@@ -120,7 +114,6 @@ h3.sub-title {
 .card h3 { margin-bottom: 10px; color: #fff; }
 .card p { color: var(--muted); font-size: 14px; margin-bottom: 15px; }
 
-/* Product Images - CONTAIN FIT */
 .card img {
   width: 100%; height: 220px; object-fit: contain;
   border-radius: 8px; margin-bottom: 15px;
@@ -128,7 +121,44 @@ h3.sub-title {
   background: rgba(255,255,255,0.02);
 }
 
-/* === FORM & CONTACT INFO === */
+/* === KATEGORİ KARTLARI (ÖZEL STİL) === */
+.category-card {
+  cursor: pointer;
+  border: 2px solid rgba(255,255,255,0.1);
+  min-height: 200px;
+  justify-content: center;
+  align-items: center;
+}
+.category-card:hover {
+  background: rgba(0, 234, 255, 0.05);
+}
+.category-icon { font-size: 50px; margin-bottom: 15px; display: block; }
+
+/* === OYUN KONTEYNERLERİ (GİZLİ) === */
+.game-container {
+  display: none; /* Başlangıçta gizli */
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: 0.3s;
+}
+.back-btn:hover { color: var(--neon); padding-left: 5px; }
+
+/* === FORM === */
 .contact-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;
 }
@@ -181,6 +211,7 @@ footer{
         <a class="btn" href="#projects">Projeler</a>
         <a class="btn" href="#games">Oyunlar</a>
         <a class="btn" href="#shop">Ürünler</a>
+        <a class="btn" href="#contact">İletişim</a>
       </div>
     </div>
   </header>
@@ -220,61 +251,94 @@ footer{
     <div class="container">
       <h2 class="sec-title">🎮 Oyunlar</h2>
       
-      <h3 class="sub-title">🪙 Jeton İşlemleri</h3>
-      <div class="grid">
-         <div class="card" style="border-color: var(--neon); box-shadow: 0 0 15px rgba(0,234,255,0.1);">
-          <div style="height:150px; display:flex; align-items:center; justify-content:center; font-size:80px;">🪙</div>
-          <h3>100 Jeton</h3>
-          <p>Oyunlarda kullanmak için bakiye yükle.</p>
-          <strong style="font-size:20px;display:block;margin:10px 0;color:var(--neon);">50 TL</strong>
-          <a class="btn" href="#" style="width:100%">Satın Al</a>
+      <div id="category-selector" class="grid">
+        
+        <div class="card category-card" onclick="openGameCategory('chance')">
+          <span class="category-icon">🎲</span>
+          <h3>Şans Oyunları</h3>
+          <p>Yazı tura, zar, slot ve kart oyunları.</p>
+          <span style="color:var(--neon); font-size:14px;">Görüntüle →</span>
+        </div>
+
+        <div class="card category-card" onclick="openGameCategory('logic')">
+          <span class="category-icon">🧠</span>
+          <h3>Zeka Oyunları</h3>
+          <p>Mantık, hafıza ve strateji oyunları.</p>
+          <span style="color:var(--neon); font-size:14px;">Görüntüle →</span>
+        </div>
+
+        <div class="card category-card" onclick="openGameCategory('action')">
+          <span class="category-icon">⚔️</span>
+          <h3>Aksiyon Oyunları</h3>
+          <p>Hız, refleks ve macera oyunları.</p>
+          <span style="color:var(--neon); font-size:14px;">Görüntüle →</span>
+        </div>
+
+      </div>
+
+      <div id="chance" class="game-container">
+        <button class="back-btn" onclick="closeGameCategory()">← Kategorilere Dön</button>
+        
+        <div class="card" style="margin-bottom:30px; border-color:var(--neon); box-shadow:0 0 15px rgba(0,234,255,0.1); flex-direction:row; align-items:center; text-align:left;">
+           <div style="font-size:50px; margin-right:20px;">🪙</div>
+           <div>
+             <h3 style="margin:0;">Jeton Yükle</h3>
+             <p style="margin:5px 0;">Şans oyunlarında kullanmak için bakiye.</p>
+             <a href="#" style="color:var(--neon); font-weight:bold;">Satın Al (50 TL) →</a>
+           </div>
+        </div>
+
+        <div class="grid">
+          <div class="card">
+            <h3>Yazı - Tura</h3>
+            <p>Klasik şans oyunu.</p>
+            <a class="btn" href="games/coinflip.html">Oyna</a>
+          </div>
+          <div class="card">
+            <h3>Zar Tahmin</h3>
+            <p>Zarın kaç geleceğini tahmin et.</p>
+            <a class="btn" href="games/dice.html">Oyna</a>
+          </div>
+          <div class="card">
+            <h3>Sayı Tahmin</h3>
+            <p>Aklımda tuttuğum sayıyı bul.</p>
+            <a class="btn" href="games/number.html">Oyna</a>
+          </div>
+          <div class="card">
+            <h3>Gark (Renk)</h3>
+            <p>Renk tahmin oyunu.</p>
+            <a class="btn" href="games/spin.html">Oyna</a>
+          </div>
+          <div class="card">
+            <h3>Black Jack</h3>
+            <p>21'e en yakın olan kazanır.</p>
+            <a class="btn" href="games/blackjack.html">Oyna</a>
+          </div>
+          <div class="card">
+            <h3>Slot</h3>
+            <p>Çarkı çevir, şansını dene.</p>
+            <a class="btn" href="games/slot.html">Oyna</a>
+          </div>
         </div>
       </div>
 
-      <h3 class="sub-title" style="margin-top:30px;">Şans Oyunları</h3>
-      <div class="grid">
-        <div class="card">
-          <h3>Yazı - Tura</h3>
-          <p>Klasik şans oyunu.</p>
-          <a class="btn" href="#">Oyna</a>
-        </div>
-        <div class="card">
-          <h3>Zar Tahmin</h3>
-          <p>Zarın kaç geleceğini tahmin et.</p>
-          <a class="btn" href="#">Oyna</a>
-        </div>
-        <div class="card">
-          <h3>Sayı Tahmin</h3>
-          <p>Aklımda tuttuğum sayıyı bul.</p>
-          <a class="btn" href="#">Oyna</a>
-        </div>
-        <div class="card">
-          <h3>Gark (Renk)</h3>
-          <p>Renk tahmin oyunu.</p>
-          <a class="btn" href="#">Oyna</a>
-        </div>
-        <div class="card">
-          <h3>Black Jack</h3>
-          <p>21'e en yakın olan kazanır.</p>
-          <a class="btn" href="#">Oyna</a>
-        </div>
-        <div class="card">
-          <h3>Slot</h3>
-          <p>Çarkı çevir, şansını dene.</p>
-          <a class="btn" href="#">Oyna</a>
+      <div id="logic" class="game-container">
+        <button class="back-btn" onclick="closeGameCategory()">← Kategorilere Dön</button>
+        <div class="grid">
+          <div class="card">
+            <h3>Yakında...</h3>
+            <p>Zeka oyunları hazırlanıyor.</p>
+          </div>
         </div>
       </div>
 
-      <div class="grid">
-        <div class="card">
-          <h3>🧠 Zeka Oyunları</h3>
-          <p>Strateji ve mantık gerektiren oyunlar.</p>
-          <a class="btn" href="#">Listele</a>
-        </div>
-        <div class="card">
-          <h3>⚔️ Aksiyon Oyunları</h3>
-          <p>Hız ve refleks gerektiren maceralar.</p>
-          <a class="btn" href="#">Listele</a>
+      <div id="action" class="game-container">
+        <button class="back-btn" onclick="closeGameCategory()">← Kategorilere Dön</button>
+        <div class="grid">
+           <div class="card">
+            <h3>Yakında...</h3>
+            <p>Aksiyon oyunları hazırlanıyor.</p>
+          </div>
         </div>
       </div>
 
@@ -284,28 +348,27 @@ footer{
   <section id="shop">
     <div class="container">
       <h2 class="sec-title">🛒 Doğal Ürünler</h2>
-      
       <div class="grid">
         <div class="card">
           <img src="images/zeytinyagi.png" alt="Zeytinyağı">
           <h3>Soğuk Sıkım Zeytinyağı</h3>
           <p>1 Litre, tamamen doğal ve katkısız.</p>
           <strong style="font-size:20px;display:block;margin:10px 0;color:var(--neon);">400 TL</strong>
-          <a class="btn" href="/odeme/zeytinyagi.html" style="width:100%">Satın Al</a>
+          <a class="btn" href="odeme/zeytinyagi.html" style="width:100%">Satın Al</a>
         </div>
         <div class="card">
           <img src="images/bal.png" alt="Bal">
           <h3>Hakiki Çiçek Balı</h3>
           <p>Saf, organik köy balı.</p>
           <strong style="font-size:20px;display:block;margin:10px 0;color:var(--neon);">300 TL</strong>
-          <a class="btn" href="/odeme/bal.html" style="width:100%">Satın Al</a>
+          <a class="btn" href="odeme/bal.html" style="width:100%">Satın Al</a>
         </div>
         <div class="card">
           <img src="images/kuner.png" alt="Çam Fıstığı">
           <h3>Çam Fıstığı</h3>
           <p>Doğal, yüksek kalite, 100 gram.</p>
           <strong style="font-size:20px;display:block;margin:10px 0;color:var(--neon);">450 TL</strong>
-          <a class="btn" href="/odeme/camfistigi.html" style="width:100%">Satın Al</a>
+          <a class="btn" href="odeme/camfistigi.html" style="width:100%">Satın Al</a>
         </div>
       </div>
     </div>
@@ -314,24 +377,13 @@ footer{
   <section id="contact">
     <div class="container">
       <h2 class="sec-title">📬 İletişim & Destek</h2>
-      
       <div class="contact-grid">
         <div class="contact-info">
           <h3 style="margin-bottom:25px; color:#fff;">İletişim Bilgileri</h3>
-          <div class="info-item">
-            <i>📧</i> <span>info@huseyinsedat.com</span>
-          </div>
-          <div class="info-item">
-            <i>📞</i> <span>+90 555 000 00 00</span>
-          </div>
-          <div class="info-item">
-            <i>📍</i> <span>Teknoloji Vadisi, İzmir / Türkiye</span>
-          </div>
-          <p style="margin-top:20px; font-size:13px; color:var(--muted);">
-            7/24 Destek hattımızdan veya form üzerinden bize ulaşabilirsiniz.
-          </p>
+          <div class="info-item"><i>📧</i> <span>info@huseyinsedat.com</span></div>
+          <div class="info-item"><i>📞</i> <span>+90 555 000 00 00</span></div>
+          <div class="info-item"><i>📍</i> <span>İzmir / Türkiye</span></div>
         </div>
-
         <form action="https://formspree.io/f/KODUNUZ" method="POST">
            <h3 style="margin-bottom:20px; color:#fff;">Bize Yazın</h3>
           <input type="text" name="name" placeholder="Ad Soyad" required>
@@ -346,25 +398,22 @@ footer{
   <footer>
     © 2025 Hüseyin Sedat — Tüm hakları saklıdır.
     <br><br>
-    <a href="/kvkk.html">KVKK</a> •
-    <a href="/iade-politikasi.html">İade Politikası</a> •
-    <a href="/mesafeli-satis-sozlesmesi.html">Satış Sözleşmesi</a>
+    <a href="kvkk.html">KVKK</a> •
+    <a href="iade-politikasi.html">İade Politikası</a> •
+    <a href="mesafeli-satis-sozlesmesi.html">Satış Sözleşmesi</a>
   </footer>
 
   <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
 
   <script>
-    /* ===== Particles BG ===== */
     const bg = document.getElementById("bg");
     const ctx = bg.getContext("2d");
     function resize(){ bg.width = window.innerWidth; bg.height = window.innerHeight; }
     resize(); window.addEventListener("resize", resize);
-
     const dots = Array.from({length:60}, () => ({
       x: Math.random()*bg.width, y: Math.random()*bg.height,
       vx: (Math.random()-.5)*0.5, vy: (Math.random()-.5)*0.5
     }));
-
     function loop(){
       ctx.clearRect(0,0,bg.width,bg.height); ctx.fillStyle = "#00eaff";
       dots.forEach(d => {
@@ -376,11 +425,7 @@ footer{
       requestAnimationFrame(loop);
     }
     loop();
-
-    /* ===== MENU TOGGLE ===== */
-    function toggleMenu() {
-      document.getElementById("mobileMenu").classList.toggle("open");
-    }
+    function toggleMenu() { document.getElementById("mobileMenu").classList.toggle("open"); }
     document.addEventListener("click", function(e) {
       const menu = document.getElementById("mobileMenu");
       const hamburger = document.querySelector(".hamburger");
@@ -388,6 +433,25 @@ footer{
         menu.classList.remove("open");
       }
     });
+
+    /* === OYUN KATEGORİ SİSTEMİ SCRİPTİ === */
+    function openGameCategory(categoryId) {
+      // Ana kategori seçim ekranını gizle
+      document.getElementById('category-selector').style.display = 'none';
+      
+      // Seçilen kategori detayını aç
+      document.getElementById(categoryId).style.display = 'block';
+    }
+
+    function closeGameCategory() {
+      // Tüm detayları gizle
+      document.querySelectorAll('.game-container').forEach(el => {
+        el.style.display = 'none';
+      });
+
+      // Ana kategori seçim ekranını geri getir
+      document.getElementById('category-selector').style.display = 'grid'; // Grid yapısını koru
+    }
   </script>
 </body>
 </html>
