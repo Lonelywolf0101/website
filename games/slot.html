@@ -5,386 +5,150 @@
 <title>Slot Makinesi | Hüseyin Sedat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
 <style>
-    :root{
-      --bg:#05060b;
-      --neon:#00eaff;
-      --glass: rgba(255,255,255,.06);
-      --red: #ff4d4d;
-      --green: #00ff88;
-      --gold: #ffd700;
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: "Poppins", sans-serif;
-        background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed;
-        color: #eaeaea;
-        text-align: center;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-
-    h1 {
-        color: var(--neon);
-        text-shadow: 0 0 20px rgba(0, 234, 255, 0.6);
-        margin-bottom: 5px;
-        font-size: 2.5rem;
-    }
-
-    .container {
-        position: relative;
-        z-index: 10;
-        width: 100%;
-        max-width: 600px;
-        padding: 20px;
-    }
-
-    .box {
-        background: var(--glass);
-        border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 30px 20px;
-        box-shadow: 0 0 30px rgba(0,0,0,0.5);
-    }
-
-    .token-display {
-        font-size: 24px;
-        background: rgba(0,0,0,0.3);
-        padding: 10px 20px;
-        border-radius: 50px;
-        display: inline-block;
-        margin-bottom: 20px;
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    /* === SLOT MAKİNESİ GÖRSELİ === */
-    .slot-machine {
-        background: #111;
-        border: 4px solid var(--neon);
-        border-radius: 15px;
-        padding: 15px;
-        position: relative;
-        box-shadow: 0 0 40px rgba(0, 234, 255, 0.2);
-        margin-bottom: 20px;
-    }
-
-    /* Kazanan Satır Çizgisi */
-    .payline {
-        position: absolute;
-        top: 50%;
-        left: -10px;
-        right: -10px;
-        height: 4px;
-        background: rgba(255, 0, 0, 0.6);
-        z-index: 50;
-        pointer-events: none;
-        box-shadow: 0 0 10px red;
-    }
-
-    .reels-container {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        background: #000;
-        padding: 10px;
-        border-radius: 10px;
-        overflow: hidden; /* Dönen şeritlerin taşmasını gizle */
-        height: 180px; /* Görünecek alan yüksekliği */
-        position: relative;
-    }
-
-    .reel {
-        width: 80px;
-        height: 100%; /* Konteyner kadar */
-        background: linear-gradient(180deg, #000 0%, #222 50%, #000 100%);
-        border: 1px solid #333;
-        border-radius: 5px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    /* Hareket eden şerit */
-    .reel-strip {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        will-change: transform; /* Performans için */
-    }
-
-    .symbol {
-        height: 180px; /* Konteyner yüksekliğiyle aynı olmalı ki ortalansın */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 60px;
-        text-shadow: 0 0 10px rgba(255,255,255,0.3);
-    }
-
-    /* Buton */
-    button {
-        padding: 15px 40px;
-        font-size: 22px;
-        font-weight: 700;
-        border-radius: 12px;
-        border: 2px solid var(--neon);
-        cursor: pointer;
-        transition: 0.3s;
-        color: #000;
-        background: var(--neon);
-        box-shadow: 0 0 20px rgba(0,234,255,0.4);
-        margin-top: 10px;
-    }
-
-    button:hover {
-        background: #fff;
-        box-shadow: 0 0 40px rgba(255,255,255,0.6);
-        transform: scale(1.05);
-    }
-
-    button:disabled {
-        background: #555;
-        border-color: #555;
-        color: #888;
-        cursor: not-allowed;
-        box-shadow: none;
-        transform: none;
-    }
-
-    #result {
-        margin-top: 20px;
-        font-size: 20px;
-        font-weight: 600;
-        height: 30px;
-    }
-
-    #back-btn {
-        margin-top: 30px;
-        color: #a8b3bd;
-        text-decoration: none;
-        font-size: 14px;
-        transition: 0.3s;
-        display: inline-block;
-    }
-    #back-btn:hover { color: var(--neon); }
-
-    /* Blur Efekti (Dönerken) */
-    .blur {
-        filter: blur(4px);
-    }
-
+    :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
+    body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; }
+    h1 { color:var(--neon); text-shadow:0 0 20px rgba(0, 234, 255, 0.6); margin-bottom:5px; font-size:2.5rem; }
+    .container { position:relative; z-index:10; width:100%; max-width:600px; padding:20px; }
+    .box { background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:30px 20px; box-shadow:0 0 30px rgba(0,0,0,0.5); }
+    .token-display { font-size:24px; background:rgba(0,0,0,0.3); padding:10px 20px; border-radius:50px; display:inline-block; margin-bottom:20px; border:1px solid rgba(255,255,255,0.1); }
+    .slot-machine { background:#111; border:4px solid var(--neon); border-radius:15px; padding:15px; position:relative; box-shadow:0 0 40px rgba(0,234,255,.2); margin-bottom:20px; }
+    .payline { position:absolute; top:50%; left:-10px; right:-10px; height:4px; background:rgba(255,0,0,.6); z-index:50; pointer-events:none; box-shadow:0 0 10px red; }
+    .reels-container { display:flex; gap:10px; justify-content:center; background:#000; padding:10px; border-radius:10px; overflow:hidden; height:180px; position:relative; }
+    .reel { width:80px; height:100%; background:linear-gradient(180deg, #000 0%, #222 50%, #000 100%); border:1px solid #333; border-radius:5px; position:relative; overflow:hidden; }
+    .reel-strip { position:absolute; top:0; left:0; width:100%; will-change:transform; }
+    .symbol { height:180px; display:flex; align-items:center; justify-content:center; font-size:60px; text-shadow:0 0 10px rgba(255,255,255,.3); }
+    button { padding:15px 40px; font-size:22px; font-weight:700; border-radius:12px; border:2px solid var(--neon); cursor:pointer; transition:.3s; color:#000; background:var(--neon); box-shadow:0 0 20px rgba(0,234,255,.4); margin-top:10px; }
+    button:hover { background:#fff; box-shadow:0 0 40px rgba(255,255,255,.6); transform:scale(1.05); }
+    button:disabled { background:#555; border-color:#555; color:#888; cursor:not-allowed; box-shadow:none; transform:none; }
+    #result { margin-top:20px; font-size:20px; font-weight:600; height:30px; }
+    #back-btn { margin-top:30px; color:#a8b3bd; text-decoration:none; font-size:14px; transition:.3s; display:inline-block; }
+    #back-btn:hover { color:var(--neon); }
+    .blur { filter:blur(4px); }
 </style>
 </head>
 <body>
-
     <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
-
     <div class="container">
         <h1>Slot Makinesi</h1>
         <p style="color:#aaa; margin-bottom:20px;">Giriş: <span style="color:var(--red)">20 Jeton</span> | Jackpot: <span style="color:var(--gold)">200 Jeton</span></p>
-
         <div class="box">
-            <div class="token-display">
-                🪙 <span id="tokens">100</span>
-            </div>
-
+            <div class="token-display">🪙 <span id="tokens">...</span></div>
             <div class="slot-machine">
-                <div class="payline"></div> <div class="reels-container">
+                <div class="payline"></div>
+                <div class="reels-container">
                     <div class="reel"><div class="reel-strip" id="strip1"></div></div>
                     <div class="reel"><div class="reel-strip" id="strip2"></div></div>
                     <div class="reel"><div class="reel-strip" id="strip3"></div></div>
                 </div>
             </div>
-
             <button id="spinBtn" onclick="spin()">ÇEVİR</button>
             <h2 id="result"></h2>
         </div>
-
         <a id="back-btn" href="../index.html#chance">← Oyun Lobisine Dön</a>
     </div>
 
 <script>
-    /* ===== SLOT MANTIĞI VE HİLE SİSTEMİ ===== */
-    let tokens = 100;
+    /* === ORTAK CÜZDAN === */
+    let savedTokens = localStorage.getItem("huseyin_bakiye");
+    let tokens = (savedTokens === null) ? 100 : parseInt(savedTokens);
+    if(savedTokens === null) localStorage.setItem("huseyin_bakiye", tokens);
+    document.getElementById("tokens").innerText = tokens;
+
+    function updateBalance(newAmount) {
+        tokens = newAmount;
+        document.getElementById("tokens").innerText = tokens;
+        localStorage.setItem("huseyin_bakiye", tokens);
+    }
+
+    /* === OYUN LOJİĞİ === */
     const COST = 20;
     const JACKPOT = 200;
     let playCount = 0;
     let isSpinning = false;
-
-    // Semboller (7 En değerlisi)
     const symbols = ["🍒", "🍋", "🍇", "🍉", "💎", "🔔", "7️⃣"];
-    
-    // Şerit elementleri
     const strip1 = document.getElementById("strip1");
     const strip2 = document.getElementById("strip2");
     const strip3 = document.getElementById("strip3");
-    const resultText = document.getElementById("result");
-    const tokenDisplay = document.getElementById("tokens");
-    const spinBtn = document.getElementById("spinBtn");
 
-    // Başlangıçta rastgele semboller koy
     initReels();
-
     function initReels() {
-        [strip1, strip2, strip3].forEach(strip => {
-            strip.innerHTML = `<div class="symbol">${getRandomSymbol()}</div>`;
-        });
+        [strip1, strip2, strip3].forEach(strip => { strip.innerHTML = `<div class="symbol">${getRandomSymbol()}</div>`; });
     }
-
-    function getRandomSymbol() {
-        return symbols[Math.floor(Math.random() * symbols.length)];
-    }
+    function getRandomSymbol() { return symbols[Math.floor(Math.random() * symbols.length)]; }
 
     function spin() {
         if (isSpinning) return;
-        if (tokens < COST) {
-            resultText.style.color = "var(--red)";
-            resultText.innerText = "Yetersiz Jeton!";
-            return;
-        }
+        if (tokens < COST) { document.getElementById("result").style.color = "var(--red)"; document.getElementById("result").innerText = "Yetersiz Jeton!"; return; }
 
-        // Ödeme Al
-        tokens -= COST;
-        tokenDisplay.innerText = tokens;
+        updateBalance(tokens - COST);
         isSpinning = true;
-        spinBtn.disabled = true;
-        resultText.innerText = "";
+        document.getElementById("spinBtn").disabled = true;
+        document.getElementById("result").innerText = "";
         
-        // 1. ADIM: SONUCU ÖNCEDEN BELİRLE (HİLE ALGORİTMASI)
         playCount++;
-        let outcome = determineOutcome(playCount); // [Sembol1, Sembol2, Sembol3] döner
+        let outcome = determineOutcome(playCount);
 
-        // 2. ADIM: ANİMASYON İÇİN ŞERİTLERİ HAZIRLA
-        // Her makara için uzun bir HTML oluşturacağız
-        // En alta "outcome" sembolü gelecek şekilde
-        animateReel(strip1, outcome[0], 0);   // Gecikmesiz
-        animateReel(strip2, outcome[1], 300); // 300ms gecikmeli
-        animateReel(strip3, outcome[2], 600); // 600ms gecikmeli
+        animateReel(strip1, outcome[0], 0);
+        animateReel(strip2, outcome[1], 300);
+        animateReel(strip3, outcome[2], 600);
 
-        // 3. ADIM: SONUÇ KONTROLÜ (Animasyon bitince)
         setTimeout(() => {
             checkWin(outcome);
             isSpinning = false;
-            spinBtn.disabled = false;
-        }, 2500); // En son makara durduktan sonra
+            document.getElementById("spinBtn").disabled = false;
+        }, 2500);
     }
 
-    // --- HİLE VE SONUÇ BELİRLEME FONKSİYONU ---
     function determineOutcome(count) {
-        // Acemi Şansı: İlk 5 elde %60 kazanma şansı
-        let winChance = (count <= 5) ? 0.6 : 0.15; // Sonra %15'e düşer
-        
+        let winChance = (count <= 5) ? 0.6 : 0.15;
         if (Math.random() < winChance) {
-            // KAZANDIR (3'ü de aynı)
             let winSymbol = getRandomSymbol();
             return [winSymbol, winSymbol, winSymbol];
         } else {
-            // KAYBETTİR (Ama nasıl?)
-            // "Near Miss" (Kıl Payı) Taktiği: %40 ihtimalle ilk ikisi aynı gelsin
             if (Math.random() < 0.4) {
                 let s = getRandomSymbol();
                 let loseS;
                 do { loseS = getRandomSymbol(); } while(loseS === s);
-                return [s, s, loseS]; // Örn: 7 - 7 - Muz
+                return [s, s, loseS]; 
             } else {
-                // Tamamen rastgele (Rastgele ama 3'ü aynı olmasın)
-                let s1 = getRandomSymbol();
-                let s2 = getRandomSymbol();
-                let s3 = getRandomSymbol();
-                // Çok nadir şansla rastgele de tutabilir, engellemeye gerek yok
-                return [s1, s2, s3]; 
+                return [getRandomSymbol(), getRandomSymbol(), getRandomSymbol()];
             }
         }
     }
 
-    // --- ANİMASYON FONKSİYONU ---
     function animateReel(stripElement, targetSymbol, delay) {
-        // Şeridin içine rastgele 20 sembol + en sona HEDEF sembolü ekle
         let content = "";
-        for(let i=0; i<20; i++) {
-            content += `<div class="symbol">${getRandomSymbol()}</div>`;
-        }
-        content += `<div class="symbol">${targetSymbol}</div>`; // Hedef en sonda
-        
+        for(let i=0; i<20; i++) content += `<div class="symbol">${getRandomSymbol()}</div>`;
+        content += `<div class="symbol">${targetSymbol}</div>`;
         stripElement.innerHTML = content;
-        
-        // Başlangıç pozisyonu (En üst)
         stripElement.style.transition = "none";
         stripElement.style.transform = "translateY(0)";
         stripElement.classList.add("blur");
-
-        // Animasyonu Tetikle
         setTimeout(() => {
-            // Yüksekliği hesapla: Her sembol 180px. 
-            // 21 sembol var. Sonuncusu (20. index) görünmeli.
-            // translateY(- (20 * 180px))
             let moveY = -(20 * 180); 
-            
             stripElement.style.transition = `transform 1.5s cubic-bezier(0.1, 0.9, 0.2, 1)`;
             stripElement.style.transform = `translateY(${moveY}px)`;
         }, 50 + delay);
-
-        // Blur efektini kaldır (Durmaya yakın)
-        setTimeout(() => {
-            stripElement.classList.remove("blur");
-        }, 1200 + delay);
+        setTimeout(() => { stripElement.classList.remove("blur"); }, 1200 + delay);
     }
 
     function checkWin(outcome) {
-        // 3 sembol aynı mı?
         if (outcome[0] === outcome[1] && outcome[1] === outcome[2]) {
             let winAmount = JACKPOT;
-            // 7 geldiyse daha büyük ödül verilebilir ama şimdilik standart tutalım
             if(outcome[0] === "7️⃣") winAmount = 500; 
-
-            tokens += winAmount;
-            tokenDisplay.innerText = tokens;
-            resultText.style.color = "var(--gold)";
-            resultText.innerText = `JACKPOT! Kazandın: ${winAmount} Jeton`;
-            
-            // Konfeti veya parlama efekti eklenebilir
+            updateBalance(tokens + winAmount);
+            document.getElementById("result").style.color = "var(--gold)";
+            document.getElementById("result").innerText = `JACKPOT! Kazandın: ${winAmount} Jeton`;
             document.querySelector(".slot-machine").style.boxShadow = "0 0 80px var(--gold)";
         } else {
-            resultText.style.color = "var(--red)";
-            // Eğer ilk ikisi aynıysa "Çok yaklaştın" de
-            if (outcome[0] === outcome[1]) {
-                resultText.innerText = "Ah be! Çok yaklaştın!";
-            } else {
-                resultText.innerText = "Kaybettin. Tekrar dene!";
-            }
-            document.querySelector(".slot-machine").style.boxShadow = "0 0 40px rgba(0, 234, 255, 0.2)";
+            document.getElementById("result").style.color = "var(--red)";
+            if (outcome[0] === outcome[1]) document.getElementById("result").innerText = "Ah be! Çok yaklaştın!";
+            else document.getElementById("result").innerText = "Kaybettin. Tekrar dene!";
+            document.querySelector(".slot-machine").style.boxShadow = "0 0 40px rgba(0,234,255,.2)";
         }
     }
-
-    /* ===== ARKA PLAN EFEKTİ ===== */
-    const bg = document.getElementById("bg");
-    const ctx = bg.getContext("2d");
-    function resize(){ bg.width = window.innerWidth; bg.height = window.innerHeight; }
-    resize(); window.addEventListener("resize", resize);
-    const dots = Array.from({length:40}, () => ({
-      x: Math.random()*bg.width, y: Math.random()*bg.height,
-      vx: (Math.random()-.5)*0.3, vy: (Math.random()-.5)*0.3
-    }));
-    function loop(){
-      ctx.clearRect(0,0,bg.width,bg.height); ctx.fillStyle = "#00eaff";
-      dots.forEach(d => {
-        d.x += d.vx; d.y += d.vy;
-        if (d.x < 0 || d.x > bg.width) d.vx *= -1;
-        if (d.y < 0 || d.y > bg.height) d.vy *= -1;
-        ctx.beginPath(); ctx.arc(d.x, d.y, 1.5, 0, Math.PI*2); ctx.fill();
-      });
-      requestAnimationFrame(loop);
-    }
-    loop();
+    const bg=document.getElementById("bg"),ctx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));function loop(){ctx.clearRect(0,0,bg.width,bg.height);ctx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;ctx.beginPath();ctx.arc(d.x,d.y,1.5,0,Math.PI*2);ctx.fill()});requestAnimationFrame(loop)}loop();
 </script>
-
 </body>
 </html>
