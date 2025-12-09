@@ -5,330 +5,115 @@
 <title>Spin Çarkı | Hüseyin Sedat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
 <style>
-    :root{
-      --bg:#05060b;
-      --neon:#00eaff;
-      --glass: rgba(255,255,255,.06);
-      --red: #ff4d4d;
-      --green: #00ff88;
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: "Poppins", sans-serif;
-        background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed;
-        color: #eaeaea;
-        text-align: center;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        overflow-x: hidden;
-    }
-
-    h1 {
-        color: var(--neon);
-        text-shadow: 0 0 20px rgba(0, 234, 255, 0.6);
-        margin-bottom: 5px;
-        font-size: 2.5rem;
-    }
-
-    .container {
-        position: relative;
-        z-index: 10;
-        width: 100%;
-        max-width: 500px;
-        padding: 20px;
-    }
-
-    .box {
-        background: var(--glass);
-        border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 30px 20px;
-        box-shadow: 0 0 30px rgba(0,0,0,0.5);
-    }
-
-    .token-display {
-        font-size: 24px;
-        background: rgba(0,0,0,0.3);
-        padding: 10px 20px;
-        border-radius: 50px;
-        display: inline-block;
-        margin-bottom: 20px;
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    /* === ÇARK TASARIMI === */
-    .wheel-wrapper {
-        position: relative;
-        width: 280px;
-        height: 280px;
-        margin: 20px auto;
-    }
-
-    .pointer {
-        position: absolute;
-        top: -15px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 0; 
-        height: 0; 
-        border-left: 15px solid transparent;
-        border-right: 15px solid transparent;
-        border-top: 30px solid #fff;
-        z-index: 20;
-        filter: drop-shadow(0 0 10px var(--neon));
-    }
-
-    .wheel {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        border: 8px solid rgba(255,255,255,0.1);
-        background: conic-gradient(
-            #ff4d4d 0deg 60deg,    /* Kırmızı */
-            #00eaff 60deg 120deg,  /* Mavi */
-            #00ff88 120deg 180deg, /* Yeşil */
-            #ffd700 180deg 240deg, /* Sarı */
-            #9d00ff 240deg 300deg, /* Mor */
-            #ff9100 300deg 360deg  /* Turuncu */
-        );
-        transition: transform 4s cubic-bezier(0.1, 0.6, 0.1, 1);
-        box-shadow: 0 0 30px rgba(0,0,0,0.5);
-    }
-
-    /* Kontroller */
-    .controls {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-top: 20px;
-        flex-wrap: wrap;
-    }
-
-    select {
-        padding: 12px;
-        font-size: 18px;
-        border-radius: 10px;
-        background: rgba(0,0,0,0.3);
-        color: white;
-        border: 1px solid rgba(255,255,255,0.2);
-        outline: none;
-        width: 140px;
-        text-align: center;
-        cursor: pointer;
-    }
-    
-    option { background: #000; }
-
-    button {
-        padding: 12px 30px;
-        font-size: 18px;
-        font-weight: 600;
-        border-radius: 10px;
-        border: 1px solid var(--neon);
-        cursor: pointer;
-        transition: 0.3s;
-        color: #000;
-        background: var(--neon);
-        box-shadow: 0 0 15px rgba(0,234,255,0.4);
-    }
-
-    button:hover {
-        background: #fff;
-        box-shadow: 0 0 25px rgba(255,255,255,0.6);
-        transform: translateY(-2px);
-    }
-
-    #result {
-        margin-top: 25px;
-        font-size: 18px;
-        font-weight: 600;
-        height: 30px;
-    }
-
-    #back-btn {
-        margin-top: 30px;
-        color: #a8b3bd;
-        text-decoration: none;
-        font-size: 14px;
-        transition: 0.3s;
-        display: inline-block;
-    }
-    #back-btn:hover { color: var(--neon); }
-
+    :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; }
+    body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow-x:hidden; }
+    h1 { color:var(--neon); text-shadow:0 0 20px rgba(0, 234, 255, 0.6); margin-bottom:5px; font-size:2.5rem; }
+    .container { position:relative; z-index:10; width:100%; max-width:500px; padding:20px; }
+    .box { background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:30px 20px; box-shadow:0 0 30px rgba(0,0,0,0.5); }
+    .token-display { font-size:24px; background:rgba(0,0,0,0.3); padding:10px 20px; border-radius:50px; display:inline-block; margin-bottom:20px; border:1px solid rgba(255,255,255,0.1); }
+    .wheel-wrapper { position:relative; width:280px; height:280px; margin:20px auto; }
+    .pointer { position:absolute; top:-15px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:15px solid transparent; border-right:15px solid transparent; border-top:30px solid #fff; z-index:20; filter:drop-shadow(0 0 10px var(--neon)); }
+    .wheel { width:100%; height:100%; border-radius:50%; border:8px solid rgba(255,255,255,0.1); background:conic-gradient(#ff4d4d 0deg 60deg, #00eaff 60deg 120deg, #00ff88 120deg 180deg, #ffd700 180deg 240deg, #9d00ff 240deg 300deg, #ff9100 300deg 360deg); transition:transform 4s cubic-bezier(0.1, 0.6, 0.1, 1); box-shadow:0 0 30px rgba(0,0,0,0.5); }
+    .controls { display:flex; gap:10px; justify-content:center; margin-top:20px; flex-wrap:wrap; }
+    select { padding:12px; font-size:18px; border-radius:10px; background:rgba(0,0,0,0.3); color:white; border:1px solid rgba(255,255,255,0.2); outline:none; width:140px; text-align:center; cursor:pointer; }
+    option { background:#000; }
+    button { padding:12px 30px; font-size:18px; font-weight:600; border-radius:10px; border:1px solid var(--neon); cursor:pointer; transition:0.3s; color:#000; background:var(--neon); box-shadow:0 0 15px rgba(0,234,255,0.4); }
+    button:hover { background:#fff; box-shadow:0 0 25px rgba(255,255,255,0.6); transform:translateY(-2px); }
+    #result { margin-top:25px; font-size:18px; font-weight:600; height:30px; }
+    #back-btn { margin-top:30px; color:#a8b3bd; text-decoration:none; font-size:14px; transition:0.3s; display:inline-block; }
+    #back-btn:hover { color:var(--neon); }
 </style>
 </head>
 <body>
-
     <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
-
     <div class="container">
         <h1>Renkli Çark</h1>
         <p style="color:#aaa; margin-bottom:20px;">Giriş: <span style="color:var(--red)">10 Jeton</span> | Kazanç: <span style="color:var(--green)">50 Jeton</span></p>
-
         <div class="box">
-            <div class="token-display">
-                🪙 <span id="tokens">100</span>
-            </div>
-
-            <div class="wheel-wrapper">
-                <div class="pointer"></div>
-                <div class="wheel" id="wheel"></div>
-            </div>
-
+            <div class="token-display">🪙 <span id="tokens">...</span></div>
+            <div class="wheel-wrapper"><div class="pointer"></div><div class="wheel" id="wheel"></div></div>
             <h2 id="result">Bir renk seç ve çevir!</h2>
-
             <div class="controls">
                 <select id="guess">
-                    <option value="red">🔴 Kırmızı</option>
-                    <option value="blue">🔵 Mavi</option>
-                    <option value="green">🟢 Yeşil</option>
-                    <option value="yellow">🟡 Sarı</option>
-                    <option value="purple">🟣 Mor</option>
-                    <option value="orange">🟠 Turuncu</option>
+                    <option value="red">🔴 Kırmızı</option><option value="blue">🔵 Mavi</option>
+                    <option value="green">🟢 Yeşil</option><option value="yellow">🟡 Sarı</option>
+                    <option value="purple">🟣 Mor</option><option value="orange">🟠 Turuncu</option>
                 </select>
                 <button onclick="spin()">ÇEVİR</button>
             </div>
         </div>
-
         <a id="back-btn" href="../index.html#chance">← Oyun Lobisine Dön</a>
     </div>
 
 <script>
-    /* ===== OYUN VE HİLE MANTIĞI ===== */
-    let tokens = 100;
+    /* === ORTAK CÜZDAN === */
+    let savedTokens = localStorage.getItem("huseyin_bakiye");
+    let tokens = (savedTokens === null) ? 100 : parseInt(savedTokens);
+    if(savedTokens === null) localStorage.setItem("huseyin_bakiye", tokens);
+    document.getElementById("tokens").innerText = tokens;
+
+    function updateBalance(newAmount) {
+        tokens = newAmount;
+        document.getElementById("tokens").innerText = tokens;
+        localStorage.setItem("huseyin_bakiye", tokens);
+    }
+
+    /* === OYUN LOJİĞİ === */
     const COST = 10;
     const REWARD = 50;
     let playCount = 0;
     let isSpinning = false;
-
-    const wheel = document.getElementById("wheel");
-    const resultText = document.getElementById("result");
-    const tokenDisplay = document.getElementById("tokens");
-
-    // Renklerin açı aralıkları (Çark yapısına göre)
-    const slices = [
-        { color: "red",    min: 0,   max: 60 },
-        { color: "blue",   min: 60,  max: 120 },
-        { color: "green",  min: 120, max: 180 },
-        { color: "yellow", min: 180, max: 240 },
-        { color: "purple", min: 240, max: 300 },
-        { color: "orange", min: 300, max: 360 }
-    ];
+    const slices = [ { color:"red", min:0, max:60 }, { color:"blue", min:60, max:120 }, { color:"green", min:120, max:180 }, { color:"yellow", min:180, max:240 }, { color:"purple", min:240, max:300 }, { color:"orange", min:300, max:360 } ];
 
     function spin() {
         if (isSpinning) return;
-
-        if (tokens < COST) {
-            resultText.style.color = "var(--red)";
-            resultText.innerText = "Yetersiz Jeton!";
-            return;
-        }
+        if (tokens < COST) { document.getElementById("result").style.color = "var(--red)"; document.getElementById("result").innerText = "Yetersiz Jeton!"; return; }
 
         const userGuess = document.getElementById("guess").value;
-
-        // Ödeme Al
-        tokens -= COST;
-        tokenDisplay.innerText = tokens;
+        updateBalance(tokens - COST);
         isSpinning = true;
-        resultText.style.color = "#eaeaea";
-        resultText.innerText = "Çark dönüyor...";
+        document.getElementById("result").style.color = "#eaeaea";
+        document.getElementById("result").innerText = "Çark dönüyor...";
 
-        // 1. ADIM: SONUCU BELİRLE (HİLE ALGORİTMASI)
         playCount++;
         let targetColorObj;
-        let winChance = (playCount <= 3) ? 0.5 : 0.16; // İlk 3 el %50, sonra %16
+        let winChance = (playCount <= 3) ? 0.5 : 0.16;
         
-        // Kazanacak mı?
         if (Math.random() < winChance) {
-            // Evet, kullanıcının seçtiği rengi hedefle
             targetColorObj = slices.find(s => s.color === userGuess);
         } else {
-            // Hayır, rastgele farklı bir renk seç
             let otherSlices = slices.filter(s => s.color !== userGuess);
             targetColorObj = otherSlices[Math.floor(Math.random() * otherSlices.length)];
         }
 
-        // 2. ADIM: HEDEF AÇIYI HESAPLA
-        // Seçilen dilimin içinde rastgele bir nokta seç (Kenarlara çok yaklaşma ki tartışma çıkmasın)
-        // Örneğin: Kırmızı (0-60) -> 10 ile 50 arasında bir yer seç
         const randomDegreeInSlice = Math.floor(Math.random() * (targetColorObj.max - targetColorObj.min - 20)) + targetColorObj.min + 10;
-
-        // Çark saat yönünde döner. 0 derece (Kırmızı) en üstte başlar.
-        // CSS transform rotate ile döndürdüğümüzde:
-        // Pointer (Ok) sabittir ve en üsttedir (0 derece konumu).
-        // Eğer 30 derece döndürürsek, 0-60 aralığı değil, 330-360 aralığı (Turuncu) okun altına gelir (Ters mantık).
-        // Bu yüzden matematik şu: (360 - HedefAçı) kadar döndürmeliyiz.
-        
         let stopAngle = (360 - randomDegreeInSlice); 
-        
-        // En az 5 tam tur atsın (360 * 5)
         let finalRotation = (360 * 8) + stopAngle;
 
-
-        // 3. ADIM: ANİMASYON
-        // Önce çarkı sıfırla (Transition olmadan)
+        const wheel = document.getElementById("wheel");
         wheel.style.transition = "none";
         wheel.style.transform = `rotate(0deg)`;
 
-        // Kısa bir gecikmeyle dönüşü başlat
         setTimeout(() => {
             wheel.style.transition = "transform 4s cubic-bezier(0.1, 0.6, 0.1, 1)";
             wheel.style.transform = `rotate(${finalRotation}deg)`;
         }, 50);
 
-        // 4. ADIM: SONUÇ GÖSTER
         setTimeout(() => {
             if (targetColorObj.color === userGuess) {
-                tokens += REWARD;
-                tokenDisplay.innerText = tokens;
-                resultText.style.color = "var(--green)";
-                resultText.innerText = `TEBRİKLER! ${translateColor(userGuess)} geldi!`;
+                updateBalance(tokens + REWARD);
+                document.getElementById("result").style.color = "var(--green)";
+                document.getElementById("result").innerText = `TEBRİKLER! ${translateColor(userGuess)} geldi!`;
             } else {
-                resultText.style.color = "var(--red)";
-                resultText.innerText = `Kaybettin! ${translateColor(targetColorObj.color)} geldi.`;
+                document.getElementById("result").style.color = "var(--red)";
+                document.getElementById("result").innerText = `Kaybettin! ${translateColor(targetColorObj.color)} geldi.`;
             }
             isSpinning = false;
         }, 4100);
     }
-
-    function translateColor(eng) {
-        const map = {
-            "red": "Kırmızı", "blue": "Mavi", "green": "Yeşil", 
-            "yellow": "Sarı", "purple": "Mor", "orange": "Turuncu"
-        };
-        return map[eng] || eng;
-    }
-
-
-    /* ===== ARKA PLAN EFEKTİ ===== */
-    const bg = document.getElementById("bg");
-    const ctx = bg.getContext("2d");
-    function resize(){ bg.width = window.innerWidth; bg.height = window.innerHeight; }
-    resize(); window.addEventListener("resize", resize);
-    const dots = Array.from({length:40}, () => ({
-      x: Math.random()*bg.width, y: Math.random()*bg.height,
-      vx: (Math.random()-.5)*0.3, vy: (Math.random()-.5)*0.3
-    }));
-    function loop(){
-      ctx.clearRect(0,0,bg.width,bg.height); ctx.fillStyle = "#00eaff";
-      dots.forEach(d => {
-        d.x += d.vx; d.y += d.vy;
-        if (d.x < 0 || d.x > bg.width) d.vx *= -1;
-        if (d.y < 0 || d.y > bg.height) d.vy *= -1;
-        ctx.beginPath(); ctx.arc(d.x, d.y, 1.5, 0, Math.PI*2); ctx.fill();
-      });
-      requestAnimationFrame(loop);
-    }
-    loop();
+    function translateColor(eng) { const map = { "red": "Kırmızı", "blue": "Mavi", "green": "Yeşil", "yellow": "Sarı", "purple": "Mor", "orange": "Turuncu" }; return map[eng] || eng; }
+    const bg=document.getElementById("bg"),ctx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));function loop(){ctx.clearRect(0,0,bg.width,bg.height);ctx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;ctx.beginPath();ctx.arc(d.x,d.y,1.5,0,Math.PI*2);ctx.fill()});requestAnimationFrame(loop)}loop();
 </script>
-
 </body>
 </html>
