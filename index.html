@@ -45,7 +45,7 @@ nav{
 }
 .brand{ font-weight:700; font-size:20px; color:var(--neon); }
 
-/* HAMBURGER ICON */
+/* HAMBURGER ICON (28px) */
 .hamburger { font-size: 28px; cursor: pointer; color: var(--neon); user-select: none; z-index: 2001; }
 
 /* === SLIDE MENÜ === */
@@ -64,20 +64,18 @@ nav{
   position: absolute; 
   top: 20px;            
   right: 25px;          
-  font-size: 32px;      /* Hamburger ile uyumlu boyut */
+  font-size: 32px;      
   line-height: 1;     
   color: var(--neon);   
   cursor: pointer; 
-  transition: 0.3s;     /* Sadece renk değişimi için geçiş */
+  transition: 0.3s;
   font-weight: 300;     
   z-index: 3001;        
   display: block;
 }
-
-/* Üzerine gelince sadece rengi değişir, hareket etmez */
 .close-btn:hover { 
   color: #fff;
-  transform: none;      /* Dönme iptal edildi */
+  transform: none;      
 }
 
 .mobile-menu a {
@@ -441,7 +439,7 @@ footer{
       <div id="tab-load">
         <p style="color:#ccc; font-size:14px;">Shopier kodunu buraya gir:</p>
         <input type="text" id="epinInput" placeholder="KODU GİRİN (Örn: JETON1000)" style="width:100%; padding:12px; margin:15px 0; background:rgba(255,255,255,0.1); border:1px solid #333; color:#fff; text-align:center; border-radius:5px;">
-        <button onclick="redeemCode()" style="width:100%; padding:12px; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer; font-size:16px;">KODU KULLAN</button>
+        <button onclick="window.redeemCodeFirebase()" style="width:100%; padding:12px; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer; font-size:16px;">KODU KULLAN</button>
         <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
           <a href="#" target="_blank" style="color:#00eaff; text-decoration:underline; font-size:14px;">Shopier Mağazasından Satın Al</a>
         </div>
@@ -511,33 +509,24 @@ footer{
         document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
       }
       
-      // Bakiye göster
-      let t = localStorage.getItem("huseyin_bakiye");
-      if(t===null) { t=100; localStorage.setItem("huseyin_bakiye", 100); }
-      document.getElementById("tokens").innerText = t;
+      /* === ORTAK CÜZDAN SİSTEMİ (MERKEZ BANKASI) === */
+      let savedTokens = localStorage.getItem("huseyin_bakiye");
+      let tokens;
+      if (savedTokens === null) {
+          tokens = 100; localStorage.setItem("huseyin_bakiye", tokens);
+      } else {
+          tokens = parseInt(savedTokens);
+      }
+      document.getElementById("tokens").innerText = tokens;
     });
 
     /* MARKET SİSTEMİ */
-    const validCodes = { "JETON1000": 1000, "JETON5000": 5000, "HOSGELDIN": 500 };
     function openWallet() { document.getElementById("walletModal").style.display = "flex"; }
     function closeWallet() { document.getElementById("walletModal").style.display = "none"; }
     function showTab(tab) {
       document.getElementById("tab-load").style.display = "none";
       document.getElementById("tab-spend").style.display = "none";
       document.getElementById("tab-"+tab).style.display = "block";
-    }
-    function redeemCode() {
-      const c = document.getElementById("epinInput").value.toUpperCase().trim();
-      if(localStorage.getItem("used_"+c)){ alert("Bu kod kullanıldı!"); return; }
-      if(validCodes[c]){
-        let cur = parseInt(localStorage.getItem("huseyin_bakiye"))||0;
-        let add = validCodes[c];
-        localStorage.setItem("huseyin_bakiye", cur+add);
-        document.getElementById("tokens").innerText = cur+add;
-        localStorage.setItem("used_"+c, "true");
-        alert(add + " Jeton yüklendi!");
-        closeWallet();
-      } else { alert("Geçersiz Kod!"); }
     }
     function buyCoupon(cost, code){
       let cur = parseInt(localStorage.getItem("huseyin_bakiye"))||0;
@@ -548,6 +537,68 @@ footer{
           alert("Kodun: " + code);
         }
       } else { alert("Yetersiz Jeton!"); }
+    }
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc } 
+      from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // 🔥 SENİN FIREBASE ANAHTARLARIN
+    const firebaseConfig = {
+      apiKey: "AIzaSyANHre3Yv9RdlGtRPeYH_6ez2PSTaOR-ls",
+      authDomain: "site-c4802.firebaseapp.com",
+      projectId: "site-c4802",
+      storageBucket: "site-c4802.firebasestorage.app",
+      messagingSenderId: "678825640794",
+      appId: "1:678825640794:web:da9846527bfa3a38452963",
+      measurementId: "G-YYJR6G6MM1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.redeemCodeFirebase = async function() {
+      const input = document.getElementById("epinInput");
+      const code = input.value.trim().toUpperCase();
+      const btn = document.querySelector("button[onclick='window.redeemCodeFirebase()']");
+
+      if(!code) { alert("Lütfen kod girin!"); return; }
+
+      btn.innerText = "Kontrol ediliyor...";
+      btn.disabled = true;
+
+      try {
+        const codeRef = doc(db, "codes", code);
+        const codeSnap = await getDoc(codeRef);
+
+        if (codeSnap.exists()) {
+          const data = codeSnap.data();
+          if (data.isUsed === true) {
+            alert("❌ Bu kod daha önce kullanılmış!");
+          } else {
+            const amount = data.amount;
+            await updateDoc(codeRef, { isUsed: true, usedAt: new Date() });
+
+            let currentTokens = parseInt(localStorage.getItem("huseyin_bakiye")) || 0;
+            let newTokens = currentTokens + amount;
+            localStorage.setItem("huseyin_bakiye", newTokens);
+            document.getElementById("tokens").innerText = newTokens;
+
+            alert("✅ BAŞARILI! " + amount + " Jeton hesabına yüklendi.");
+            input.value = "";
+            closeWallet();
+          }
+        } else {
+          alert("❌ Geçersiz Kod!");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Bağlantı hatası.");
+      }
+      btn.innerText = "KODU KULLAN";
+      btn.disabled = false;
     }
   </script>
 </body>
