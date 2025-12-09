@@ -5,292 +5,112 @@
 <title>Sayı Tahmin | Hüseyin Sedat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
 <style>
-    :root{
-      --bg:#05060b;
-      --neon:#00eaff;
-      --glass: rgba(255,255,255,.06);
-      --red: #ff4d4d;
-      --green: #00ff88;
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: "Poppins", sans-serif;
-        background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed;
-        color: #eaeaea;
-        text-align: center;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-
-    h1 {
-        color: var(--neon);
-        text-shadow: 0 0 20px rgba(0, 234, 255, 0.6);
-        margin-bottom: 5px;
-        font-size: 2.5rem;
-    }
-
-    .container {
-        position: relative;
-        z-index: 10;
-        width: 100%;
-        max-width: 500px;
-        padding: 20px;
-    }
-
-    .box {
-        background: var(--glass);
-        border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 40px 20px;
-        box-shadow: 0 0 30px rgba(0,0,0,0.5);
-    }
-
-    .token-display {
-        font-size: 24px;
-        background: rgba(0,0,0,0.3);
-        padding: 10px 20px;
-        border-radius: 50px;
-        display: inline-block;
-        margin-bottom: 30px;
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    /* Büyük Sayı Göstergesi */
-    .number-display {
-        font-size: 100px;
-        font-weight: 700;
-        color: #fff;
-        text-shadow: 0 0 30px var(--neon);
-        margin: 20px 0;
-        min-height: 150px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* Input Alanı */
-    .control-group {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-    input[type="number"] {
-        padding: 12px;
-        font-size: 20px;
-        border-radius: 10px;
-        background: rgba(0,0,0,0.3);
-        color: var(--neon);
-        border: 1px solid rgba(255,255,255,0.2);
-        outline: none;
-        width: 100px;
-        text-align: center;
-        font-weight: bold;
-    }
-    
-    /* Input oklarını gizle (Chrome/Safari/Edge) */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    button {
-        padding: 12px 30px;
-        font-size: 18px;
-        font-weight: 600;
-        border-radius: 10px;
-        border: 1px solid var(--neon);
-        cursor: pointer;
-        transition: 0.3s;
-        color: #000;
-        background: var(--neon);
-        box-shadow: 0 0 15px rgba(0,234,255,0.4);
-    }
-
-    button:hover {
-        background: #fff;
-        box-shadow: 0 0 25px rgba(255,255,255,0.6);
-        transform: translateY(-2px);
-    }
-
-    #result {
-        margin-top: 25px;
-        font-size: 18px;
-        font-weight: 600;
-        height: 30px;
-    }
-
-    #back-btn {
-        margin-top: 30px;
-        color: #a8b3bd;
-        text-decoration: none;
-        font-size: 14px;
-        transition: 0.3s;
-        display: inline-block;
-    }
-    #back-btn:hover { color: var(--neon); }
-
+    :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; }
+    body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; }
+    h1 { color:var(--neon); text-shadow:0 0 20px rgba(0, 234, 255, 0.6); margin-bottom:5px; font-size:2.5rem; }
+    .container { position:relative; z-index:10; width:100%; max-width:500px; padding:20px; }
+    .box { background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:40px 20px; box-shadow:0 0 30px rgba(0,0,0,0.5); }
+    .token-display { font-size:24px; background:rgba(0,0,0,0.3); padding:10px 20px; border-radius:50px; display:inline-block; margin-bottom:30px; border:1px solid rgba(255,255,255,0.1); }
+    .number-display { font-size:100px; font-weight:700; color:#fff; text-shadow:0 0 30px var(--neon); margin:20px 0; min-height:150px; display:flex; align-items:center; justify-content:center; }
+    .control-group { display:flex; gap:10px; justify-content:center; margin-top:20px; }
+    input[type="number"] { padding:12px; font-size:20px; border-radius:10px; background:rgba(0,0,0,0.3); color:var(--neon); border:1px solid rgba(255,255,255,0.2); outline:none; width:100px; text-align:center; font-weight:bold; }
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+    button { padding:12px 30px; font-size:18px; font-weight:600; border-radius:10px; border:1px solid var(--neon); cursor:pointer; transition:0.3s; color:#000; background:var(--neon); box-shadow:0 0 15px rgba(0,234,255,0.4); }
+    button:hover { background:#fff; box-shadow:0 0 25px rgba(255,255,255,0.6); transform:translateY(-2px); }
+    #result { margin-top:25px; font-size:18px; font-weight:600; height:30px; }
+    #back-btn { margin-top:30px; color:#a8b3bd; text-decoration:none; font-size:14px; transition:0.3s; display:inline-block; }
+    #back-btn:hover { color:var(--neon); }
 </style>
 </head>
 <body>
-
     <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
-
     <div class="container">
         <h1>Sayı Tahmin</h1>
         <p style="color:#aaa; margin-bottom:20px;">Giriş: <span style="color:var(--red)">5 Jeton</span> | Kazanç: <span style="color:var(--green)">40 Jeton</span></p>
-
         <div class="box">
-            <div class="token-display">
-                🪙 <span id="tokens">100</span>
-            </div>
-
+            <div class="token-display">🪙 <span id="tokens">...</span></div>
             <div class="number-display" id="display">?</div>
-
             <h2 id="result">1 ile 10 arası bir sayı gir</h2>
-
             <div class="control-group">
                 <input id="guess" type="number" min="1" max="10" placeholder="#">
                 <button onclick="play()">BUL</button>
             </div>
         </div>
-
         <a id="back-btn" href="../index.html#chance">← Oyun Lobisine Dön</a>
     </div>
 
 <script>
-    /* ===== OYUN VE HİLE MANTIĞI ===== */
-    let tokens = 100;
+    /* === ORTAK CÜZDAN === */
+    let savedTokens = localStorage.getItem("huseyin_bakiye");
+    let tokens = (savedTokens === null) ? 100 : parseInt(savedTokens);
+    if(savedTokens === null) localStorage.setItem("huseyin_bakiye", tokens);
+    document.getElementById("tokens").innerText = tokens;
+
+    function updateBalance(newAmount) {
+        tokens = newAmount;
+        document.getElementById("tokens").innerText = tokens;
+        localStorage.setItem("huseyin_bakiye", tokens);
+    }
+
+    /* === OYUN LOJİĞİ === */
     const COST = 5;
-    const REWARD = 40; // Zor olduğu için ödül yüksek
+    const REWARD = 40; 
     let playCount = 0;
     let isPlaying = false;
 
-    const display = document.getElementById("display");
-    const resultText = document.getElementById("result");
-    const tokenDisplay = document.getElementById("tokens");
-
     function play() {
         let guess = parseInt(document.getElementById("guess").value);
-
         if (isPlaying) return;
+        if (!guess || guess < 1 || guess > 10) { document.getElementById("result").style.color = "var(--red)"; document.getElementById("result").innerText = "Lütfen 1–10 arası sayı gir!"; return; }
+        if (tokens < COST) { document.getElementById("result").style.color = "var(--red)"; document.getElementById("result").innerText = "Yetersiz Jeton!"; return; }
 
-        // Validasyon
-        if (!guess || guess < 1 || guess > 10) {
-            resultText.style.color = "var(--red)";
-            resultText.innerText = "Lütfen 1–10 arası sayı gir!";
-            return;
-        }
-
-        if (tokens < COST) {
-            resultText.style.color = "var(--red)";
-            resultText.innerText = "Yetersiz Jeton!";
-            return;
-        }
-
-        // Başlangıç
-        tokens -= COST;
-        tokenDisplay.innerText = tokens;
+        updateBalance(tokens - COST);
         isPlaying = true;
-        resultText.style.color = "#eaeaea";
-        resultText.innerText = "Sayı aranıyor...";
+        document.getElementById("result").style.color = "#eaeaea";
+        document.getElementById("result").innerText = "Sayı aranıyor...";
 
-        // Animasyon: Hızlıca sayıları değiştir
-        let loopCount = 0;
         const animation = setInterval(() => {
-            display.innerText = Math.floor(Math.random() * 10) + 1;
+            document.getElementById("display").innerText = Math.floor(Math.random() * 10) + 1;
         }, 80);
 
-        // SONUÇ BELİRLEME (HİLE ALGORİTMASI)
         setTimeout(() => {
             clearInterval(animation);
             playCount++;
-            
-            let finalNumber; 
-
-            /* --- HİLE MANTIĞI --- */
-            // Acemi Şansı: İlk 3 elde %40 ihtimalle kazanır.
-            let winChance = (playCount <= 3) ? 0.4 : 0.1; // Normalde %10
+            let finalNumber;
+            // İlk 3 elde %40 kazanır, yoksa "kıl payı" kaybeder
+            let winChance = (playCount <= 3) ? 0.4 : 0.1;
             
             if (Math.random() < winChance) {
-                // KAZANACAK
                 finalNumber = guess;
             } else {
-                // KAYBEDECEK - AMA NASIL?
-                // "Near Miss" (Kıl Payı) Etkisi: %30 ihtimalle 1 altını veya 1 üstünü göster.
-                // Bu kullanıcıyı "çok yaklaştım" diye gaza getirir.
-                if (Math.random() < 0.3) {
+                if (Math.random() < 0.3) { // Kıl payı kaçırma
                     let offset = Math.random() < 0.5 ? -1 : 1;
                     finalNumber = guess + offset;
-                    // Sınırları kontrol et (0 veya 11 olmasın)
                     if(finalNumber < 1) finalNumber = 2;
                     if(finalNumber > 10) finalNumber = 9;
                 } else {
-                    // Tamamen rastgele bir sayı seç (ama tahmin ettiği olmasın)
-                    do {
-                        finalNumber = Math.floor(Math.random() * 10) + 1;
-                    } while (finalNumber === guess);
+                    do { finalNumber = Math.floor(Math.random() * 10) + 1; } while (finalNumber === guess);
                 }
             }
 
-            // Ekrana bas
-            display.innerText = finalNumber;
+            document.getElementById("display").innerText = finalNumber;
 
-            // Sonuç Kontrol
             if (finalNumber === guess) {
-                tokens += REWARD;
-                tokenDisplay.innerText = tokens;
-                resultText.style.color = "var(--green)";
-                resultText.innerText = `TEBRİKLER! Bildin! (+${REWARD} Jeton)`;
-                // Kazanma efekti (Parlat)
-                display.style.textShadow = "0 0 50px #00ff88";
+                updateBalance(tokens + REWARD);
+                document.getElementById("result").style.color = "var(--green)";
+                document.getElementById("result").innerText = `TEBRİKLER! Bildin! (+${REWARD-COST} Jeton)`;
+                document.getElementById("display").style.textShadow = "0 0 50px #00ff88";
             } else {
-                resultText.style.color = "var(--red)";
-                resultText.innerText = `Bilemedin! ${finalNumber} çıktı.`;
-                display.style.textShadow = "0 0 30px var(--red)";
+                document.getElementById("result").style.color = "var(--red)";
+                document.getElementById("result").innerText = `Bilemedin! ${finalNumber} çıktı.`;
+                document.getElementById("display").style.textShadow = "0 0 30px var(--red)";
             }
-
-            // Reset (Gölgeyi eski haline getir)
-            setTimeout(() => {
-                display.style.textShadow = "0 0 30px var(--neon)";
-            }, 1000);
-
+            setTimeout(() => { document.getElementById("display").style.textShadow = "0 0 30px var(--neon)"; }, 1000);
             isPlaying = false;
-        }, 1500); // 1.5 saniye animasyon
+        }, 1500);
     }
-
-    /* ===== ARKA PLAN EFEKTİ ===== */
-    const bg = document.getElementById("bg");
-    const ctx = bg.getContext("2d");
-    function resize(){ bg.width = window.innerWidth; bg.height = window.innerHeight; }
-    resize(); window.addEventListener("resize", resize);
-    const dots = Array.from({length:40}, () => ({
-      x: Math.random()*bg.width, y: Math.random()*bg.height,
-      vx: (Math.random()-.5)*0.3, vy: (Math.random()-.5)*0.3
-    }));
-    function loop(){
-      ctx.clearRect(0,0,bg.width,bg.height); ctx.fillStyle = "#00eaff";
-      dots.forEach(d => {
-        d.x += d.vx; d.y += d.vy;
-        if (d.x < 0 || d.x > bg.width) d.vx *= -1;
-        if (d.y < 0 || d.y > bg.height) d.vy *= -1;
-        ctx.beginPath(); ctx.arc(d.x, d.y, 1.5, 0, Math.PI*2); ctx.fill();
-      });
-      requestAnimationFrame(loop);
-    }
-    loop();
+    const bg=document.getElementById("bg"),ctx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));function loop(){ctx.clearRect(0,0,bg.width,bg.height);ctx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;ctx.beginPath();ctx.arc(d.x,d.y,1.5,0,Math.PI*2);ctx.fill()});requestAnimationFrame(loop)}loop();
 </script>
-
 </body>
 </html>
