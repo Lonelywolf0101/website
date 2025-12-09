@@ -5,242 +5,86 @@
 <title>Blackjack | Hüseyin Sedat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
 <style>
-    :root{
-      --bg:#05060b;
-      --neon:#00eaff;
-      --glass: rgba(255,255,255,.06);
-      --red: #ff4d4d;
-      --green: #00ff88;
-      --gold: #ffd700;
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: "Poppins", sans-serif;
-        background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed;
-        color: #eaeaea;
-        text-align: center;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        overflow-x: hidden;
-    }
-
-    h1 {
-        color: var(--neon);
-        text-shadow: 0 0 20px rgba(0, 234, 255, 0.6);
-        margin-bottom: 5px;
-        font-size: 2.5rem;
-    }
-
-    .container {
-        position: relative;
-        z-index: 10;
-        width: 100%;
-        max-width: 800px;
-        padding: 20px;
-    }
-
-    .box {
-        background: var(--glass);
-        border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 30px;
-        box-shadow: 0 0 30px rgba(0,0,0,0.5);
-    }
-
-    .token-display {
-        font-size: 20px;
-        background: rgba(0,0,0,0.3);
-        padding: 8px 20px;
-        border-radius: 50px;
-        display: inline-block;
-        margin-bottom: 20px;
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    /* === OYUN ALANI === */
-    .game-area {
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
-        margin-bottom: 20px;
-    }
-
-    .hand-area {
-        min-height: 160px;
-    }
-
-    .hand-title {
-        font-size: 18px;
-        color: var(--muted);
-        margin-bottom: 10px;
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .score-badge {
-        background: var(--neon);
-        color: #000;
-        padding: 2px 8px;
-        border-radius: 10px;
-        font-weight: bold;
-        font-size: 14px;
-    }
-
-    /* KART TASARIMI */
-    .cards-container {
-        display: flex;
-        justify-content: center;
-        gap: 10px; /* Kartlar üst üste binmesin diye */
-        flex-wrap: wrap;
-    }
-
-    .playing-card {
-        width: 80px;
-        height: 110px;
-        background: white;
-        border-radius: 8px;
-        color: #000;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 5px;
-        font-weight: bold;
-        font-size: 20px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        position: relative;
-        animation: dealCard 0.5s ease-out;
-        user-select: none;
-    }
-
-    .playing-card.red { color: #d00000; }
-    .playing-card.black { color: #000; }
-
-    .card-top { align-self: flex-start; line-height: 1; }
-    .card-center { 
-        position: absolute; 
-        top: 50%; left: 50%; 
-        transform: translate(-50%, -50%); 
-        font-size: 32px; 
-    }
-    .card-bottom { align-self: flex-end; transform: rotate(180deg); line-height: 1; }
-
-    @keyframes dealCard {
-        from { opacity: 0; transform: translateY(-50px) rotateY(90deg); }
-        to { opacity: 1; transform: translateY(0) rotateY(0); }
-    }
-
-    /* Butonlar */
-    .controls {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
-
-    button {
-        padding: 12px 24px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 10px;
-        border: 1px solid rgba(255,255,255,0.2);
-        cursor: pointer;
-        transition: 0.3s;
-        color: white;
-        background: rgba(255,255,255,0.1);
-    }
-
-    button:hover {
-        background: var(--neon);
-        color: #000;
-        box-shadow: 0 0 15px rgba(0,234,255,0.4);
-    }
-
-    .btn-hit { background: rgba(0, 100, 255, 0.3); border-color: #0080ff; }
-    .btn-stand { background: rgba(255, 100, 0, 0.3); border-color: #ff6600; }
-    .btn-deal { background: var(--green); color: #000; width: 100%; max-width: 200px; }
-
-    #status {
-        font-size: 22px;
-        margin-top: 20px;
-        height: 30px;
-        font-weight: bold;
-    }
-
-    #back-btn {
-        margin-top: 30px;
-        color: #a8b3bd;
-        text-decoration: none;
-        font-size: 14px;
-        transition: 0.3s;
-        display: inline-block;
-    }
-    #back-btn:hover { color: var(--neon); }
-
+    :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
+    body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow-x:hidden; }
+    h1 { color:var(--neon); text-shadow:0 0 20px rgba(0, 234, 255, 0.6); margin-bottom:5px; font-size:2.5rem; }
+    .container { position:relative; z-index:10; width:100%; max-width:800px; padding:20px; }
+    .box { background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:30px; box-shadow:0 0 30px rgba(0,0,0,0.5); }
+    .token-display { font-size:20px; background:rgba(0,0,0,0.3); padding:8px 20px; border-radius:50px; display:inline-block; margin-bottom:20px; border:1px solid rgba(255,255,255,0.1); }
+    .game-area { display:flex; flex-direction:column; gap:30px; margin-bottom:20px; }
+    .hand-area { min-height:160px; }
+    .hand-title { font-size:18px; color:var(--muted); margin-bottom:10px; display:flex; justify-content:center; gap:10px; }
+    .score-badge { background:var(--neon); color:#000; padding:2px 8px; border-radius:10px; font-weight:bold; font-size:14px; }
+    .cards-container { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+    .playing-card { width:80px; height:110px; background:white; border-radius:8px; color:#000; display:flex; flex-direction:column; justify-content:space-between; padding:5px; font-weight:bold; font-size:20px; box-shadow:0 5px 15px rgba(0,0,0,0.5); position:relative; animation:dealCard 0.5s ease-out; user-select:none; }
+    .playing-card.red { color:#d00000; }
+    .playing-card.black { color:#000; }
+    .card-center { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-size:32px; }
+    .card-bottom { align-self:flex-end; transform:rotate(180deg); line-height:1; }
+    @keyframes dealCard { from { opacity:0; transform:translateY(-50px) rotateY(90deg); } to { opacity:1; transform:translateY(0) rotateY(0); } }
+    .controls { display:flex; justify-content:center; gap:15px; flex-wrap:wrap; }
+    button { padding:12px 24px; font-size:16px; font-weight:600; border-radius:10px; border:1px solid rgba(255,255,255,.2); cursor:pointer; transition:.3s; color:white; background:rgba(255,255,255,.1); }
+    button:hover { background:var(--neon); color:#000; box-shadow:0 0 15px rgba(0,234,255,.4); }
+    .btn-hit { background:rgba(0,100,255,.3); border-color:#0080ff; }
+    .btn-stand { background:rgba(255,100,0,.3); border-color:#ff6600; }
+    .btn-deal { background:var(--green); color:#000; width:100%; max-width:200px; }
+    #status { font-size:22px; margin-top:20px; height:30px; font-weight:bold; }
+    #back-btn { margin-top:30px; color:#a8b3bd; text-decoration:none; font-size:14px; transition:.3s; display:inline-block; }
+    #back-btn:hover { color:var(--neon); }
 </style>
 </head>
 <body>
-
     <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
-
     <div class="container">
         <h1>♠ Blackjack ♦</h1>
         <p style="color:#aaa; margin-bottom:20px;">Giriş: <span style="color:var(--red)">20 Jeton</span> | Kazanç: <span style="color:var(--green)">40 Jeton</span></p>
-
         <div class="box">
-            <div class="token-display">
-                🪙 <span id="tokens">100</span>
-            </div>
-
+            <div class="token-display">🪙 <span id="tokens">...</span></div>
             <div class="game-area">
                 <div class="hand-area">
                     <div class="hand-title">KRUPİYE <span id="dealerScore" class="score-badge">0</span></div>
                     <div class="cards-container" id="dealerCards"></div>
                 </div>
-
                 <div class="hand-area">
                     <div class="hand-title">SEN <span id="playerScore" class="score-badge">0</span></div>
                     <div class="cards-container" id="playerCards"></div>
                 </div>
             </div>
-
             <h2 id="status"></h2>
-
             <div class="controls" id="gameControls" style="display:none;">
                 <button class="btn-hit" onclick="hit()">➕ KART ÇEK</button>
                 <button class="btn-stand" onclick="stand()">✋ DUR (STAND)</button>
             </div>
-
             <div class="controls">
                 <button id="startBtn" class="btn-deal" onclick="startGame()">OYUNA BAŞLA</button>
             </div>
         </div>
-
         <a id="back-btn" href="../index.html#chance">← Oyun Lobisine Dön</a>
     </div>
 
 <script>
-    /* ===== OYUN VE HİLE MANTIĞI ===== */
-    let tokens = 100;
-    const COST = 20;
-    const REWARD = 40; // 2 Katı
-    const BLACKJACK_REWARD = 50; // 2.5 Katı
+    /* === ORTAK CÜZDAN === */
+    let savedTokens = localStorage.getItem("huseyin_bakiye");
+    let tokens = (savedTokens === null) ? 100 : parseInt(savedTokens);
+    if(savedTokens === null) localStorage.setItem("huseyin_bakiye", tokens);
+    document.getElementById("tokens").innerText = tokens;
 
+    function updateBalance(newAmount) {
+        tokens = newAmount;
+        document.getElementById("tokens").innerText = tokens;
+        localStorage.setItem("huseyin_bakiye", tokens);
+    }
+
+    /* === OYUN LOJİĞİ === */
+    const COST = 20;
+    const REWARD = 40; 
+    const BLACKJACK_REWARD = 50; 
     let deck = [];
     let playerHand = [];
     let dealerHand = [];
     let playCount = 0;
     let gameActive = false;
-
-    // Kart Tanımları
     const suits = ["♠", "♥", "♣", "♦"];
     const values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
 
@@ -256,66 +100,32 @@
         }
         return newDeck;
     }
-
-    function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
-
-    // Kart çek (Desteden al)
-    function drawCard() {
-        return deck.pop();
-    }
-
-    // Eli Hesapla
+    function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
+    function drawCard() { return deck.pop(); }
     function calculateHand(hand) {
-        let sum = 0;
-        let aces = 0;
-        for (let card of hand) {
-            sum += card.weight;
-            if (card.value === "A") aces++;
-        }
-        while (sum > 21 && aces > 0) {
-            sum -= 10;
-            aces--;
-        }
+        let sum = 0; let aces = 0;
+        for (let card of hand) { sum += card.weight; if (card.value === "A") aces++; }
+        while (sum > 21 && aces > 0) { sum -= 10; aces--; }
         return sum;
     }
-
     function renderCard(card, container) {
         const div = document.createElement("div");
         div.className = "playing-card " + (card.suit === "♥" || card.suit === "♦" ? "red" : "black");
-        
-        div.innerHTML = `
-            <div class="card-top">${card.value}<br>${card.suit}</div>
-            <div class="card-center">${card.suit}</div>
-            <div class="card-bottom">${card.value}<br>${card.suit}</div>
-        `;
+        div.innerHTML = `<div class="card-top">${card.value}<br>${card.suit}</div><div class="card-center">${card.suit}</div><div class="card-bottom">${card.value}<br>${card.suit}</div>`;
         container.appendChild(div);
     }
-
     function updateUI(showDealerHidden = false) {
         const pCont = document.getElementById("playerCards");
         const dCont = document.getElementById("dealerCards");
-        pCont.innerHTML = "";
-        dCont.innerHTML = "";
-
-        // Oyuncu Kartları
+        pCont.innerHTML = ""; dCont.innerHTML = "";
         playerHand.forEach(c => renderCard(c, pCont));
         document.getElementById("playerScore").innerText = calculateHand(playerHand);
-
-        // Krupiye Kartları
         if (showDealerHidden) {
             dealerHand.forEach(c => renderCard(c, dCont));
             document.getElementById("dealerScore").innerText = calculateHand(dealerHand);
         } else {
-            // İlk kart açık, ikincisi kapalı
             if (dealerHand.length > 0) renderCard(dealerHand[0], dCont);
             if (dealerHand.length > 1) {
-                // Kapalı Kart
                 const hidden = document.createElement("div");
                 hidden.className = "playing-card";
                 hidden.style.background = "linear-gradient(45deg, #222, #000)";
@@ -323,116 +133,63 @@
                 hidden.innerHTML = `<div class="card-center" style="color:#555; font-size:40px;">?</div>`;
                 dCont.appendChild(hidden);
             }
-            // Sadece açık kartın değeri
             if(dealerHand.length > 0) document.getElementById("dealerScore").innerText = dealerHand[0].weight; 
         }
     }
 
     function startGame() {
-        if (tokens < COST) {
-            document.getElementById("status").innerText = "Yetersiz Jeton!";
-            document.getElementById("status").style.color = "var(--red)";
-            return;
-        }
-
-        tokens -= COST;
-        document.getElementById("tokens").innerText = tokens;
-        
+        if (tokens < COST) { document.getElementById("status").innerText = "Yetersiz Jeton!"; document.getElementById("status").style.color = "var(--red)"; return; }
+        updateBalance(tokens - COST);
         deck = shuffle(createDeck());
-        playerHand = [];
-        dealerHand = [];
-        gameActive = true;
-        playCount++;
-
+        playerHand = []; dealerHand = [];
+        gameActive = true; playCount++;
         document.getElementById("status").innerText = "";
         document.getElementById("startBtn").style.display = "none";
         document.getElementById("gameControls").style.display = "flex";
 
-        /* --- HİLE 1: ACEMİ ŞANSI (HOOK) --- */
-        // İlk 3 elde oyuncuya ilk kart olarak "Resimli" (10'luk) veya "As" ver.
         if (playCount <= 3) {
-            // Destedeki ilk güçlü kartı bul
             let goodCardIndex = deck.findIndex(c => c.weight >= 10);
-            if (goodCardIndex > -1) {
-                // O kartı en üste taşı
-                let goodCard = deck.splice(goodCardIndex, 1)[0];
-                deck.push(goodCard); 
-            }
+            if (goodCardIndex > -1) deck.push(deck.splice(goodCardIndex, 1)[0]);
         }
-
-        // Dağıt: Oyuncu, Krupiye, Oyuncu, Krupiye
-        playerHand.push(drawCard());
-        dealerHand.push(drawCard());
-        playerHand.push(drawCard());
-        dealerHand.push(drawCard());
-
+        playerHand.push(drawCard()); dealerHand.push(drawCard());
+        playerHand.push(drawCard()); dealerHand.push(drawCard());
         updateUI(false);
-
-        // Blackjack Kontrolü
-        if (calculateHand(playerHand) === 21) {
-            gameOver("BLACKJACK! 2.5 Katı Kazandın!", "blackjack");
-        }
+        if (calculateHand(playerHand) === 21) gameOver("BLACKJACK! 2.5 Katı Kazandın!", "blackjack");
     }
 
     function hit() {
         if (!gameActive) return;
         playerHand.push(drawCard());
         updateUI(false);
-
-        if (calculateHand(playerHand) > 21) {
-            gameOver("BATTIN! (21'i geçtin)", "lose");
-        }
+        if (calculateHand(playerHand) > 21) gameOver("BATTIN! (21'i geçtin)", "lose");
     }
 
     function stand() {
         if (!gameActive) return;
-        
-        // Krupiye oynar
-        // Kurallar: Krupiye 17'ye kadar çeker.
-        
-        // Açık kartı göstererek başla
         updateUI(true);
-
-        // Krupiye döngüsü
         let dealerLoop = setInterval(() => {
             let dScore = calculateHand(dealerHand);
-
             if (dScore < 17) {
                 let newCard = drawCard();
-                
-                /* --- HİLE 2: KASA AVANTAJI (EDGE) --- */
-                // 3. elden sonra Kasa modu açılır.
-                // Eğer yeni kart Krupiyeyi batıracaksa (Total > 21),
-                // %50 ihtimalle o kartı çöpe atıp yeni bir tane çeker (İkinci şans).
                 if (playCount > 3 && (dScore + newCard.weight > 21)) {
-                    if (Math.random() < 0.5) {
-                        // "Hoppa bu kartı beğenmedim" der ve bir tane daha çeker
-                        newCard = drawCard();
-                    }
+                    if (Math.random() < 0.5) newCard = drawCard();
                 }
-
                 dealerHand.push(newCard);
                 updateUI(true);
             } else {
                 clearInterval(dealerLoop);
                 determineWinner();
             }
-        }, 800); // Her kart çekişte biraz bekle (Heyecan için)
+        }, 800);
     }
 
     function determineWinner() {
         let pScore = calculateHand(playerHand);
         let dScore = calculateHand(dealerHand);
-
-        if (dScore > 21) {
-            gameOver("KRUPİYE BATTI! Kazandın!", "win");
-        } else if (pScore > dScore) {
-            gameOver("KAZANDIN!", "win");
-        } else if (pScore === dScore) {
-            gameOver("BERABERE (İade)", "push");
-        } else {
-            gameOver("KAYBETTİN...", "lose");
-        }
+        if (dScore > 21) gameOver("KRUPİYE BATTI! Kazandın!", "win");
+        else if (pScore > dScore) gameOver("KAZANDIN!", "win");
+        else if (pScore === dScore) gameOver("BERABERE (İade)", "push");
+        else gameOver("KAYBETTİN...", "lose");
     }
 
     function gameOver(msg, type) {
@@ -441,44 +198,12 @@
         document.getElementById("gameControls").style.display = "none";
         document.getElementById("startBtn").style.display = "block";
         document.getElementById("startBtn").innerText = "TEKRAR OYNA";
-
-        if (type === "win") {
-            document.getElementById("status").style.color = "var(--green)";
-            tokens += REWARD;
-        } else if (type === "blackjack") {
-            document.getElementById("status").style.color = "var(--gold)";
-            tokens += BLACKJACK_REWARD;
-        } else if (type === "push") {
-            document.getElementById("status").style.color = "#fff";
-            tokens += COST;
-        } else {
-            document.getElementById("status").style.color = "var(--red)";
-        }
-        
-        document.getElementById("tokens").innerText = tokens;
+        if (type === "win") { document.getElementById("status").style.color = "var(--green)"; updateBalance(tokens + REWARD); }
+        else if (type === "blackjack") { document.getElementById("status").style.color = "var(--gold)"; updateBalance(tokens + BLACKJACK_REWARD); }
+        else if (type === "push") { document.getElementById("status").style.color = "#fff"; updateBalance(tokens + COST); }
+        else { document.getElementById("status").style.color = "var(--red)"; }
     }
-
-    /* ===== ARKA PLAN EFEKTİ ===== */
-    const bg = document.getElementById("bg");
-    const ctx = bg.getContext("2d");
-    function resize(){ bg.width = window.innerWidth; bg.height = window.innerHeight; }
-    resize(); window.addEventListener("resize", resize);
-    const dots = Array.from({length:40}, () => ({
-      x: Math.random()*bg.width, y: Math.random()*bg.height,
-      vx: (Math.random()-.5)*0.3, vy: (Math.random()-.5)*0.3
-    }));
-    function loop(){
-      ctx.clearRect(0,0,bg.width,bg.height); ctx.fillStyle = "#00eaff";
-      dots.forEach(d => {
-        d.x += d.vx; d.y += d.vy;
-        if (d.x < 0 || d.x > bg.width) d.vx *= -1;
-        if (d.y < 0 || d.y > bg.height) d.vy *= -1;
-        ctx.beginPath(); ctx.arc(d.x, d.y, 1.5, 0, Math.PI*2); ctx.fill();
-      });
-      requestAnimationFrame(loop);
-    }
-    loop();
+    const bg=document.getElementById("bg"),ctx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));function loop(){ctx.clearRect(0,0,bg.width,bg.height);ctx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;ctx.beginPath();ctx.arc(d.x,d.y,1.5,0,Math.PI*2);ctx.fill()});requestAnimationFrame(loop)}loop();
 </script>
-
 </body>
 </html>
