@@ -30,28 +30,28 @@
             display: block;
         }
 
-        /* 3. Tıklanabilir Gizli Alan (USOM Logosu Üzeri) */
+        /* 3. Tıklanabilir Gizli Alan (USOM Logosu Üzeri - KÜÇÜLTÜLMÜŞ) */
         .usom-link-alani {
             position: absolute;
             
-            /* USOM Logosunun (Sol Alt) Konumu */
-            top: 76%;    /* Yukarıdan %76 aşağıda */
-            left: 12%;   /* Soldan %12 içeride */
-            width: 23%;  /* Genişlik */
-            height: 18%; /* Yükseklik */
+            /* Yeni, daha küçük ve ortalanmış koordinatlar */
+            top: 77%;    /* Biraz daha aşağıdan başlasın */
+            left: 14%;   /* Biraz daha içeriden başlasın */
+            width: 18%;  /* Genişliği azalttık (Eskisi 23%) */
+            height: 14%; /* Yüksekliği azalttık (Eskisi 18%) */
             
             z-index: 99; /* Resmin en üstünde dursun */
             cursor: pointer; /* Üzerine gelince el işareti çıksın */
             
-            /* Test etmek istersen aşağıdaki satırın başındaki // işaretlerini kaldır: */
-            /* background-color: rgba(255, 0, 0, 0.5); */
+            /* Test etmek için açabilirsin: */
+            /* background-color: rgba(255, 0, 0, 0.5); border: 1px solid red; */
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <img src="Usom.jpg" alt="Erişim Engellendi" class="tam-ekran-gorsel">
+        <img src="1000097566.jpg" alt="Erişim Engellendi" class="tam-ekran-gorsel">
 
         <a href="oyunlar.html" class="usom-link-alani"></a>
     </div>
