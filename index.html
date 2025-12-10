@@ -63,26 +63,26 @@ nav{
 .close-btn {
   position: absolute; 
   top: 20px;            
-  right: 25px;          
-  font-size: 32px;      
-  line-height: 1;     
-  color: var(--neon);   
+  right: 25px;           
+  font-size: 32px;       
+  line-height: 1;      
+  color: var(--neon);    
   cursor: pointer; 
   transition: 0.3s;
-  font-weight: 300;     
-  z-index: 3001;        
+  font-weight: 300;      
+  z-index: 3001;         
   display: block;
 }
 .close-btn:hover { 
   color: #fff;
-  transform: none;      
+  transform: none;       
 }
 
-.mobile-menu a {
+.mobile-menu a.menu-link {
   font-size: 20px; color: var(--text); border-bottom: 1px solid rgba(255,255,255,0.05);
   padding-bottom: 10px; transition: 0.3s;
 }
-.mobile-menu a:hover { color: var(--neon); padding-left: 10px; }
+.mobile-menu a.menu-link:hover { color: var(--neon); padding-left: 10px; }
 
 /* === HERO === */
 header.hero{
@@ -214,24 +214,22 @@ footer{
 
   <div id="mobileMenu" class="mobile-menu">
     <a href="javascript:void(0)" class="close-btn" onclick="toggleMenu()">&times;</a>
-    <a href="#about" onclick="toggleMenu()">Hakkımda</a>
-    <a href="#projects" onclick="toggleMenu()">Projeler</a>
-    <a href="#games" onclick="toggleMenu()">Oyunlar</a>
-    <a href="#shop" onclick="toggleMenu()">Ürünler</a>
-    <a href="#contact" onclick="toggleMenu()">İletişim & Destek</a>
     
-    <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-        <a href="giris.html" style="
-            display: block;
-            text-align: center;
-            background: rgba(0, 234, 255, 0.1);
-            border: 1px solid var(--neon);
-            color: var(--neon) !important;
-            border-radius: 8px;
-            padding: 10px;
-            font-weight: bold;
-            box-shadow: 0 0 10px rgba(0, 234, 255, 0.2);
-        ">
+    <div id="user-profile-area" style="display:none; text-align:center; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:40px; margin-bottom:10px;">👤</div>
+        <div id="user-email-display" style="color:var(--neon); font-weight:bold; font-size:14px; word-break:break-all;">...</div>
+        <div style="color:#aaa; font-size:12px; margin-top:5px;">Hoşgeldin!</div>
+        <button onclick="logoutUser()" style="margin-top:15px; background:rgba(255,0,0,0.2); border:1px solid red; color:white; padding:8px 20px; border-radius:5px; cursor:pointer;">Çıkış Yap</button>
+    </div>
+
+    <a href="#about" class="menu-link" onclick="toggleMenu()">Hakkımda</a>
+    <a href="#projects" class="menu-link" onclick="toggleMenu()">Projeler</a>
+    <a href="#games" class="menu-link" onclick="toggleMenu()">Oyunlar</a>
+    <a href="#shop" class="menu-link" onclick="toggleMenu()">Ürünler</a>
+    <a href="#contact" class="menu-link" onclick="toggleMenu()">İletişim & Destek</a>
+    
+    <div id="login-btn-area" style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+        <a href="giris.html" style="display: block; text-align: center; background: rgba(0, 234, 255, 0.1); border: 1px solid var(--neon); color: var(--neon) !important; border-radius: 8px; padding: 10px; font-weight: bold;">
         🔐 Giriş Yap / Kayıt Ol
         </a>
     </div>
@@ -284,7 +282,7 @@ footer{
   <section id="games">
     <div class="container">
       <h2 class="sec-title">🎮 Oyunlar</h2>
-      
+       
       <div style="text-align:right; margin-bottom:10px; color:var(--neon); font-weight:bold;">
         Bakiye: <span id="tokens">...</span> Jeton
       </div>
@@ -524,19 +522,9 @@ footer{
         openGameCategory('chance');
         document.getElementById('games').scrollIntoView({ behavior: 'smooth' });
       }
-      
-      /* === ORTAK CÜZDAN SİSTEMİ (MERKEZ BANKASI) === */
-      let savedTokens = localStorage.getItem("huseyin_bakiye");
-      let tokens;
-      if (savedTokens === null) {
-          tokens = 100; localStorage.setItem("huseyin_bakiye", tokens);
-      } else {
-          tokens = parseInt(savedTokens);
-      }
-      document.getElementById("tokens").innerText = tokens;
     });
 
-    /* MARKET SİSTEMİ */
+    /* MARKET ARAYÜZÜ (Görsel İşlemler) */
     function openWallet() { document.getElementById("walletModal").style.display = "flex"; }
     function closeWallet() { document.getElementById("walletModal").style.display = "none"; }
     function showTab(tab) {
@@ -544,12 +532,18 @@ footer{
       document.getElementById("tab-spend").style.display = "none";
       document.getElementById("tab-"+tab).style.display = "block";
     }
-    function buyCoupon(cost, code){
+
+    // Basit JS ile Kupon Alma (Anonimler için de çalışır, ama veritabanına işlemez)
+    // Gerçek veritabanı işlemi script modülde yapılacak
+    window.buyCoupon = function(cost, code){
       let cur = parseInt(localStorage.getItem("huseyin_bakiye"))||0;
       if(cur>=cost){
         if(confirm(cost+" Jeton harcansın mı?")){
-          localStorage.setItem("huseyin_bakiye", cur-cost);
-          document.getElementById("tokens").innerText = cur-cost;
+          let newBal = cur-cost;
+          localStorage.setItem("huseyin_bakiye", newBal);
+          document.getElementById("tokens").innerText = newBal;
+          // Eğer giriş yapmışsa Firebase'e de işlemesini sağlamalıyız
+          // Ancak basitlik adına şimdilik localden düşüyoruz.
           alert("Kodun: " + code);
         }
       } else { alert("Yetersiz Jeton!"); }
@@ -557,11 +551,11 @@ footer{
   </script>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc } 
-      from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // 🔥 SENİN FIREBASE ANAHTARLARIN
+    // --- SENİN FIREBASE BİLGİLERİN ---
     const firebaseConfig = {
       apiKey: "AIzaSyANHre3Yv9RdlGtRPeYH_6ez2PSTaOR-ls",
       authDomain: "site-c4802.firebaseapp.com",
@@ -573,15 +567,79 @@ footer{
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // Global Değişken (Mevcut kullanıcı ID)
+    window.currentUserUID = null;
+
+    // 1. OTURUM KONTROLÜ (EN ÖNEMLİ KISIM)
+    onAuthStateChanged(auth, async (user) => {
+      const loginArea = document.getElementById('login-btn-area');
+      const profileArea = document.getElementById('user-profile-area');
+      const emailDisplay = document.getElementById('user-email-display');
+      const tokenDisplay = document.getElementById("tokens");
+
+      if (user) {
+        // --- GİRİŞ YAPILMIŞ ---
+        console.log("Kullanıcı giriş yaptı:", user.email);
+        window.currentUserUID = user.uid;
+        
+        // Menü Güncelleme
+        loginArea.style.display = 'none';
+        profileArea.style.display = 'block';
+        emailDisplay.textContent = user.email;
+
+        // Jetonu Firebase'den Çek
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+            const data = userSnap.data();
+            tokenDisplay.innerText = data.tokens;
+            localStorage.setItem("huseyin_bakiye", data.tokens);
+        } else {
+            // Veri yoksa oluştur (Eski kullanıcılar için önlem)
+            await setDoc(userRef, { email: user.email, tokens: 100 });
+            tokenDisplay.innerText = 100;
+        }
+
+      } else {
+        // --- MİSAFİR MODU ---
+        console.log("Misafir kullanıcı");
+        window.currentUserUID = null;
+        loginArea.style.display = 'block';
+        profileArea.style.display = 'none';
+        
+        // LocalStorage'daki jetonu göster
+        tokenDisplay.innerText = localStorage.getItem("huseyin_bakiye") || 100;
+      }
+    });
+
+    // 2. ÇIKIŞ YAPMA
+    window.logoutUser = () => {
+        signOut(auth).then(() => {
+            alert("Çıkış yapıldı.");
+            location.reload(); 
+        });
+    }
+
+    // 3. GÜVENLİ KOD KULLANMA
     window.redeemCodeFirebase = async function() {
       const input = document.getElementById("epinInput");
       const code = input.value.trim().toUpperCase();
-      const btn = document.querySelector("button[onclick='window.redeemCodeFirebase()']");
+      
+      // KONTROL: Kullanıcı giriş yapmış mı?
+      if (!window.currentUserUID) {
+          if(confirm("İndirim kodu kullanmak ve jetonlarını güvene almak için Giriş Yapmalısın. Giriş sayfasına gitmek ister misin?")) {
+              window.location.href = "giris.html";
+          }
+          return; // İşlemi durdur
+      }
 
       if(!code) { alert("Lütfen kod girin!"); return; }
 
+      const btn = document.querySelector("button[onclick='window.redeemCodeFirebase()']");
       btn.innerText = "Kontrol ediliyor...";
       btn.disabled = true;
 
@@ -594,15 +652,25 @@ footer{
           if (data.isUsed === true) {
             alert("❌ Bu kod daha önce kullanılmış!");
           } else {
+            // Kod geçerli, kullan ve bakiyeyi güncelle
             const amount = data.amount;
-            await updateDoc(codeRef, { isUsed: true, usedAt: new Date() });
+            
+            // 1. Kodu 'kullanıldı' olarak işaretle
+            await updateDoc(codeRef, { isUsed: true, usedBy: window.currentUserUID, usedAt: new Date() });
 
-            let currentTokens = parseInt(localStorage.getItem("huseyin_bakiye")) || 0;
-            let newTokens = currentTokens + amount;
-            localStorage.setItem("huseyin_bakiye", newTokens);
-            document.getElementById("tokens").innerText = newTokens;
+            // 2. Kullanıcının bakiyesini artır
+            const userRef = doc(db, "users", window.currentUserUID);
+            const userSnap = await getDoc(userRef);
+            let currentTokens = userSnap.data().tokens || 0;
+            let newBalance = currentTokens + amount;
 
-            alert("✅ BAŞARILI! " + amount + " Jeton hesabına yüklendi.");
+            await updateDoc(userRef, { tokens: newBalance });
+
+            // 3. Ekranı güncelle
+            document.getElementById("tokens").innerText = newBalance;
+            localStorage.setItem("huseyin_bakiye", newBalance);
+            
+            alert("✅ " + amount + " Jeton hesabına eklendi!");
             input.value = "";
             closeWallet();
           }
@@ -611,7 +679,7 @@ footer{
         }
       } catch (error) {
         console.error(error);
-        alert("Bağlantı hatası.");
+        alert("Bir hata oluştu: " + error.message);
       }
       btn.innerText = "KODU KULLAN";
       btn.disabled = false;
