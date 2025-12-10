@@ -533,8 +533,7 @@ footer{
       document.getElementById("tab-"+tab).style.display = "block";
     }
 
-    // Basit JS ile Kupon Alma (Anonimler için de çalışır, ama veritabanına işlemez)
-    // Gerçek veritabanı işlemi script modülde yapılacak
+    // Basit Kupon Alma (Veritabanına işlemez, sadece görsel)
     window.buyCoupon = function(cost, code){
       let cur = parseInt(localStorage.getItem("huseyin_bakiye"))||0;
       if(cur>=cost){
@@ -542,8 +541,6 @@ footer{
           let newBal = cur-cost;
           localStorage.setItem("huseyin_bakiye", newBal);
           document.getElementById("tokens").innerText = newBal;
-          // Eğer giriş yapmışsa Firebase'e de işlemesini sağlamalıyız
-          // Ancak basitlik adına şimdilik localden düşüyoruz.
           alert("Kodun: " + code);
         }
       } else { alert("Yetersiz Jeton!"); }
@@ -570,10 +567,9 @@ footer{
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Global Değişken (Mevcut kullanıcı ID)
     window.currentUserUID = null;
 
-    // 1. OTURUM KONTROLÜ (EN ÖNEMLİ KISIM)
+    // 1. OTURUM VE BAKİYE SENKRONİZASYONU
     onAuthStateChanged(auth, async (user) => {
       const loginArea = document.getElementById('login-btn-area');
       const profileArea = document.getElementById('user-profile-area');
@@ -582,36 +578,48 @@ footer{
 
       if (user) {
         // --- GİRİŞ YAPILMIŞ ---
-        console.log("Kullanıcı giriş yaptı:", user.email);
         window.currentUserUID = user.uid;
         
-        // Menü Güncelleme
         loginArea.style.display = 'none';
         profileArea.style.display = 'block';
         emailDisplay.textContent = user.email;
 
-        // Jetonu Firebase'den Çek
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-            const data = userSnap.data();
-            tokenDisplay.innerText = data.tokens;
-            localStorage.setItem("huseyin_bakiye", data.tokens);
+            const serverData = userSnap.data();
+            const serverTokens = serverData.tokens;
+            
+            // TARAYICIDAKİ (OYUNDAN GELEN) BAKİYEYİ AL
+            const localTokens = parseInt(localStorage.getItem("huseyin_bakiye"));
+
+            // KRİTİK KONTROL: Eğer yerel bakiye varsa ve sunucudan farklıysa (Oyun oynanmış demektir)
+            // Sunucudaki eski veriyi YERİNE, yereldeki yeni veriyi kaydet.
+            if (!isNaN(localTokens) && localTokens !== serverTokens) {
+                console.log("Oyun kazancı tespit edildi. Veritabanı güncelleniyor...", localTokens);
+                tokenDisplay.innerText = localTokens; // Hemen ekrana yaz
+                await updateDoc(userRef, { tokens: localTokens });
+            } else {
+                // Eğer fark yoksa veya yerel boşsa, sunucudakini kullan
+                tokenDisplay.innerText = serverTokens;
+                localStorage.setItem("huseyin_bakiye", serverTokens);
+            }
+
         } else {
-            // Veri yoksa oluştur (Eski kullanıcılar için önlem)
+            // İlk defa oluşturuluyorsa
             await setDoc(userRef, { email: user.email, tokens: 100 });
             tokenDisplay.innerText = 100;
+            localStorage.setItem("huseyin_bakiye", 100);
         }
 
       } else {
         // --- MİSAFİR MODU ---
-        console.log("Misafir kullanıcı");
         window.currentUserUID = null;
         loginArea.style.display = 'block';
         profileArea.style.display = 'none';
         
-        // LocalStorage'daki jetonu göster
+        // Misafirler sadece LocalStorage kullanır
         tokenDisplay.innerText = localStorage.getItem("huseyin_bakiye") || 100;
       }
     });
@@ -620,27 +628,25 @@ footer{
     window.logoutUser = () => {
         signOut(auth).then(() => {
             alert("Çıkış yapıldı.");
+            localStorage.setItem("huseyin_bakiye", 100); // Çıkışta sıfırla (İsteğe bağlı)
             location.reload(); 
         });
     }
 
-    // 3. GÜVENLİ KOD KULLANMA
+    // 3. KOD KULLANMA
     window.redeemCodeFirebase = async function() {
       const input = document.getElementById("epinInput");
       const code = input.value.trim().toUpperCase();
       
-      // KONTROL: Kullanıcı giriş yapmış mı?
       if (!window.currentUserUID) {
-          if(confirm("İndirim kodu kullanmak ve jetonlarını güvene almak için Giriş Yapmalısın. Giriş sayfasına gitmek ister misin?")) {
-              window.location.href = "giris.html";
-          }
-          return; // İşlemi durdur
+          if(confirm("Giriş yapmalısın. Gitmek ister misin?")) window.location.href = "giris.html";
+          return;
       }
 
       if(!code) { alert("Lütfen kod girin!"); return; }
 
       const btn = document.querySelector("button[onclick='window.redeemCodeFirebase()']");
-      btn.innerText = "Kontrol ediliyor...";
+      btn.innerText = "⏳...";
       btn.disabled = true;
 
       try {
@@ -650,15 +656,12 @@ footer{
         if (codeSnap.exists()) {
           const data = codeSnap.data();
           if (data.isUsed === true) {
-            alert("❌ Bu kod daha önce kullanılmış!");
+            alert("❌ Bu kod kullanılmış!");
           } else {
-            // Kod geçerli, kullan ve bakiyeyi güncelle
             const amount = data.amount;
-            
-            // 1. Kodu 'kullanıldı' olarak işaretle
             await updateDoc(codeRef, { isUsed: true, usedBy: window.currentUserUID, usedAt: new Date() });
 
-            // 2. Kullanıcının bakiyesini artır
+            // Bakiyeyi güncelle
             const userRef = doc(db, "users", window.currentUserUID);
             const userSnap = await getDoc(userRef);
             let currentTokens = userSnap.data().tokens || 0;
@@ -666,11 +669,11 @@ footer{
 
             await updateDoc(userRef, { tokens: newBalance });
 
-            // 3. Ekranı güncelle
+            // Ekrana ve Hafızaya Yaz
             document.getElementById("tokens").innerText = newBalance;
             localStorage.setItem("huseyin_bakiye", newBalance);
             
-            alert("✅ " + amount + " Jeton hesabına eklendi!");
+            alert("✅ " + amount + " Jeton yüklendi!");
             input.value = "";
             closeWallet();
           }
@@ -679,31 +682,11 @@ footer{
         }
       } catch (error) {
         console.error(error);
-        alert("Bir hata oluştu: " + error.message);
+        alert("Hata: " + error.message);
       }
       btn.innerText = "KODU KULLAN";
       btn.disabled = false;
     }
-    // --- BU KODU index.html EN ALTINA (Script bitmeden hemen önceye) EKLE ---
-
-    // Kullanıcı başka sekmeden veya oyun sayfasından bu sayfaya geri döndüğünde çalışır
-    window.addEventListener("focus", async () => {
-        // 1. Tarayıcı hafızasındaki (Oyunun güncellediği) bakiyeyi al
-        let localBalance = parseInt(localStorage.getItem("huseyin_bakiye"));
-        
-        if (!isNaN(localBalance)) {
-            // Ekrana yaz
-            document.getElementById("tokens").innerText = localBalance;
-
-            // Eğer giriş yapmış bir kullanıcıysa, bu yeni bakiyeyi Veritabanına da kaydet
-            if (window.currentUserUID) {
-                 const userRef = doc(db, "users", window.currentUserUID);
-                 // Sadece bakiyeyi güncelle
-                 await updateDoc(userRef, { tokens: localBalance }).catch(e => console.log(e));
-                 console.log("Oyun sonrası bakiye veritabanına işlendi:", localBalance);
-            }
-        }
-    });
   </script>
 </body>
 </html>
