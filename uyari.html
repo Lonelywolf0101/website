@@ -5,46 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erişim Engellendi</title>
     <style>
-        /* Sayfa ayarları: Kenar boşluklarını sıfırla, kaydırmayı engelle */
+        /* GENEL AYARLAR */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Kaydırma çubuklarını gizler */
-            background-color: #000; /* Resim yüklenmezse siyah fon olsun */
+            overflow: hidden;
+            background-color: #000; /* Resim sığmazsa kenarlar siyah kalsın */
         }
 
-        /* 1. Kapsayıcı Kutu */
         .container {
             position: relative;
             width: 100%;
-            height: 100vh; /* Ekran yüksekliği kadar */
+            height: 100vh;
         }
 
-        /* 2. Arkaplan Görseli */
+        /* 1. MASAÜSTÜ İÇİN GÖRSEL AYARI */
         .tam-ekran-gorsel {
             width: 100%;
             height: 100%;
-            object-fit: fill; /* Resmi ekrana tam yayar */
+            object-fit: fill; /* Masaüstünde tam kaplasın */
             display: block;
         }
 
-        /* 3. Tıklanabilir Gizli Alan (USOM Logosu Üzeri - KÜÇÜLTÜLMÜŞ) */
+        /* 2. MASAÜSTÜ İÇİN LİNK KONUMU */
         .usom-link-alani {
             position: absolute;
+            top: 77%;    
+            left: 14%;   
+            width: 18%;  
+            height: 14%; 
+            z-index: 99;
+            cursor: pointer;
+            /* Ayar yaparken kutuyu görmek için açabilirsin: */
+            /* background-color: rgba(255, 0, 0, 0.5); */
+        }
+
+        /* === MOBİL CİHAZLAR İÇİN ÖZEL AYAR (EKRAN KÜÇÜKSE) === */
+        @media screen and (max-width: 768px) {
             
-            /* Yeni, daha küçük ve ortalanmış koordinatlar */
-            top: 77%;    /* Biraz daha aşağıdan başlasın */
-            left: 14%;   /* Biraz daha içeriden başlasın */
-            width: 18%;  /* Genişliği azalttık (Eskisi 23%) */
-            height: 14%; /* Yüksekliği azalttık (Eskisi 18%) */
-            
-            z-index: 99; /* Resmin en üstünde dursun */
-            cursor: pointer; /* Üzerine gelince el işareti çıksın */
-            
-            /* Test etmek için açabilirsin: */
-            /* background-color: rgba(255, 0, 0, 0.5); border: 1px solid red; */
+            /* Mobilde resmi sıkıştırma, orantılı küçült ve ortala */
+            .tam-ekran-gorsel {
+                object-fit: contain; 
+                object-position: center;
+            }
+
+            /* Mobilde Linkin Yerini Kaydır (Çünkü resim küçüldü) */
+            .usom-link-alani {
+                /* Bu değerleri telefonuna bakarak ince ayarlayabilirsin */
+                top: 55%;    /* Resim ortalandığı için logo daha yukarı çıkar */
+                left: 5%;    /* Mobilde biraz daha sola yanaşabilir */
+                width: 35%;  /* Mobilde parmakla basmak için alanı genişletelim */
+                height: 10%; 
+            }
         }
     </style>
 </head>
