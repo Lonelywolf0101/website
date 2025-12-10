@@ -41,16 +41,14 @@
     </div>
 
 <script>
-    /* === ORTAK CÜZDAN === */
-    let savedTokens = localStorage.getItem("huseyin_bakiye");
-    let tokens = (savedTokens === null) ? 100 : parseInt(savedTokens);
-    if(savedTokens === null) localStorage.setItem("huseyin_bakiye", tokens);
-    document.getElementById("tokens").innerText = tokens;
+    /* === 1. ORTAK CÜZDAN BAĞLANTISI === */
+    var currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
+    document.getElementById("tokens").innerText = currentBalance;
 
-    function updateBalance(newAmount) {
-        tokens = newAmount;
-        document.getElementById("tokens").innerText = tokens;
-        localStorage.setItem("huseyin_bakiye", tokens);
+    function updateGlobalWallet(newAmount) {
+        currentBalance = newAmount;
+        document.getElementById("tokens").innerText = currentBalance;
+        localStorage.setItem("huseyin_bakiye", currentBalance);
     }
 
     /* === OYUN LOJİĞİ === */
@@ -62,14 +60,29 @@
     function play() {
         let guess = parseInt(document.getElementById("guess").value);
         if (isPlaying) return;
-        if (!guess || guess < 1 || guess > 10) { document.getElementById("result").style.color = "var(--red)"; document.getElementById("result").innerText = "Lütfen 1–10 arası sayı gir!"; return; }
-        if (tokens < COST) { document.getElementById("result").style.color = "var(--red)"; document.getElementById("result").innerText = "Yetersiz Jeton!"; return; }
 
-        updateBalance(tokens - COST);
+        // Input Kontrolü
+        if (!guess || guess < 1 || guess > 10) { 
+            document.getElementById("result").style.color = "var(--red)"; 
+            document.getElementById("result").innerText = "Lütfen 1–10 arası sayı gir!"; 
+            return; 
+        }
+
+        // Bakiye Kontrolü
+        if (currentBalance < COST) { 
+            document.getElementById("result").style.color = "var(--red)"; 
+            document.getElementById("result").innerText = "Yetersiz Jeton!"; 
+            return; 
+        }
+
+        // Ücreti düş ve kaydet
+        updateGlobalWallet(currentBalance - COST);
+
         isPlaying = true;
         document.getElementById("result").style.color = "#eaeaea";
         document.getElementById("result").innerText = "Sayı aranıyor...";
 
+        // Animasyon
         const animation = setInterval(() => {
             document.getElementById("display").innerText = Math.floor(Math.random() * 10) + 1;
         }, 80);
@@ -78,13 +91,15 @@
             clearInterval(animation);
             playCount++;
             let finalNumber;
-            // İlk 3 elde %40 kazanır, yoksa "kıl payı" kaybeder
+            
+            // İlk 3 elde %40 kazanma şansı, yoksa zorlaştır
             let winChance = (playCount <= 3) ? 0.4 : 0.1;
             
             if (Math.random() < winChance) {
                 finalNumber = guess;
             } else {
-                if (Math.random() < 0.3) { // Kıl payı kaçırma
+                // "Kıl payı kaçırdın" hissi vermek için yakın sayı üretme (%30 şansla)
+                if (Math.random() < 0.3) { 
                     let offset = Math.random() < 0.5 ? -1 : 1;
                     finalNumber = guess + offset;
                     if(finalNumber < 1) finalNumber = 2;
@@ -97,7 +112,9 @@
             document.getElementById("display").innerText = finalNumber;
 
             if (finalNumber === guess) {
-                updateBalance(tokens + REWARD);
+                // Kazanınca ödülü ekle ve kaydet
+                updateGlobalWallet(currentBalance + REWARD);
+
                 document.getElementById("result").style.color = "var(--green)";
                 document.getElementById("result").innerText = `TEBRİKLER! Bildin! (+${REWARD-COST} Jeton)`;
                 document.getElementById("display").style.textShadow = "0 0 50px #00ff88";
@@ -106,10 +123,13 @@
                 document.getElementById("result").innerText = `Bilemedin! ${finalNumber} çıktı.`;
                 document.getElementById("display").style.textShadow = "0 0 30px var(--red)";
             }
+            
             setTimeout(() => { document.getElementById("display").style.textShadow = "0 0 30px var(--neon)"; }, 1000);
             isPlaying = false;
         }, 1500);
     }
+
+    // Arka Plan
     const bg=document.getElementById("bg"),ctx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));function loop(){ctx.clearRect(0,0,bg.width,bg.height);ctx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;ctx.beginPath();ctx.arc(d.x,d.y,1.5,0,Math.PI*2);ctx.fill()});requestAnimationFrame(loop)}loop();
 </script>
 </body>
