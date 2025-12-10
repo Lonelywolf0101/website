@@ -280,7 +280,9 @@
     document.addEventListener("click", function(e) { const menu = document.getElementById("mobileMenu"); const hamburger = document.querySelector(".hamburger"); if (menu.classList.contains("open") && !menu.contains(e.target) && !hamburger.contains(e.target)) { menu.classList.remove("open"); } });
     function openGameCategory(categoryId) { document.getElementById('category-selector').style.display = 'none'; document.getElementById(categoryId).style.display = 'block'; }
     function closeGameCategory() { document.querySelectorAll('.game-container').forEach(el => el.style.display = 'none'); document.getElementById('category-selector').style.display = 'grid'; }
-    window.addEventListener('load', function() { if (window.location.hash === '#chance') { openGameCategory('chance'); document.getElementById('games').scrollIntoView({ behavior: 'smooth' }); } });
+    
+    // HATALI KOD SİLİNDİ: Artık #chance kontrolü yapmıyoruz, çünkü o bölümü kaldırdık.
+    
     function openWallet() { document.getElementById("walletModal").style.display = "flex"; }
     function closeWallet() { document.getElementById("walletModal").style.display = "none"; }
     function showTab(tab) { document.getElementById("tab-load").style.display = "none"; document.getElementById("tab-spend").style.display = "none"; document.getElementById("tab-"+tab).style.display = "block"; }
