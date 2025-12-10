@@ -5,103 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Şans Oyunları Odası</title>
     <style>
-        /* Sitenin genel tasarım ayarlarını buraya da ekledik ki uyumlu görünsün */
-        :root{
-            --bg:#05060b;
-            --text:#eaeaea;
-            --muted:#a8b3bd;
-            --neon:#00eaff;
-            --glass: rgba(255,255,255,.06);
-            --br:14px;
-        }
-
-        /* Temel Ayarlar */
-        body { 
-            background-color: var(--bg); 
-            color: var(--text); 
-            font-family: "Poppins", sans-serif; 
-            text-align: center; 
-            padding: 50px 20px;
-            /* Arka plan efekti */
-            background: radial-gradient(1200px 600px at 50% 10%, #0c1022 0%, var(--bg) 60%) fixed;
-        }
-        
-        /* Link düzeni */
+        :root{ --bg:#05060b; --text:#eaeaea; --muted:#a8b3bd; --neon:#00eaff; --glass: rgba(255,255,255,.06); --br:14px; }
+        body { background-color: var(--bg); color: var(--text); font-family: "Poppins", sans-serif; text-align: center; padding: 50px 20px; background: radial-gradient(1200px 600px at 50% 10%, #0c1022 0%, var(--bg) 60%) fixed; }
         a { text-decoration: none; color: inherit; }
-
         .container { max-width: 1000px; margin: auto; }
-
-        /* Başarı Mesajı */
-        .basari-mesaji { 
-            color: #0f0; /* Yeşil */
-            font-size: 32px;
-            margin-bottom: 10px; 
-            text-shadow: 0 0 15px rgba(0, 255, 0, 0.5); 
-        }
-
-        /* Izgara Yapısı */
-        .grid { 
-            display: grid; 
-            gap: 25px; 
-            grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); 
-            margin-top: 40px;
-        }
-        
-        /* Kart Tasarımı */
-        .card { 
-            background: var(--glass); 
-            padding: 25px; 
-            border-radius: var(--br); 
-            border: 1px solid rgba(255,255,255,.08); 
-            transition: .3s; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-            align-items: center;
-        }
-        .card:hover { 
-            transform: translateY(-5px); 
-            border-color: var(--neon); 
-            box-shadow: 0 10px 30px rgba(0,234,255,.15); 
-        }
+        .basari-mesaji { color: #0f0; font-size: 32px; margin-bottom: 10px; text-shadow: 0 0 15px rgba(0, 255, 0, 0.5); }
+        .grid { display: grid; gap: 25px; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); margin-top: 40px; }
+        .card { background: var(--glass); padding: 25px; border-radius: var(--br); border: 1px solid rgba(255,255,255,.08); transition: .3s; display: flex; flex-direction: column; justify-content: space-between; align-items: center; }
+        .card:hover { transform: translateY(-5px); border-color: var(--neon); box-shadow: 0 10px 30px rgba(0,234,255,.15); }
         .card h3 { margin-bottom: 10px; color: #fff; margin-top: 0; }
         .card p { color: var(--muted); font-size: 14px; margin-bottom: 15px; }
-        
-        /* Buton Tasarımı */
-        .btn { 
-            display: inline-block; 
-            padding: 10px 25px; 
-            border-radius: 8px; 
-            background: rgba(0,234,255,.1); 
-            border: 1px solid rgba(0,234,255,.3); 
-            color: white; 
-            font-weight: 600; 
-            transition: .3s; 
-            cursor: pointer; 
-        }
-        .btn:hover { 
-            background: var(--neon); 
-            color: #000; 
-            box-shadow: 0 0 15px rgba(0,234,255,.4);
-        }
-
-        /* Geri Dön Butonu */
-        .back-home { 
-            position: absolute; 
-            top: 20px; 
-            left: 20px; 
-            color: var(--muted); 
-            font-weight: bold; 
-            font-size: 14px;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 8px 15px;
-            border-radius: 8px;
-            transition: 0.3s;
-        }
-        .back-home:hover {
-            color: var(--neon);
-            border-color: var(--neon);
-        }
+        .btn { display: inline-block; padding: 10px 25px; border-radius: 8px; background: rgba(0,234,255,.1); border: 1px solid rgba(0,234,255,.3); color: white; font-weight: 600; transition: .3s; cursor: pointer; }
+        .btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 15px rgba(0,234,255,.4); }
+        .back-home { position: absolute; top: 20px; left: 20px; color: var(--muted); font-weight: bold; font-size: 14px; border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 8px; transition: 0.3s; }
+        .back-home:hover { color: var(--neon); border-color: var(--neon); }
     </style>
 </head>
 <body>
@@ -114,45 +31,37 @@
         <p style="color: #ccc;">Gizli oyun odasına giriş yaptınız. İyi eğlenceler!</p>
 
         <div class="grid">
-            
             <div class="card">
                 <h3>Yazı - Tura</h3>
                 <p>Klasik şans oyunu.</p>
                 <a class="btn" href="games/coinflip.html">Oyna</a>
             </div>
-
             <div class="card">
                 <h3>Zar Tahmin</h3>
                 <p>Zarın kaç geleceğini tahmin et.</p>
                 <a class="btn" href="games/dice.html">Oyna</a>
             </div>
-
             <div class="card">
                 <h3>Sayı Tahmin</h3>
                 <p>Aklımda tuttuğum sayıyı bul.</p>
                 <a class="btn" href="games/number.html">Oyna</a>
             </div>
-
             <div class="card">
                 <h3>Renkli Çark</h3>
                 <p>Renk tahmin oyunu.</p>
                 <a class="btn" href="games/spin.html">Oyna</a>
             </div>
-
             <div class="card">
                 <h3>Black Jack</h3>
                 <p>21'e en yakın olan kazanır.</p>
                 <a class="btn" href="games/blackjack.html">Oyna</a>
             </div>
-
             <div class="card">
                 <h3>Slot</h3>
                 <p>Çarkı çevir, şansını dene.</p>
                 <a class="btn" href="games/slot.html">Oyna</a>
             </div>
-
         </div>
     </div>
-
 </body>
 </html>
