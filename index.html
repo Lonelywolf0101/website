@@ -684,6 +684,26 @@ footer{
       btn.innerText = "KODU KULLAN";
       btn.disabled = false;
     }
+    // --- BU KODU index.html EN ALTINA (Script bitmeden hemen önceye) EKLE ---
+
+    // Kullanıcı başka sekmeden veya oyun sayfasından bu sayfaya geri döndüğünde çalışır
+    window.addEventListener("focus", async () => {
+        // 1. Tarayıcı hafızasındaki (Oyunun güncellediği) bakiyeyi al
+        let localBalance = parseInt(localStorage.getItem("huseyin_bakiye"));
+        
+        if (!isNaN(localBalance)) {
+            // Ekrana yaz
+            document.getElementById("tokens").innerText = localBalance;
+
+            // Eğer giriş yapmış bir kullanıcıysa, bu yeni bakiyeyi Veritabanına da kaydet
+            if (window.currentUserUID) {
+                 const userRef = doc(db, "users", window.currentUserUID);
+                 // Sadece bakiyeyi güncelle
+                 await updateDoc(userRef, { tokens: localBalance }).catch(e => console.log(e));
+                 console.log("Oyun sonrası bakiye veritabanına işlendi:", localBalance);
+            }
+        }
+    });
   </script>
 </body>
 </html>
