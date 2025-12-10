@@ -5,251 +5,131 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Giriş & Kayıt | Portfolyo</title>
 <style>
-  /* --- GENEL AYARLAR --- */
-  body {
-    background-color: #f0f2f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-  }
-
-  /* --- KART TASARIMI --- */
-  .container {
-    position: relative;
-    width: 350px;
-  }
-
-  .card {
-    background-color: white;
-    padding: 40px 30px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-    display: none; /* JS ile açılacak */
-    animation: fadeIn 0.5s;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* --- YAZILAR & INPUTLAR --- */
+  /* --- TASARIM AYNI KALIYOR --- */
+  body { background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Segoe UI', sans-serif; margin: 0; }
+  .container { position: relative; width: 350px; }
+  .card { background-color: white; padding: 40px 30px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05); display: none; animation: fadeIn 0.5s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
   .title { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 20px; }
-  
-  input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 14px;
-    outline: none;
-    transition: 0.3s;
-  }
+  input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; outline: none; transition: 0.3s; }
   input:focus { border-color: #3b82f6; }
-
-  /* --- BUTONLAR --- */
-  .btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    border: none;
-    color: white;
-    transition: 0.3s;
-  }
-  .btn-primary { background-color: #3b82f6; }
-  .btn-primary:hover { background-color: #2563eb; }
-  
-  .btn-danger { background-color: #ef4444; }
-  .btn-danger:hover { background-color: #dc2626; }
-
-  /* --- ALT LİNKLER (Toggle) --- */
-  .toggle-text {
-    margin-top: 15px;
-    font-size: 14px;
-    color: #666;
-  }
-  .toggle-link {
-    color: #3b82f6;
-    cursor: pointer;
-    font-weight: bold;
-    text-decoration: none;
-  }
-  .toggle-link:hover { text-decoration: underline; }
-
-  /* --- HATALAR --- */
-  .error-msg {
-    color: #ef4444;
-    font-size: 13px;
-    margin-bottom: 10px;
-    display: none;
-    text-align: left;
-    background: #fee2e2;
-    padding: 8px;
-    border-radius: 6px;
-  }
-  
-  /* --- HOŞGELDİN EKRANI ÖZEL --- */
-  .welcome-email { font-weight: 600; color: #333; margin-bottom: 5px; font-size: 16px; }
-  .welcome-msg { color: #777; font-size: 14px; margin-top: 0; margin-bottom: 30px; }
-
+  .btn { width: 100%; padding: 12px; font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer; border: none; color: white; transition: 0.3s; }
+  .btn-primary { background-color: #3b82f6; } .btn-primary:hover { background-color: #2563eb; }
+  .toggle-text { margin-top: 15px; font-size: 14px; color: #666; }
+  .toggle-link { color: #3b82f6; cursor: pointer; font-weight: bold; text-decoration: none; }
+  .error-msg { color: #ef4444; font-size: 13px; margin-bottom: 10px; display: none; text-align: left; background: #fee2e2; padding: 8px; border-radius: 6px; }
 </style>
 </head>
 <body>
 
 <div class="container">
-
   <div id="login-card" class="card">
     <div class="title">Giriş Yap</div>
     <div class="error-msg" id="login-error"></div>
-    
     <input type="email" id="login-email" placeholder="E-posta Adresi">
     <input type="password" id="login-pass" placeholder="Şifre">
-    
     <button class="btn btn-primary" id="btn-login">Giriş Yap</button>
-    
-    <div class="toggle-text">
-      Hesabın yok mu? <span class="toggle-link" onclick="window.showRegister()">Kayıt Ol</span>
-    </div>
+    <div class="toggle-text">Hesabın yok mu? <span class="toggle-link" onclick="window.showRegister()">Kayıt Ol</span></div>
   </div>
 
   <div id="register-card" class="card">
     <div class="title">Yeni Hesap Oluştur</div>
     <div class="error-msg" id="register-error"></div>
-
     <input type="email" id="reg-email" placeholder="E-posta Adresi">
     <input type="password" id="reg-pass" placeholder="Şifre (En az 6 karakter)">
-    
     <button class="btn btn-primary" id="btn-register">Kayıt Ol</button>
-    
-    <div class="toggle-text">
-      Zaten üye misin? <span class="toggle-link" onclick="window.showLogin()">Giriş Yap</span>
-    </div>
+    <div class="toggle-text">Zaten üye misin? <span class="toggle-link" onclick="window.showLogin()">Giriş Yap</span></div>
   </div>
-
-  <div id="welcome-card" class="card">
-    <div class="title">Hoşgeldin! 🎉</div>
-    <p class="welcome-email" id="user-email">...</p>
-    <p class="welcome-msg">Başarıyla giriş yaptın.</p>
-    
-    <button class="btn btn-danger" id="btn-logout">Çıkış Yap</button>
-  </div>
-
 </div>
 
 <script type="module">
-  // Tarayıcıda çalışması için CDN linklerini kullanıyoruz
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  // Firestore ekledik (Veritabanı işlemleri için)
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // SENİN GÖNDERDİĞİN CONFİG BİLGİLERİ
   const firebaseConfig = {
-    apiKey: "AIzaSyANHre3Yv9RdlGtRPeYH_6ez2PSTaOR-ls",
-    authDomain: "site-c4802.firebaseapp.com",
-    projectId: "site-c4802",
-    storageBucket: "site-c4802.firebasestorage.app",
-    messagingSenderId: "678825640794",
-    appId: "1:678825640794:web:da9846527bfa3a38452963",
-    measurementId: "G-YYJR6G6MM1"
+      apiKey: "AIzaSyANHre3Yv9RdlGtRPeYH_6ez2PSTaOR-ls",
+      authDomain: "site-c4802.firebaseapp.com",
+      projectId: "site-c4802",
+      storageBucket: "site-c4802.firebasestorage.app",
+      messagingSenderId: "678825640794",
+      appId: "1:678825640794:web:da9846527bfa3a38452963",
+      measurementId: "G-YYJR6G6MM1"
   };
 
-  // Firebase Başlatma
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
 
-  // Elementleri Seçme
   const loginCard = document.getElementById('login-card');
   const registerCard = document.getElementById('register-card');
-  const welcomeCard = document.getElementById('welcome-card');
-  
   const loginError = document.getElementById('login-error');
   const registerError = document.getElementById('register-error');
 
-  // Ekran Değiştirme Fonksiyonları (Global erişim için window'a atadık)
-  window.showRegister = () => {
-    loginCard.style.display = 'none';
-    registerCard.style.display = 'block';
-    registerError.style.display = 'none';
-    document.title = "Kayıt Ol | Portfolyo";
-  }
-
-  window.showLogin = () => {
-    registerCard.style.display = 'none';
-    loginCard.style.display = 'block';
-    loginError.style.display = 'none';
-    document.title = "Giriş Yap | Portfolyo";
-  }
-
-  // --- 1. OTURUM DURUMUNU DİNLEME ---
+  // Sayfa Yüklenince
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // Giriş yapılmışsa
-      loginCard.style.display = 'none';
-      registerCard.style.display = 'none';
-      welcomeCard.style.display = 'block';
-      document.getElementById('user-email').textContent = user.email;
+      // Eğer kullanıcı zaten giriş yapmışsa direkt ana sayfaya at
+      window.location.href = "index.html"; 
     } else {
-      // Giriş yapılmamışsa (veya çıkış yapılmışsa)
-      welcomeCard.style.display = 'none';
       loginCard.style.display = 'block';
     }
   });
 
-  // --- 2. KAYIT OLMA İŞLEMİ ---
-  document.getElementById('btn-register').addEventListener('click', () => {
+  window.showRegister = () => { loginCard.style.display = 'none'; registerCard.style.display = 'block'; registerError.style.display = 'none'; }
+  window.showLogin = () => { registerCard.style.display = 'none'; loginCard.style.display = 'block'; loginError.style.display = 'none'; }
+
+  // --- KAYIT OLMA (DATABASE İLE BİRLİKTE) ---
+  document.getElementById('btn-register').addEventListener('click', async () => {
     const email = document.getElementById('reg-email').value;
     const pass = document.getElementById('reg-pass').value;
+    const btn = document.getElementById('btn-register');
 
+    btn.innerText = "İşleniyor...";
+    
     createUserWithEmailAndPassword(auth, email, pass)
-      .then((userCredential) => {
-        console.log("Kayıt başarılı");
-        // onAuthStateChanged otomatik olarak hoşgeldin ekranına atacak
+      .then(async (userCredential) => {
+        // Kayıt başarılı! Şimdi veritabanına cüzdan açalım
+        const user = userCredential.user;
+        
+        // 'users' koleksiyonunda kullanıcı ID'si ile bir döküman oluşturuyoruz
+        // Başlangıç hediyesi: 100 Jeton
+        await setDoc(doc(db, "users", user.uid), {
+            email: user.email,
+            tokens: 100, 
+            createdAt: new Date()
+        });
+
+        // İşlem bitince ana sayfaya yolla
+        window.location.href = "index.html";
       })
       .catch((error) => {
+        btn.innerText = "Kayıt Ol";
         registerError.style.display = 'block';
-        if(error.code === 'auth/email-already-in-use') registerError.textContent = "Bu e-posta zaten kullanımda.";
-        else if(error.code === 'auth/weak-password') registerError.textContent = "Şifre çok zayıf (en az 6 karakter).";
-        else if(error.code === 'auth/invalid-email') registerError.textContent = "Geçersiz e-posta adresi.";
-        else registerError.textContent = "Hata: " + error.message;
+        if(error.code === 'auth/email-already-in-use') registerError.textContent = "Bu e-posta kullanımda.";
+        else if(error.code === 'auth/weak-password') registerError.textContent = "Şifre en az 6 karakter olmalı.";
+        else registerError.textContent = error.message;
       });
   });
 
-  // --- 3. GİRİŞ YAPMA İŞLEMİ ---
+  // --- GİRİŞ YAPMA ---
   document.getElementById('btn-login').addEventListener('click', () => {
     const email = document.getElementById('login-email').value;
     const pass = document.getElementById('login-pass').value;
-
+    
     signInWithEmailAndPassword(auth, email, pass)
-      .then((userCredential) => {
-        console.log("Giriş başarılı");
+      .then(() => {
+        // Giriş başarılı, onAuthStateChanged tetiklenecek ve yönlendirecek
+        window.location.href = "index.html";
       })
       .catch((error) => {
         loginError.style.display = 'block';
-        // Hata kodları bazen değişebilir ama genelde bunlardır
-        if(error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-            loginError.textContent = "Hatalı e-posta veya şifre.";
-        } else {
-            loginError.textContent = "Hata: " + error.message;
-        }
+        if(error.code === 'auth/invalid-credential') loginError.textContent = "Hatalı bilgi.";
+        else if(error.code === 'auth/too-many-requests') loginError.textContent = "Çok deneme yaptınız, biraz bekleyin.";
+        else loginError.textContent = error.message;
       });
   });
-
-  // --- 4. ÇIKIŞ YAPMA İŞLEMİ ---
-  document.getElementById('btn-logout').addEventListener('click', () => {
-    signOut(auth).then(() => {
-        console.log("Çıkış yapıldı");
-    });
-  });
-
 </script>
-
 </body>
 </html>
