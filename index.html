@@ -628,7 +628,9 @@ footer{
     window.logoutUser = () => {
         signOut(auth).then(() => {
             alert("Çıkış yapıldı.");
-            localStorage.setItem("huseyin_bakiye", 100); // Çıkışta sıfırla (İsteğe bağlı)
+            // 🔥 KRİTİK NOKTA: Çıkış yapınca yerel hafızayı temizle ki
+            // bir sonraki giriş yapan kişi misafir bakiyesini görmesin.
+            localStorage.removeItem("huseyin_bakiye"); 
             location.reload(); 
         });
     }
