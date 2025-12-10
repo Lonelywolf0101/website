@@ -49,16 +49,19 @@
     </div>
 
 <script>
-    /* === ORTAK CÜZDAN === */
-    let savedTokens = localStorage.getItem("huseyin_bakiye");
-    let tokens = (savedTokens === null) ? 100 : parseInt(savedTokens);
-    if(savedTokens === null) localStorage.setItem("huseyin_bakiye", tokens);
-    document.getElementById("tokens").innerText = tokens;
+    /* === 1. ORTAK CÜZDAN BAĞLANTISI === */
+    // Sayfa açılır açılmaz LocalStorage'dan (Ana Kasadan) veriyi çekiyoruz
+    var currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
+    
+    // Ekrana yazdır
+    document.getElementById("tokens").innerText = currentBalance;
 
-    function updateBalance(newAmount) {
-        tokens = newAmount;
-        document.getElementById("tokens").innerText = tokens;
-        localStorage.setItem("huseyin_bakiye", tokens);
+    // Bakiyeyi güncelleyen ve kaydeden fonksiyon
+    function updateGlobalWallet(newAmount) {
+        currentBalance = newAmount;
+        document.getElementById("tokens").innerText = currentBalance;
+        // En önemlisi: Tarayıcı hafızasına yazıyoruz ki index.html okuyabilsin
+        localStorage.setItem("huseyin_bakiye", currentBalance);
     }
 
     /* === OYUN LOJİĞİ === */
@@ -70,22 +73,28 @@
 
     function playGame(choice) {
         if(isSpinning) return;
-        if (tokens < COST) {
+        
+        // Bakiye Kontrolü (Global değişkenden)
+        if (currentBalance < COST) {
             document.getElementById("result").style.color = "var(--red)";
             document.getElementById("result").innerText = "Yetersiz Jeton!";
             return;
         }
 
-        updateBalance(tokens - COST);
+        // Giriş ücretini düş ve kaydet
+        updateGlobalWallet(currentBalance - COST);
+
         isSpinning = true;
         document.getElementById("result").innerText = "Para dönüyor...";
         document.getElementById("result").style.color = "#eaeaea";
 
         playCount++;
+        // İlk 4 elde kazanma şansı yüksek (%75), sonra normal (%45)
         let winChance = (playCount <= 4) ? 0.75 : 0.45;
         let playerWillWin = Math.random() < winChance;
         let resultFace = playerWillWin ? choice : ((choice === 'heads') ? 'tails' : 'heads');
 
+        // Dönme Animasyonu Hesaplama
         let spinAmount = 1800; 
         if (resultFace === 'heads') {
             if (currentRotation % 360 !== 0) spinAmount += 180;
@@ -95,20 +104,24 @@
         currentRotation += spinAmount;
         document.getElementById("coin").style.transform = `rotateY(${currentRotation}deg)`;
 
+        // Sonuç
         setTimeout(() => {
             if (playerWillWin) {
-                updateBalance(tokens + REWARD);
+                // Kazanınca parayı ekle ve kaydet
+                updateGlobalWallet(currentBalance + REWARD);
+                
                 document.getElementById("result").style.color = "var(--green)";
                 document.getElementById("result").innerText = `KAZANDIN! (+${REWARD-COST} Jeton)`;
             } else {
                 document.getElementById("result").style.color = "var(--red)";
                 document.getElementById("result").innerText = "KAYBETTİN!";
+                // Kaybedince zaten başta parayı düşmüştük
             }
             isSpinning = false;
         }, 3000);
     }
 
-    /* BG */
+    /* ARKA PLAN */
     const bg=document.getElementById("bg"),ctx=bg.getContext("2d");
     function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}
     resize();window.addEventListener("resize",resize);
