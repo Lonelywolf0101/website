@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hüseyin Sedat | Portfolio</title>
   <style>
-   :root{
+    :root{
   --bg:#05060b;
   --bg2:#0c0f1a;
   --text:#eaeaea;
@@ -63,19 +63,19 @@ nav{
 .close-btn {
   position: absolute; 
   top: 20px;            
-  right: 25px;           
-  font-size: 32px;       
+  right: 25px;            
+  font-size: 32px;        
   line-height: 1;      
-  color: var(--neon);    
+  color: var(--neon);     
   cursor: pointer; 
   transition: 0.3s;
-  font-weight: 300;      
-  z-index: 3001;         
+  font-weight: 300;       
+  z-index: 3001;          
   display: block;
 }
 .close-btn:hover { 
   color: #fff;
-  transform: none;       
+  transform: none;        
 }
 
 .mobile-menu a.menu-link {
@@ -289,11 +289,11 @@ footer{
 
       <div id="category-selector" class="grid">
         
-        <div class="card category-card" onclick="openGameCategory('chance')">
-          <span class="category-icon">🎲</span>
-          <h3>Şans Oyunları</h3>
-          <p>Yazı tura, zar, slot ve kart oyunları.</p>
-          <span style="color:var(--neon); font-size:14px;">Görüntüle →</span>
+        <div class="card category-card" onclick="location.href='uyari.html'">
+            <span class="category-icon">🎲</span>
+            <h3>Şans Oyunları</h3>
+            <p>Yazı tura, zar, slot ve kart oyunları.</p>
+            <span style="color:var(--neon); font-size:14px;">Görüntüle →</span>
         </div>
 
         <div class="card category-card" onclick="openGameCategory('logic')">
@@ -312,6 +312,8 @@ footer{
 
       </div>
 
+      işaretlerini sil.
+      
       <div id="chance" class="game-container">
         <button class="back-btn" onclick="closeGameCategory()">← Kategorilere Dön</button>
         
@@ -357,6 +359,8 @@ footer{
           </div>
         </div>
       </div>
+      
+      -->
 
       <div id="logic" class="game-container">
         <button class="back-btn" onclick="closeGameCategory()">← Kategorilere Dön</button>
