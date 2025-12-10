@@ -47,16 +47,16 @@
     </div>
 
 <script>
-    /* === ORTAK CÜZDAN === */
-    let savedTokens = localStorage.getItem("huseyin_bakiye");
-    let tokens = (savedTokens === null) ? 100 : parseInt(savedTokens);
-    if(savedTokens === null) localStorage.setItem("huseyin_bakiye", tokens);
-    document.getElementById("tokens").innerText = tokens;
+    /* === 1. ORTAK CÜZDAN BAĞLANTISI === */
+    // Ana Kasadan veriyi çek
+    var currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
+    document.getElementById("tokens").innerText = currentBalance;
 
-    function updateBalance(newAmount) {
-        tokens = newAmount;
-        document.getElementById("tokens").innerText = tokens;
-        localStorage.setItem("huseyin_bakiye", tokens);
+    // Bakiyeyi güncelleyen ve kaydeden fonksiyon
+    function updateGlobalWallet(newAmount) {
+        currentBalance = newAmount;
+        document.getElementById("tokens").innerText = currentBalance;
+        localStorage.setItem("huseyin_bakiye", currentBalance);
     }
 
     /* === OYUN LOJİĞİ === */
@@ -64,45 +64,71 @@
     const REWARD = 50;
     let playCount = 0;
     let isSpinning = false;
-    const slices = [ { color:"red", min:0, max:60 }, { color:"blue", min:60, max:120 }, { color:"green", min:120, max:180 }, { color:"yellow", min:180, max:240 }, { color:"purple", min:240, max:300 }, { color:"orange", min:300, max:360 } ];
+    const slices = [ 
+        { color:"red", min:0, max:60 }, 
+        { color:"blue", min:60, max:120 }, 
+        { color:"green", min:120, max:180 }, 
+        { color:"yellow", min:180, max:240 }, 
+        { color:"purple", min:240, max:300 }, 
+        { color:"orange", min:300, max:360 } 
+    ];
 
     function spin() {
         if (isSpinning) return;
-        if (tokens < COST) { document.getElementById("result").style.color = "var(--red)"; document.getElementById("result").innerText = "Yetersiz Jeton!"; return; }
+        
+        // Bakiye Kontrolü
+        if (currentBalance < COST) { 
+            document.getElementById("result").style.color = "var(--red)"; 
+            document.getElementById("result").innerText = "Yetersiz Jeton!"; 
+            return; 
+        }
 
         const userGuess = document.getElementById("guess").value;
-        updateBalance(tokens - COST);
+        
+        // Ücreti düş ve kaydet
+        updateGlobalWallet(currentBalance - COST);
+
         isSpinning = true;
         document.getElementById("result").style.color = "#eaeaea";
         document.getElementById("result").innerText = "Çark dönüyor...";
 
         playCount++;
         let targetColorObj;
+        
+        // Kazanma ihtimali (İlk 3 el %50, sonra %16)
         let winChance = (playCount <= 3) ? 0.5 : 0.16;
         
         if (Math.random() < winChance) {
+            // Kazanacaksa seçtiği rengi hedefle
             targetColorObj = slices.find(s => s.color === userGuess);
         } else {
+            // Kaybedecekse seçmediği bir rengi hedefle
             let otherSlices = slices.filter(s => s.color !== userGuess);
             targetColorObj = otherSlices[Math.floor(Math.random() * otherSlices.length)];
         }
 
+        // Derece Hesaplama (Pointer en üstte, yani 0 derecede kabul edilir)
+        // Hedeflenen dilimi 0 noktasına (en tepeye) getirmek için gereken dönüşü hesaplıyoruz
         const randomDegreeInSlice = Math.floor(Math.random() * (targetColorObj.max - targetColorObj.min - 20)) + targetColorObj.min + 10;
         let stopAngle = (360 - randomDegreeInSlice); 
-        let finalRotation = (360 * 8) + stopAngle;
+        let finalRotation = (360 * 8) + stopAngle; // 8 tam tur + hedef açı
 
         const wheel = document.getElementById("wheel");
         wheel.style.transition = "none";
         wheel.style.transform = `rotate(0deg)`;
 
+        // Animasyonu başlat
         setTimeout(() => {
             wheel.style.transition = "transform 4s cubic-bezier(0.1, 0.6, 0.1, 1)";
             wheel.style.transform = `rotate(${finalRotation}deg)`;
         }, 50);
 
+        // Sonuç
         setTimeout(() => {
             if (targetColorObj.color === userGuess) {
-                updateBalance(tokens + REWARD);
+                // Kazanınca parayı ekle ve kaydet
+                updateGlobalWallet(currentBalance + REWARD);
+                
                 document.getElementById("result").style.color = "var(--green)";
                 document.getElementById("result").innerText = `TEBRİKLER! ${translateColor(userGuess)} geldi!`;
             } else {
@@ -112,7 +138,10 @@
             isSpinning = false;
         }, 4100);
     }
+
     function translateColor(eng) { const map = { "red": "Kırmızı", "blue": "Mavi", "green": "Yeşil", "yellow": "Sarı", "purple": "Mor", "orange": "Turuncu" }; return map[eng] || eng; }
+    
+    // Arka Plan
     const bg=document.getElementById("bg"),ctx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));function loop(){ctx.clearRect(0,0,bg.width,bg.height);ctx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;ctx.beginPath();ctx.arc(d.x,d.y,1.5,0,Math.PI*2);ctx.fill()});requestAnimationFrame(loop)}loop();
 </script>
 </body>
