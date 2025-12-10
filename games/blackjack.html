@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-    :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
+    :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; --muted:#a8b3bd; }
     body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow-x:hidden; }
     h1 { color:var(--neon); text-shadow:0 0 20px rgba(0, 234, 255, 0.6); margin-bottom:5px; font-size:2.5rem; }
     .container { position:relative; z-index:10; width:100%; max-width:800px; padding:20px; }
@@ -64,22 +64,26 @@
     </div>
 
 <script>
-    /* === ORTAK CÜZDAN === */
-    let savedTokens = localStorage.getItem("huseyin_bakiye");
-    let tokens = (savedTokens === null) ? 100 : parseInt(savedTokens);
-    if(savedTokens === null) localStorage.setItem("huseyin_bakiye", tokens);
-    document.getElementById("tokens").innerText = tokens;
+    /* === 1. ORTAK CÜZDAN BAĞLANTISI === */
+    // Sayfa açılır açılmaz LocalStorage'dan (Ana Kasadan) veriyi çekiyoruz
+    var currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
+    
+    // Ekrana yazdır
+    document.getElementById("tokens").innerText = currentBalance;
 
-    function updateBalance(newAmount) {
-        tokens = newAmount;
-        document.getElementById("tokens").innerText = tokens;
-        localStorage.setItem("huseyin_bakiye", tokens);
+    // Bakiyeyi güncelleyen ve kaydeden fonksiyon
+    function updateGlobalWallet(newAmount) {
+        currentBalance = newAmount;
+        document.getElementById("tokens").innerText = currentBalance;
+        // En önemlisi: Tarayıcı hafızasına yazıyoruz ki index.html okuyabilsin
+        localStorage.setItem("huseyin_bakiye", currentBalance);
     }
 
     /* === OYUN LOJİĞİ === */
     const COST = 20;
     const REWARD = 40; 
     const BLACKJACK_REWARD = 50; 
+    
     let deck = [];
     let playerHand = [];
     let dealerHand = [];
@@ -102,24 +106,29 @@
     }
     function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
     function drawCard() { return deck.pop(); }
+    
     function calculateHand(hand) {
         let sum = 0; let aces = 0;
         for (let card of hand) { sum += card.weight; if (card.value === "A") aces++; }
         while (sum > 21 && aces > 0) { sum -= 10; aces--; }
         return sum;
     }
+
     function renderCard(card, container) {
         const div = document.createElement("div");
         div.className = "playing-card " + (card.suit === "♥" || card.suit === "♦" ? "red" : "black");
         div.innerHTML = `<div class="card-top">${card.value}<br>${card.suit}</div><div class="card-center">${card.suit}</div><div class="card-bottom">${card.value}<br>${card.suit}</div>`;
         container.appendChild(div);
     }
+
     function updateUI(showDealerHidden = false) {
         const pCont = document.getElementById("playerCards");
         const dCont = document.getElementById("dealerCards");
         pCont.innerHTML = ""; dCont.innerHTML = "";
+        
         playerHand.forEach(c => renderCard(c, pCont));
         document.getElementById("playerScore").innerText = calculateHand(playerHand);
+        
         if (showDealerHidden) {
             dealerHand.forEach(c => renderCard(c, dCont));
             document.getElementById("dealerScore").innerText = calculateHand(dealerHand);
@@ -138,8 +147,16 @@
     }
 
     function startGame() {
-        if (tokens < COST) { document.getElementById("status").innerText = "Yetersiz Jeton!"; document.getElementById("status").style.color = "var(--red)"; return; }
-        updateBalance(tokens - COST);
+        // Bakiye Kontrolü (Global değişkenden)
+        if (currentBalance < COST) { 
+            document.getElementById("status").innerText = "Yetersiz Jeton!"; 
+            document.getElementById("status").style.color = "var(--red)"; 
+            return; 
+        }
+        
+        // Parayı düş ve kaydet
+        updateGlobalWallet(currentBalance - COST);
+
         deck = shuffle(createDeck());
         playerHand = []; dealerHand = [];
         gameActive = true; playCount++;
@@ -147,13 +164,17 @@
         document.getElementById("startBtn").style.display = "none";
         document.getElementById("gameControls").style.display = "flex";
 
+        // Küçük bir hile (İlk ellerde oyuncuya kıyak geçelim)
         if (playCount <= 3) {
             let goodCardIndex = deck.findIndex(c => c.weight >= 10);
             if (goodCardIndex > -1) deck.push(deck.splice(goodCardIndex, 1)[0]);
         }
+        
         playerHand.push(drawCard()); dealerHand.push(drawCard());
         playerHand.push(drawCard()); dealerHand.push(drawCard());
+        
         updateUI(false);
+        
         if (calculateHand(playerHand) === 21) gameOver("BLACKJACK! 2.5 Katı Kazandın!", "blackjack");
     }
 
@@ -171,9 +192,6 @@
             let dScore = calculateHand(dealerHand);
             if (dScore < 17) {
                 let newCard = drawCard();
-                if (playCount > 3 && (dScore + newCard.weight > 21)) {
-                    if (Math.random() < 0.5) newCard = drawCard();
-                }
                 dealerHand.push(newCard);
                 updateUI(true);
             } else {
@@ -198,11 +216,26 @@
         document.getElementById("gameControls").style.display = "none";
         document.getElementById("startBtn").style.display = "block";
         document.getElementById("startBtn").innerText = "TEKRAR OYNA";
-        if (type === "win") { document.getElementById("status").style.color = "var(--green)"; updateBalance(tokens + REWARD); }
-        else if (type === "blackjack") { document.getElementById("status").style.color = "var(--gold)"; updateBalance(tokens + BLACKJACK_REWARD); }
-        else if (type === "push") { document.getElementById("status").style.color = "#fff"; updateBalance(tokens + COST); }
-        else { document.getElementById("status").style.color = "var(--red)"; }
+        
+        if (type === "win") { 
+            document.getElementById("status").style.color = "var(--green)"; 
+            updateGlobalWallet(currentBalance + REWARD); 
+        }
+        else if (type === "blackjack") { 
+            document.getElementById("status").style.color = "var(--gold)"; 
+            updateGlobalWallet(currentBalance + BLACKJACK_REWARD); 
+        }
+        else if (type === "push") { 
+            document.getElementById("status").style.color = "#fff"; 
+            updateGlobalWallet(currentBalance + COST); 
+        }
+        else { 
+            document.getElementById("status").style.color = "var(--red)"; 
+            // Kaybedince zaten başta düşmüştük, bir şey yapmaya gerek yok
+        }
     }
+
+    // Arka Plan Efekti
     const bg=document.getElementById("bg"),ctx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));function loop(){ctx.clearRect(0,0,bg.width,bg.height);ctx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;ctx.beginPath();ctx.arc(d.x,d.y,1.5,0,Math.PI*2);ctx.fill()});requestAnimationFrame(loop)}loop();
 </script>
 </body>
