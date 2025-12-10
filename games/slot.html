@@ -49,16 +49,14 @@
     </div>
 
 <script>
-    /* === ORTAK CÜZDAN === */
-    let savedTokens = localStorage.getItem("huseyin_bakiye");
-    let tokens = (savedTokens === null) ? 100 : parseInt(savedTokens);
-    if(savedTokens === null) localStorage.setItem("huseyin_bakiye", tokens);
-    document.getElementById("tokens").innerText = tokens;
+    /* === 1. ORTAK CÜZDAN BAĞLANTISI === */
+    var currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
+    document.getElementById("tokens").innerText = currentBalance;
 
-    function updateBalance(newAmount) {
-        tokens = newAmount;
-        document.getElementById("tokens").innerText = tokens;
-        localStorage.setItem("huseyin_bakiye", tokens);
+    function updateGlobalWallet(newAmount) {
+        currentBalance = newAmount;
+        document.getElementById("tokens").innerText = currentBalance;
+        localStorage.setItem("huseyin_bakiye", currentBalance);
     }
 
     /* === OYUN LOJİĞİ === */
@@ -66,11 +64,15 @@
     const JACKPOT = 200;
     let playCount = 0;
     let isSpinning = false;
+    
+    // Semboller
     const symbols = ["🍒", "🍋", "🍇", "🍉", "💎", "🔔", "7️⃣"];
+    
     const strip1 = document.getElementById("strip1");
     const strip2 = document.getElementById("strip2");
     const strip3 = document.getElementById("strip3");
 
+    // Başlangıçta rastgele semboller koy
     initReels();
     function initReels() {
         [strip1, strip2, strip3].forEach(strip => { strip.innerHTML = `<div class="symbol">${getRandomSymbol()}</div>`; });
@@ -79,9 +81,17 @@
 
     function spin() {
         if (isSpinning) return;
-        if (tokens < COST) { document.getElementById("result").style.color = "var(--red)"; document.getElementById("result").innerText = "Yetersiz Jeton!"; return; }
+        
+        // Bakiye Kontrolü
+        if (currentBalance < COST) { 
+            document.getElementById("result").style.color = "var(--red)"; 
+            document.getElementById("result").innerText = "Yetersiz Jeton!"; 
+            return; 
+        }
 
-        updateBalance(tokens - COST);
+        // Ücreti düş ve kaydet
+        updateGlobalWallet(currentBalance - COST);
+
         isSpinning = true;
         document.getElementById("spinBtn").disabled = true;
         document.getElementById("result").innerText = "";
@@ -89,10 +99,12 @@
         playCount++;
         let outcome = determineOutcome(playCount);
 
+        // Çarkları Döndür
         animateReel(strip1, outcome[0], 0);
         animateReel(strip2, outcome[1], 300);
         animateReel(strip3, outcome[2], 600);
 
+        // Sonuç Kontrolü (Animasyon bitince)
         setTimeout(() => {
             checkWin(outcome);
             isSpinning = false;
@@ -101,11 +113,15 @@
     }
 
     function determineOutcome(count) {
+        // İlk 5 el kazanma şansı yüksek (%60), sonra düşer (%15)
         let winChance = (count <= 5) ? 0.6 : 0.15;
+        
         if (Math.random() < winChance) {
+            // Kazanacak
             let winSymbol = getRandomSymbol();
             return [winSymbol, winSymbol, winSymbol];
         } else {
+            // Kaybedecek (Ama heyecan olsun diye bazen 2'si aynı gelsin)
             if (Math.random() < 0.4) {
                 let s = getRandomSymbol();
                 let loseS;
@@ -118,26 +134,37 @@
     }
 
     function animateReel(stripElement, targetSymbol, delay) {
+        // Animasyon için uzun bir şerit oluşturuyoruz
         let content = "";
+        // 20 rastgele sembol ekle
         for(let i=0; i<20; i++) content += `<div class="symbol">${getRandomSymbol()}</div>`;
+        // En sona hedef sembolü ekle
         content += `<div class="symbol">${targetSymbol}</div>`;
+        
         stripElement.innerHTML = content;
         stripElement.style.transition = "none";
         stripElement.style.transform = "translateY(0)";
         stripElement.classList.add("blur");
+        
+        // Animasyonu başlat
         setTimeout(() => {
-            let moveY = -(20 * 180); 
+            let moveY = -(20 * 180); // 20 sembol * 180px yükseklik
             stripElement.style.transition = `transform 1.5s cubic-bezier(0.1, 0.9, 0.2, 1)`;
             stripElement.style.transform = `translateY(${moveY}px)`;
         }, 50 + delay);
+
+        // Bulanıklığı kaldır
         setTimeout(() => { stripElement.classList.remove("blur"); }, 1200 + delay);
     }
 
     function checkWin(outcome) {
         if (outcome[0] === outcome[1] && outcome[1] === outcome[2]) {
             let winAmount = JACKPOT;
+            // 7'ler gelirse Süper Jackpot
             if(outcome[0] === "7️⃣") winAmount = 500; 
-            updateBalance(tokens + winAmount);
+            
+            updateGlobalWallet(currentBalance + winAmount);
+            
             document.getElementById("result").style.color = "var(--gold)";
             document.getElementById("result").innerText = `JACKPOT! Kazandın: ${winAmount} Jeton`;
             document.querySelector(".slot-machine").style.boxShadow = "0 0 80px var(--gold)";
@@ -145,9 +172,12 @@
             document.getElementById("result").style.color = "var(--red)";
             if (outcome[0] === outcome[1]) document.getElementById("result").innerText = "Ah be! Çok yaklaştın!";
             else document.getElementById("result").innerText = "Kaybettin. Tekrar dene!";
+            
             document.querySelector(".slot-machine").style.boxShadow = "0 0 40px rgba(0,234,255,.2)";
         }
     }
+
+    // Arka Plan
     const bg=document.getElementById("bg"),ctx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));function loop(){ctx.clearRect(0,0,bg.width,bg.height);ctx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;ctx.beginPath();ctx.arc(d.x,d.y,1.5,0,Math.PI*2);ctx.fill()});requestAnimationFrame(loop)}loop();
 </script>
 </body>
