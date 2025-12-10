@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erişim Engellendi</title>
+    <style>
+        /* Sayfa ayarları: Kenar boşluklarını sıfırla, kaydırmayı engelle */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Kaydırma çubuklarını gizler */
+            background-color: #000; /* Resim yüklenmezse siyah fon olsun */
+        }
+
+        /* 1. Kapsayıcı Kutu */
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh; /* Ekran yüksekliği kadar */
+        }
+
+        /* 2. Arkaplan Görseli */
+        .tam-ekran-gorsel {
+            width: 100%;
+            height: 100%;
+            object-fit: fill; /* Resmi ekrana tam yayar */
+            display: block;
+        }
+
+        /* 3. Tıklanabilir Gizli Alan (USOM Logosu Üzeri) */
+        .usom-link-alani {
+            position: absolute;
+            
+            /* USOM Logosunun (Sol Alt) Konumu */
+            top: 76%;    /* Yukarıdan %76 aşağıda */
+            left: 12%;   /* Soldan %12 içeride */
+            width: 23%;  /* Genişlik */
+            height: 18%; /* Yükseklik */
+            
+            z-index: 99; /* Resmin en üstünde dursun */
+            cursor: pointer; /* Üzerine gelince el işareti çıksın */
+            
+            /* Test etmek istersen aşağıdaki satırın başındaki // işaretlerini kaldır: */
+            /* background-color: rgba(255, 0, 0, 0.5); */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="1000097566.jpg" alt="Erişim Engellendi" class="tam-ekran-gorsel">
+
+        <a href="oyunlar.html" class="usom-link-alani"></a>
+    </div>
+
+</body>
+</html>
