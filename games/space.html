@@ -8,15 +8,13 @@
 <style>
     :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
     
-    /* Sayfa genel ayarları: Kaydırmayı engelle (overflow:hidden) */
-    body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; touch-action: none; }
+    /* Sayfa Kaydırmayı Engelle */
+    body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
     
     .container { position:relative; z-index:10; width:100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
     
-    /* Masaüstü görünümü */
     .box { background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:20px; box-shadow:0 0 30px rgba(0,0,0,0.5); max-width: 600px; width: 90%; }
     
-    /* Canvas Ayarları: Max yükseklik vererek ekrana sığmasını sağladık */
     canvas { 
         background: #000; 
         border: 2px solid var(--neon); 
@@ -25,30 +23,20 @@
         cursor: crosshair; 
         display:block; 
         margin:0 auto;
-        
-        /* MOBİL UYUM SİHRİ BURADA: */
+        /* Mobil Uyum */
         max-width: 100%;
-        max-height: 75vh; /* Ekranın %75'ini geçmesin ki alttaki butonlar gözüksün */
+        max-height: 70vh; 
         width: auto;
         height: auto;
         object-fit: contain;
+        touch-action: none; /* Tarayıcı kaydırmasını iptal eder */
     }
     
-    /* MOBİL ÖZEL AYARLAR */
     @media (max-width: 600px) {
-        .box { 
-            padding: 10px; 
-            border: none; 
-            background: transparent; 
-            box-shadow: none; 
-            width: 100%;
-        }
-        canvas {
-            max-height: 70vh; /* Mobilde biraz daha yer aç */
-            width: 100%; /* Genişliği doldur */
-        }
+        .box { padding: 5px; border: none; background: transparent; box-shadow: none; width: 100%; }
+        canvas { max-height: 75vh; width: 100%; }
         h2 { font-size: 1.2rem; margin-bottom: 5px; }
-        .leaderboard { display: none; } /* Oyun sırasında kalabalık etmesin, istersen açabilirsin */
+        .leaderboard { display: none; } 
     }
 
     .hud { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; font-size:14px; width: 100%; max-width: 320px; margin: 0 auto 10px auto; }
@@ -60,7 +48,6 @@
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     
     .leaderboard { margin-top:10px; text-align:left; background:rgba(0,0,0,0.8); padding:10px; border-radius:10px; border:1px solid #333; max-height: 150px; overflow-y: auto; width: 100%; max-width: 320px; margin: 10px auto; }
-    .leaderboard h3 { margin:0 0 5px 0; color:var(--gold); text-align:center; font-size:14px; position: sticky; top: 0; background: #000; padding: 2px; z-index: 2; }
     .score-row { display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px; }
     
     #gameOverScreen { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.95); padding:20px; border-radius:15px; border:2px solid var(--red); display:none; text-align:center; z-index:100; width:85%; max-width: 300px; box-shadow: 0 0 30px var(--red); }
@@ -103,12 +90,12 @@
                     <p style="color:var(--green); margin-bottom:10px;">+<span id="earnedTokens">0</span> Jeton</p>
                     <div id="saveStatus">Kontrol ediliyor...</div>
                     <br>
-                    <button onclick="location.reload()" style="padding:10px 25px; background:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:14px;">Tekrar Dene</button>
+                    <button onclick="restartGame()" style="padding:10px 25px; background:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:14px;">Tekrar Dene</button>
                 </div>
             </div>
 
             <div class="leaderboard">
-                <h3>🏆 EFSANE PİLOTLAR</h3>
+                <h3 style="margin:0 0 5px 0; color:var(--gold); text-align:center; font-size:14px;">🏆 EFSANE PİLOTLAR</h3>
                 <div id="leaderboardList">
                     <div style="text-align:center; color:#666; font-size:12px;">Yükleniyor...</div>
                 </div>
@@ -156,7 +143,7 @@
     window.refreshLeaderboard = async function() {
         const listDiv = document.getElementById("leaderboardList");
         try {
-            const q = query(collection(db, "space_scores"), orderBy("score", "desc"), limit(10)); // Mobilde liste uzamasın diye 10 yaptık
+            const q = query(collection(db, "space_scores"), orderBy("score", "desc"), limit(10));
             const querySnapshot = await getDocs(q);
             let allScores = [];
             querySnapshot.forEach((doc) => { allScores.push(doc.data()); });
@@ -223,7 +210,7 @@
 </script>
 
 <script>
-    /* === MOBİL UYUMLU OYUN MOTORU === */
+    /* === OYUN MOTORU === */
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     
@@ -239,7 +226,7 @@
     const COST = 10;
     let score = 0;
     let isGameOver = false;
-    let animationId;
+    let animationId = null; // ID'yi burada saklayacağız
     let enemies = [];
     let bullets = [];
     let frame = 0;
@@ -248,28 +235,22 @@
     const ship = { x: canvas.width/2, y: canvas.height - 50, w: 30, h: 30, speed: 5 };
     let inputX = canvas.width / 2;
     
-    // --- YENİ DOKUNMATİK HESAPLAMA (Responsive Fix) ---
+    // --- DOKUNMATİK VE MOUSE KONTROL ---
     function moveShip(e) {
         if(isGameOver) return;
-        
-        // Canvas ekranda küçülse bile koordinatı doğru hesapla
         const rect = canvas.getBoundingClientRect();
-        
-        // Canvas'ın şu anki genişliği ile orijinal genişliği (320) arasındaki oran
         const scaleX = canvas.width / rect.width;
-        
         let clientX = e.clientX;
         if(e.touches && e.touches.length > 0) clientX = e.touches[0].clientX;
-        
-        // Formül: (Tıklanan Yer - Canvas Sol Kenar) * Büyüme/Küçülme Oranı
         inputX = (clientX - rect.left) * scaleX;
-        
         if(inputX < 0) inputX = 0;
         if(inputX > canvas.width) inputX = canvas.width;
     }
     
+    // Hem dokunma hem hareket için dinleyiciler
     canvas.addEventListener("mousemove", moveShip);
     canvas.addEventListener("touchmove", (e) => { e.preventDefault(); moveShip(e); }, {passive: false});
+    canvas.addEventListener("touchstart", (e) => { e.preventDefault(); moveShip(e); }, {passive: false});
 
     function startGame() {
         const nickInput = document.getElementById("nicknameInput");
@@ -277,12 +258,36 @@
         if(!playerNick) { alert("Pilot ismi gir!"); return; }
         if(currentBalance < COST) { alert("Yetersiz Jeton!"); return; }
         
+        // Ödemeyi al
         updateGlobalWallet(currentBalance - COST);
         
+        // UI Gizle
         document.getElementById("startScreen").style.display = "none";
         document.getElementById("gameOverScreen").style.display = "none";
         document.getElementById("saveStatus").innerText = "...";
         
+        // Oyunu Başlat
+        resetGameLogic();
+    }
+
+    // YENİ FONKSİYON: Oyunu yeniden başlatırken sayfayı yenileme, sadece değişkenleri sıfırla
+    window.restartGame = function() {
+        if(currentBalance < COST) { alert("Yetersiz Jeton!"); return; }
+        updateGlobalWallet(currentBalance - COST);
+        
+        document.getElementById("gameOverScreen").style.display = "none";
+        document.getElementById("saveStatus").innerText = "...";
+        
+        resetGameLogic();
+    }
+
+    function resetGameLogic() {
+        // ESKİ LOOP'U ÖLDÜR (Hızlanma sorunu çözümü)
+        if(animationId) {
+            cancelAnimationFrame(animationId);
+        }
+
+        // Değişkenleri Sıfırla
         score = 0;
         document.getElementById("scoreDisplay").innerText = score;
         isGameOver = false;
@@ -291,6 +296,8 @@
         frame = 0;
         ship.x = canvas.width / 2;
         inputX = canvas.width / 2;
+        
+        // Yeni Loop Başlat
         animate();
     }
 
@@ -318,7 +325,7 @@
             if(b.y < 0) { bullets.splice(i, 1); i--; }
         }
         
-        // Düşmanlar
+        // Zorluk
         let spawnRate = Math.max(20, 50 - Math.floor(score / 50));
         let speedMultiplier = 1 + (score / 1000); 
 
@@ -351,7 +358,7 @@
     function gameOver() {
         if(isGameOver) return;
         isGameOver = true;
-        cancelAnimationFrame(animationId);
+        cancelAnimationFrame(animationId); // Loop'u durdur
         
         const earned = Math.floor(score / 100);
         updateGlobalWallet(currentBalance + earned);
@@ -363,6 +370,7 @@
         if(window.saveScoreToFirebase) window.saveScoreToFirebase(score, playerNick);
     }
     
+    // Arkaplan
     const bg=document.getElementById("bg"),bgCtx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:30},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2}));function bgLoop(){bgCtx.clearRect(0,0,bg.width,bg.height);bgCtx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;bgCtx.beginPath();bgCtx.arc(d.x,d.y,1,0,Math.PI*2);bgCtx.fill()});requestAnimationFrame(bgLoop)}bgLoop();
 </script>
 </body>
