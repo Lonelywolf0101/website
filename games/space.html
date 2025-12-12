@@ -30,7 +30,7 @@
     .leaderboard { margin-top:20px; text-align:left; background:rgba(0,0,0,0.6); padding:15px; border-radius:10px; border:1px solid #333; max-height: 250px; overflow-y: auto; }
     .leaderboard h3 { margin:0 0 10px 0; color:var(--gold); text-align:center; font-size:16px; position: sticky; top: 0; background: #0c1022; padding: 5px; z-index: 2; }
     .score-row { display:flex; justify-content:space-between; padding:8px 5px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:13px; }
-    .score-row:nth-child(2) { color: #ffd700; font-weight:bold; } /* Başlık h3 child 1 olduğu için sıralama kayar, burası 1. oyuncu */
+    .score-row:nth-child(2) { color: #ffd700; font-weight:bold; } 
     .score-row:nth-child(3) { color: #c0c0c0; } 
     .score-row:nth-child(4) { color: #cd7f32; }
 
@@ -39,6 +39,7 @@
     
     /* Kullanıcı Bilgisi */
     #userStatusMsg { font-size: 12px; color: var(--green); margin-bottom: 10px; display: none; }
+    #saveStatus { font-size: 12px; color: #aaa; margin-top: 5px; font-style: italic; }
 </style>
 </head>
 <body>
@@ -65,13 +66,15 @@
                     <input type="text" id="nicknameInput" class="nick-input" placeholder="Pilot Adı (Nick)" maxlength="12">
                     
                     <button id="startBtn" onclick="startGame()">SAVAŞA GİR</button>
-                    <p style="font-size:11px; color:#666; margin-top:15px;">Her gemi +1 Jeton kazandırır.</p>
+                    <p style="font-size:11px; color:#666; margin-top:15px;">Her 100 Puan +1 Jeton kazandırır.</p>
                 </div>
 
                 <div id="gameOverScreen">
                     <h2 style="color:var(--red); margin:0 0 10px 0;">GÖREV BAŞARISIZ!</h2>
                     <p style="font-size:18px;">Skorun: <span id="finalScore" style="color:#fff; font-weight:bold;">0</span></p>
-                    <p style="color:var(--green); margin-bottom:20px;">Kazanılan: +<span id="earnedTokens">0</span> Jeton</p>
+                    <p style="color:var(--green); margin-bottom:10px;">Kazanılan: +<span id="earnedTokens">0</span> Jeton</p>
+                    <div id="saveStatus">Veritabanına kaydediliyor...</div>
+                    <br>
                     <button onclick="location.reload()" style="padding:12px 30px; background:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px;">Tekrar Dene</button>
                 </div>
             </div>
@@ -127,7 +130,6 @@
     async function loadLeaderboard() {
         const listDiv = document.getElementById("leaderboardList");
         try {
-            // BURASI DEĞİŞTİ: Limit 15 yapıldı
             const q = query(collection(db, "space_scores"), orderBy("score", "desc"), limit(15));
             const querySnapshot = await getDocs(q);
             
@@ -136,9 +138,9 @@
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 html += `<div class="score-row">
-                            <span>#${rank} ${data.name}</span>
-                            <span>${data.score} Puan</span>
-                         </div>`;
+                             <span>#${rank} ${data.name}</span>
+                             <span>${data.score} Puan</span>
+                          </div>`;
                 rank++;
             });
 
@@ -153,6 +155,7 @@
 
     // --- 3. SKORU KAYDETME ---
     window.saveScoreToFirebase = async (score, nickname) => {
+        const statusEl = document.getElementById("saveStatus");
         if(score > 0 && nickname) {
             try {
                 await addDoc(collection(db, "space_scores"), {
@@ -161,9 +164,15 @@
                     date: new Date()
                 });
                 console.log("Skor veritabanına işlendi.");
+                statusEl.innerText = "✅ Skorun başarıyla kaydedildi!";
+                statusEl.style.color = "#00ff88";
             } catch(e) {
                 console.error("Kayıt hatası:", e);
+                statusEl.innerText = "❌ Skor kaydedilemedi: " + e.message;
+                statusEl.style.color = "#ff4d4d";
             }
+        } else {
+            statusEl.innerText = "Skor çok düşük, kaydedilmedi.";
         }
     }
 </script>
@@ -178,7 +187,7 @@
     document.getElementById("walletDisplay").innerText = currentBalance;
 
     function updateGlobalWallet(newAmount) {
-        currentBalance = newAmount;
+        currentBalance = Math.floor(newAmount); // Tam sayı yap
         document.getElementById("walletDisplay").innerText = currentBalance;
         localStorage.setItem("huseyin_bakiye", currentBalance);
     }
@@ -197,6 +206,7 @@
     let inputX = canvas.width / 2;
     
     function moveShip(e) {
+        if(isGameOver) return;
         const rect = canvas.getBoundingClientRect();
         let clientX = e.clientX;
         if(e.touches && e.touches.length > 0) clientX = e.touches[0].clientX;
@@ -224,6 +234,8 @@
         
         document.getElementById("startScreen").style.display = "none";
         document.getElementById("gameOverScreen").style.display = "none";
+        document.getElementById("saveStatus").innerText = "Veritabanına kaydediliyor...";
+        document.getElementById("saveStatus").style.color = "#aaa";
         
         // Sıfırla
         score = 0;
@@ -252,8 +264,8 @@
         ctx.lineTo(ship.x + 15, ship.y + 30);
         ctx.fill();
         
-        // Ateş (Seri)
-        if(frame % 10 === 0) bullets.push({ x: ship.x, y: ship.y, w: 4, h: 10, color: "#ff0" });
+        // Ateş Etme (Mermi Hızı Düzenlendi: %18)
+        if(frame % 18 === 0) bullets.push({ x: ship.x, y: ship.y, w: 4, h: 10, color: "#ff0" });
         
         for(let i=0; i<bullets.length; i++) {
             let b = bullets[i];
@@ -263,10 +275,27 @@
             if(b.y < 0) { bullets.splice(i, 1); i--; }
         }
         
-        // Düşman
-        if(frame % 50 === 0) {
+        // --- ZORLUK AYARLAMASI ---
+        // Skor arttıkça spawnRate (doğma aralığı) düşer, yani daha sık çıkar.
+        // En az 20 frame'de bir çıkabilir (limit).
+        let spawnRate = Math.max(20, 50 - Math.floor(score / 50));
+        
+        // Skor arttıkça düşman hızına çarpan eklenir.
+        let speedMultiplier = 1 + (score / 1000); 
+
+        // Düşman Oluşturma
+        if(frame % spawnRate === 0) {
             const size = Math.random() * 20 + 20;
-            enemies.push({ x: Math.random() * (canvas.width - size), y: -50, w: size, h: size, speed: Math.random() * 2 + 1 });
+            // Düşman hızı formülü: (Rastgele 1-3 arası) * Çarpan
+            let enemySpeed = (Math.random() * 2 + 1) * speedMultiplier;
+            
+            enemies.push({ 
+                x: Math.random() * (canvas.width - size), 
+                y: -50, 
+                w: size, 
+                h: size, 
+                speed: enemySpeed 
+            });
         }
         
         for(let i=0; i<enemies.length; i++) {
@@ -275,6 +304,7 @@
             ctx.fillStyle = "#ff4d4d";
             ctx.fillRect(e.x, e.y, e.w, e.h);
             
+            // Çarpışma Kontrolü (Mermi)
             for(let j=0; j<bullets.length; j++) {
                 let b = bullets[j];
                 if(b.x > e.x && b.x < e.x + e.w && b.y > e.y && b.y < e.y + e.h) {
@@ -286,9 +316,18 @@
                 }
             }
             
+            // Çarpışma Kontrolü (Gemi)
             const dist = Math.hypot(ship.x - (e.x + e.w/2), ship.y - (e.y + e.h/2));
-            if(dist < 30) gameOver();
-            if(e.y > canvas.height) { enemies.splice(i, 1); i--; }
+            if(dist < 30) {
+                gameOver();
+                return;
+            }
+            
+            // --- OYUN BİTİRME KURALI (Alt Sınır) ---
+            if(e.y > canvas.height) { 
+                gameOver(); // Ekrandan kaçan olursa oyun biter!
+                return;
+            }
         }
         
         frame++;
@@ -296,10 +335,11 @@
     }
 
     function gameOver() {
+        if(isGameOver) return; // Çift tetiklemeyi önle
         isGameOver = true;
         cancelAnimationFrame(animationId);
         
-        const earned = score / 10; 
+        const earned = Math.floor(score / 100); // 100 puana 1 jeton
         updateGlobalWallet(currentBalance + earned);
         
         document.getElementById("finalScore").innerText = score;
