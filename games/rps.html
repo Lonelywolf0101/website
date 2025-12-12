@@ -8,30 +8,30 @@
 <style>
     :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
     body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; }
-    h1 { color:var(--neon); text-shadow:0 0 20px rgba(0, 234, 255, 0.6); margin-bottom:5px; font-size:2.5rem; }
-    .container { position:relative; z-index:10; width:100%; max-width:600px; padding:20px; }
-    .box { background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:30px 20px; box-shadow:0 0 30px rgba(0,0,0,0.5); }
-    .token-display { font-size:24px; background:rgba(0,0,0,0.3); padding:10px 20px; border-radius:50px; display:inline-block; margin-bottom:20px; border:1px solid rgba(255,255,255,0.1); }
+    h1 { color:var(--neon); text-shadow:0 0 20px rgba(0,234,255,.6); margin-bottom:5px; font-size:2.5rem; }
+    .container { position:relative; z-index:10; width:100%; max-width:500px; padding:20px; }
+    .box { background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:40px 20px; box-shadow:0 0 30px rgba(0,0,0,0.5); }
+    .token-display { font-size:24px; background:rgba(0,0,0,.3); padding:10px 20px; border-radius:50px; display:inline-block; margin-bottom:30px; border:1px solid rgba(255,255,255,.1); }
     
-    .game-arena { display:flex; justify-content:space-between; align-items:center; margin:30px 0; min-height:150px; }
-    .player-side, .cpu-side { width:45%; }
-    .hand-icon { font-size:80px; transition:transform 0.2s; display:inline-block; }
-    .vs { font-size:30px; font-weight:bold; color:var(--gold); }
+    /* Taş Kağıt Makas Özel Alanı */
+    .game-arena { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; padding:0 20px; }
+    .hand-wrapper { width: 40%; }
+    .hand-icon { font-size: 70px; display: inline-block; transition: transform 0.2s; }
+    .vs-text { font-size: 24px; font-weight: bold; color: var(--gold); }
+    .player-label { font-size: 14px; color: #aaa; margin-top: 5px; }
+
+    .controls { display:flex; justify-content:center; gap:15px; margin-top:20px; flex-wrap:wrap; }
+    .choice-btn { width:70px; height:70px; font-size:30px; border-radius:15px; border:1px solid rgba(255,255,255,.2); cursor:pointer; transition:.3s; color:white; background:rgba(255,255,255,.05); display:flex; align-items:center; justify-content:center; }
+    .choice-btn:hover { background:var(--neon); border-color:var(--neon); transform:scale(1.1); box-shadow:0 0 15px var(--neon); }
     
-    .controls { display:flex; gap:15px; justify-content:center; margin-top:20px; flex-wrap:wrap; }
-    .choice-btn { background:rgba(255,255,255,0.1); border:2px solid rgba(255,255,255,0.2); border-radius:15px; padding:15px; cursor:pointer; transition:0.3s; width:80px; height:80px; display:flex; align-items:center; justify-content:center; font-size:40px; }
-    .choice-btn:hover { background:var(--neon); border-color:var(--neon); transform:scale(1.1); box-shadow:0 0 20px var(--neon); }
-    
-    #result { margin-top:20px; font-size:22px; font-weight:700; height:30px; }
-    #back-btn { margin-top:30px; color:#a8b3bd; text-decoration:none; font-size:14px; transition:.3s; display:inline-block; }
-    #back-btn:hover { color:var(--neon); }
+    #result { margin-top:25px; font-size:20px; font-weight:600; height:30px; }
     
     /* Animasyonlar */
-    @keyframes shakeLeft { 0% { transform: rotate(0deg) translateX(0); } 25% { transform: rotate(-20deg) translateX(-10px); } 50% { transform: rotate(0deg) translateX(0); } 75% { transform: rotate(-20deg) translateX(-10px); } 100% { transform: rotate(0deg) translateX(0); } }
-    @keyframes shakeRight { 0% { transform: rotate(0deg) translateX(0) scaleX(-1); } 25% { transform: rotate(20deg) translateX(10px) scaleX(-1); } 50% { transform: rotate(0deg) translateX(0) scaleX(-1); } 75% { transform: rotate(20deg) translateX(10px) scaleX(-1); } 100% { transform: rotate(0deg) translateX(0) scaleX(-1); } }
+    @keyframes shakeLeft { 0% { transform: rotate(0deg); } 25% { transform: rotate(-20deg); } 50% { transform: rotate(0deg); } 75% { transform: rotate(-20deg); } 100% { transform: rotate(0deg); } }
+    @keyframes shakeRight { 0% { transform: scaleX(-1) rotate(0deg); } 25% { transform: scaleX(-1) rotate(-20deg); } 50% { transform: scaleX(-1) rotate(0deg); } 75% { transform: scaleX(-1) rotate(-20deg); } 100% { transform: scaleX(-1) rotate(0deg); } }
     
-    .shake-left { animation: shakeLeft 0.5s infinite; }
-    .shake-right { animation: shakeRight 0.5s infinite; }
+    .shake-l { animation: shakeLeft 0.5s infinite; }
+    .shake-r { animation: shakeRight 0.5s infinite; }
 </style>
 </head>
 <body>
@@ -43,32 +43,35 @@
             <div class="token-display">🪙 <span id="tokens">...</span></div>
             
             <div class="game-arena">
-                <div class="player-side">
+                <div class="hand-wrapper">
                     <div id="playerHand" class="hand-icon">🤜</div>
-                    <div style="margin-top:10px; font-size:14px; color:#aaa;">SEN</div>
+                    <div class="player-label">SEN</div>
                 </div>
-                <div class="vs">VS</div>
-                <div class="cpu-side">
+                <div class="vs-text">VS</div>
+                <div class="hand-wrapper">
                     <div id="cpuHand" class="hand-icon" style="transform: scaleX(-1);">🤜</div>
-                    <div style="margin-top:10px; font-size:14px; color:#aaa;">BİLGİSAYAR</div>
+                    <div class="player-label">CPU</div>
                 </div>
             </div>
 
-            <h2 id="result">Seçimini Yap!</h2>
+            <h2 id="result">Hamleni Seç!</h2>
 
             <div class="controls" id="controls">
-                <div class="choice-btn" onclick="play('rock')">🪨</div>
-                <div class="choice-btn" onclick="play('paper')">📄</div>
-                <div class="choice-btn" onclick="play('scissors')">✂️</div>
+                <button class="choice-btn" onclick="playGame('rock')">🪨</button>
+                <button class="choice-btn" onclick="playGame('paper')">📄</button>
+                <button class="choice-btn" onclick="playGame('scissors')">✂️</button>
             </div>
             
             <button id="resetBtn" onclick="resetGame()" style="display:none; margin:20px auto; padding:10px 30px; background:var(--neon); border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Tekrar Oyna</button>
         </div>
-        <a id="back-btn" href="../index.html#chance">← Oyun Lobisine Dön</a>
+        
+        <a href="../index.html#chance" style="position: absolute; top: 20px; left: 20px; color: #a8b3bd; font-weight: bold; text-decoration: none; border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 8px; font-family: sans-serif; transition: 0.3s;">
+           ← Oyun Lobisine Dön
+        </a>
     </div>
 
 <script>
-    /* === 1. ORTAK CÜZDAN === */
+    /* === 1. ORTAK CÜZDAN BAĞLANTISI === */
     var currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
     document.getElementById("tokens").innerText = currentBalance;
 
@@ -82,8 +85,8 @@
     const COST = 15;
     const REWARD = 30;
     const icons = { 'rock': '🪨', 'paper': '📄', 'scissors': '✂️', 'default': '🤜' };
-    
-    function play(playerChoice) {
+
+    function playGame(choice) {
         // Bakiye Kontrolü
         if (currentBalance < COST) {
             document.getElementById("result").style.color = "var(--red)";
@@ -91,35 +94,85 @@
             return;
         }
 
-        // Parayı düş
+        // Giriş ücretini düş
         updateGlobalWallet(currentBalance - COST);
 
-        // Arayüzü Hazırla
+        // Arayüzü Kilitle ve Animasyonu Başlat
         document.getElementById("controls").style.display = "none";
         document.getElementById("result").style.color = "#eaeaea";
         document.getElementById("result").innerText = "Sallanıyor...";
-        
+
         const pHand = document.getElementById("playerHand");
         const cHand = document.getElementById("cpuHand");
-        
-        // Animasyon için yumruk yap
+
+        // Varsayılan yumruk yap ve salla
         pHand.innerText = icons['default'];
         cHand.innerText = icons['default'];
-        pHand.classList.add("shake-left");
-        cHand.classList.add("shake-right");
+        pHand.classList.add("shake-l");
+        cHand.classList.add("shake-r");
 
-        // 1.5 saniye bekle (Heyecan olsun)
         setTimeout(() => {
-            pHand.classList.remove("shake-left");
-            cHand.classList.remove("shake-right");
+            // Sallamayı durdur
+            pHand.classList.remove("shake-l");
+            cHand.classList.remove("shake-r");
 
-            // Bilgisayar Seçimi
-            const choices = ['rock', 'paper', 'scissors'];
-            const cpuChoice = choices[Math.floor(Math.random() * choices.length)];
-            
-            // İkonları güncelle
-            pHand.innerText = icons[playerChoice];
+            // Bilgisayar Hamlesi
+            const options = ['rock', 'paper', 'scissors'];
+            const cpuChoice = options[Math.floor(Math.random() * options.length)];
+
+            // İkonları Güncelle
+            pHand.innerText = icons[choice];
             cHand.innerText = icons[cpuChoice];
 
             // Kazananı Belirle
-            let outcome = ""; // win, lose,
+            let outcome = ""; // win, lose, draw
+
+            if (choice === cpuChoice) {
+                outcome = "draw";
+            } else if (
+                (choice === 'rock' && cpuChoice === 'scissors') ||
+                (choice === 'paper' && cpuChoice === 'rock') ||
+                (choice === 'scissors' && cpuChoice === 'paper')
+            ) {
+                outcome = "win";
+            } else {
+                outcome = "lose";
+            }
+
+            // Sonucu Göster ve Parayı Ver
+            if (outcome === "win") {
+                updateGlobalWallet(currentBalance + REWARD);
+                document.getElementById("result").style.color = "var(--green)";
+                document.getElementById("result").innerText = "KAZANDIN! (+15 Jeton)";
+            } else if (outcome === "draw") {
+                updateGlobalWallet(currentBalance + COST); // İade
+                document.getElementById("result").style.color = "#fff";
+                document.getElementById("result").innerText = "BERABERE (İade)";
+            } else {
+                document.getElementById("result").style.color = "var(--red)";
+                document.getElementById("result").innerText = "KAYBETTİN!";
+            }
+
+            document.getElementById("resetBtn").style.display = "block";
+
+        }, 1500); // 1.5 saniye sallanma süresi
+    }
+
+    function resetGame() {
+        document.getElementById("playerHand").innerText = icons['default'];
+        document.getElementById("cpuHand").innerText = icons['default'];
+        document.getElementById("result").innerText = "Hamleni Seç!";
+        document.getElementById("result").style.color = "#eaeaea";
+        document.getElementById("controls").style.display = "flex";
+        document.getElementById("resetBtn").style.display = "none";
+    }
+
+    /* ARKA PLAN */
+    const bg=document.getElementById("bg"),ctx=bg.getContext("2d");
+    function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}
+    resize();window.addEventListener("resize",resize);
+    const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));
+    function loop(){ctx.clearRect(0,0,bg.width,bg.height);ctx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;ctx.beginPath();ctx.arc(d.x,d.y,1.5,0,Math.PI*2);ctx.fill()});requestAnimationFrame(loop)}loop();
+</script>
+</body>
+</html>
