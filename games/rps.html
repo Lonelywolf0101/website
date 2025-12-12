@@ -116,15 +116,35 @@
             pHand.classList.remove("shake-l");
             cHand.classList.remove("shake-r");
 
-            // Bilgisayar Hamlesi
-            const options = ['rock', 'paper', 'scissors'];
-            const cpuChoice = options[Math.floor(Math.random() * options.length)];
+            // --- AKILLI KASA MANTIĞI (%35 Kasa / %32.5 Berabere / %32.5 Oyuncu) ---
+            const luck = Math.random(); // 0 ile 1 arasında sayı üretir
+            let cpuChoice;
+
+            if (luck < 0.35) { 
+                // %35 İhtimalle: KASA KAZANIR (Oyuncu Kaybeder)
+                // Oyuncu ne seçtiyse onu yenen hamleyi yap
+                if (choice === 'rock') cpuChoice = 'paper';
+                else if (choice === 'paper') cpuChoice = 'scissors';
+                else cpuChoice = 'rock'; // choice: scissors
+                
+            } else if (luck < 0.675) { 
+                // %32.5 İhtimalle: BERABERE (0.35 + 0.325 = 0.675)
+                cpuChoice = choice;
+                
+            } else {
+                // %32.5 İhtimalle: OYUNCU KAZANIR (0.675'ten büyükse)
+                // Oyuncunun yeneceği hamleyi yap
+                if (choice === 'rock') cpuChoice = 'scissors';
+                else if (choice === 'paper') cpuChoice = 'rock';
+                else cpuChoice = 'paper'; // choice: scissors
+            }
+            // -----------------------------------------------------------------------
 
             // İkonları Güncelle
             pHand.innerText = icons[choice];
             cHand.innerText = icons[cpuChoice];
 
-            // Kazananı Belirle
+            // Kazananı Belirle (Görsel İçin)
             let outcome = ""; // win, lose, draw
 
             if (choice === cpuChoice) {
