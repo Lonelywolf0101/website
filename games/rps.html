@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Taş Kağıt Makas | Hüseyin Sedat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+    :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
+    body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; }
+    h1 { color:var(--neon); text-shadow:0 0 20px rgba(0, 234, 255, 0.6); margin-bottom:5px; font-size:2.5rem; }
+    .container { position:relative; z-index:10; width:100%; max-width:600px; padding:20px; }
+    .box { background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:30px 20px; box-shadow:0 0 30px rgba(0,0,0,0.5); }
+    .token-display { font-size:24px; background:rgba(0,0,0,0.3); padding:10px 20px; border-radius:50px; display:inline-block; margin-bottom:20px; border:1px solid rgba(255,255,255,0.1); }
+    
+    .game-arena { display:flex; justify-content:space-between; align-items:center; margin:30px 0; min-height:150px; }
+    .player-side, .cpu-side { width:45%; }
+    .hand-icon { font-size:80px; transition:transform 0.2s; display:inline-block; }
+    .vs { font-size:30px; font-weight:bold; color:var(--gold); }
+    
+    .controls { display:flex; gap:15px; justify-content:center; margin-top:20px; flex-wrap:wrap; }
+    .choice-btn { background:rgba(255,255,255,0.1); border:2px solid rgba(255,255,255,0.2); border-radius:15px; padding:15px; cursor:pointer; transition:0.3s; width:80px; height:80px; display:flex; align-items:center; justify-content:center; font-size:40px; }
+    .choice-btn:hover { background:var(--neon); border-color:var(--neon); transform:scale(1.1); box-shadow:0 0 20px var(--neon); }
+    
+    #result { margin-top:20px; font-size:22px; font-weight:700; height:30px; }
+    #back-btn { margin-top:30px; color:#a8b3bd; text-decoration:none; font-size:14px; transition:.3s; display:inline-block; }
+    #back-btn:hover { color:var(--neon); }
+    
+    /* Animasyonlar */
+    @keyframes shakeLeft { 0% { transform: rotate(0deg) translateX(0); } 25% { transform: rotate(-20deg) translateX(-10px); } 50% { transform: rotate(0deg) translateX(0); } 75% { transform: rotate(-20deg) translateX(-10px); } 100% { transform: rotate(0deg) translateX(0); } }
+    @keyframes shakeRight { 0% { transform: rotate(0deg) translateX(0) scaleX(-1); } 25% { transform: rotate(20deg) translateX(10px) scaleX(-1); } 50% { transform: rotate(0deg) translateX(0) scaleX(-1); } 75% { transform: rotate(20deg) translateX(10px) scaleX(-1); } 100% { transform: rotate(0deg) translateX(0) scaleX(-1); } }
+    
+    .shake-left { animation: shakeLeft 0.5s infinite; }
+    .shake-right { animation: shakeRight 0.5s infinite; }
+</style>
+</head>
+<body>
+    <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
+    <div class="container">
+        <h1>Taş Kağıt Makas</h1>
+        <p style="color:#aaa; margin-bottom:20px;">Giriş: <span style="color:var(--red)">15 Jeton</span> | Kazanç: <span style="color:var(--green)">30 Jeton</span></p>
+        <div class="box">
+            <div class="token-display">🪙 <span id="tokens">...</span></div>
+            
+            <div class="game-arena">
+                <div class="player-side">
+                    <div id="playerHand" class="hand-icon">🤜</div>
+                    <div style="margin-top:10px; font-size:14px; color:#aaa;">SEN</div>
+                </div>
+                <div class="vs">VS</div>
+                <div class="cpu-side">
+                    <div id="cpuHand" class="hand-icon" style="transform: scaleX(-1);">🤜</div>
+                    <div style="margin-top:10px; font-size:14px; color:#aaa;">BİLGİSAYAR</div>
+                </div>
+            </div>
+
+            <h2 id="result">Seçimini Yap!</h2>
+
+            <div class="controls" id="controls">
+                <div class="choice-btn" onclick="play('rock')">🪨</div>
+                <div class="choice-btn" onclick="play('paper')">📄</div>
+                <div class="choice-btn" onclick="play('scissors')">✂️</div>
+            </div>
+            
+            <button id="resetBtn" onclick="resetGame()" style="display:none; margin:20px auto; padding:10px 30px; background:var(--neon); border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Tekrar Oyna</button>
+        </div>
+        <a id="back-btn" href="../index.html#chance">← Oyun Lobisine Dön</a>
+    </div>
+
+<script>
+    /* === 1. ORTAK CÜZDAN === */
+    var currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
+    document.getElementById("tokens").innerText = currentBalance;
+
+    function updateGlobalWallet(newAmount) {
+        currentBalance = newAmount;
+        document.getElementById("tokens").innerText = currentBalance;
+        localStorage.setItem("huseyin_bakiye", currentBalance);
+    }
+
+    /* === OYUN LOJİĞİ === */
+    const COST = 15;
+    const REWARD = 30;
+    const icons = { 'rock': '🪨', 'paper': '📄', 'scissors': '✂️', 'default': '🤜' };
+    
+    function play(playerChoice) {
+        // Bakiye Kontrolü
+        if (currentBalance < COST) {
+            document.getElementById("result").style.color = "var(--red)";
+            document.getElementById("result").innerText = "Yetersiz Jeton!";
+            return;
+        }
+
+        // Parayı düş
+        updateGlobalWallet(currentBalance - COST);
+
+        // Arayüzü Hazırla
+        document.getElementById("controls").style.display = "none";
+        document.getElementById("result").style.color = "#eaeaea";
+        document.getElementById("result").innerText = "Sallanıyor...";
+        
+        const pHand = document.getElementById("playerHand");
+        const cHand = document.getElementById("cpuHand");
+        
+        // Animasyon için yumruk yap
+        pHand.innerText = icons['default'];
+        cHand.innerText = icons['default'];
+        pHand.classList.add("shake-left");
+        cHand.classList.add("shake-right");
+
+        // 1.5 saniye bekle (Heyecan olsun)
+        setTimeout(() => {
+            pHand.classList.remove("shake-left");
+            cHand.classList.remove("shake-right");
+
+            // Bilgisayar Seçimi
+            const choices = ['rock', 'paper', 'scissors'];
+            const cpuChoice = choices[Math.floor(Math.random() * choices.length)];
+            
+            // İkonları güncelle
+            pHand.innerText = icons[playerChoice];
+            cHand.innerText = icons[cpuChoice];
+
+            // Kazananı Belirle
+            let outcome = ""; // win, lose,
