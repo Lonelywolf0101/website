@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Uzay Savaşı | Hüseyin Sedat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+    :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
+    body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; touch-action: none; }
+    
+    .container { position:relative; z-index:10; width:100%; max-width:600px; padding:10px; }
+    .box { background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:20px; box-shadow:0 0 30px rgba(0,0,0,0.5); }
+    
+    /* Üst Bilgi */
+    .hud { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; font-size:14px; }
+    .hud span { background:rgba(0,0,0,0.5); padding:5px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); }
+    
+    /* Oyun Alanı */
+    canvas { background: #000; border: 2px solid var(--neon); border-radius: 10px; box-shadow: 0 0 20px rgba(0,234,255,0.2); cursor: crosshair; display:block; margin:0 auto; }
+    
+    /* Giriş Input ve Buton */
+    .nick-input { padding: 12px; border-radius: 8px; border: 1px solid var(--neon); background: rgba(0,0,0,0.5); color: #fff; font-size: 16px; text-align: center; width: 70%; margin-bottom: 5px; outline: none; transition: 0.3s; }
+    .nick-input:focus { box-shadow: 0 0 15px var(--neon); background: rgba(0,0,0,0.8); }
+
+    #startBtn { padding:15px 40px; font-size:20px; font-weight:bold; background:var(--neon); border:none; border-radius:10px; cursor:pointer; margin-top:10px; box-shadow:0 0 20px var(--neon); color:#000; animation: pulse 1.5s infinite; width: 80%; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    
+    /* Liderlik Tablosu */
+    .leaderboard { margin-top:20px; text-align:left; background:rgba(0,0,0,0.6); padding:15px; border-radius:10px; border:1px solid #333; max-height: 250px; overflow-y: auto; }
+    .leaderboard h3 { margin:0 0 10px 0; color:var(--gold); text-align:center; font-size:16px; position: sticky; top: 0; background: #0c1022; padding: 5px; z-index: 2; }
+    .score-row { display:flex; justify-content:space-between; padding:8px 5px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:13px; }
+    .score-row:nth-child(2) { color: #ffd700; font-weight:bold; } /* Başlık h3 child 1 olduğu için sıralama kayar, burası 1. oyuncu */
+    .score-row:nth-child(3) { color: #c0c0c0; } 
+    .score-row:nth-child(4) { color: #cd7f32; }
+
+    /* Game Over Ekranı */
+    #gameOverScreen { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.95); padding:30px; border-radius:15px; border:2px solid var(--red); display:none; text-align:center; z-index:100; width:80%; box-shadow: 0 0 30px var(--red); }
+    
+    /* Kullanıcı Bilgisi */
+    #userStatusMsg { font-size: 12px; color: var(--green); margin-bottom: 10px; display: none; }
+</style>
+</head>
+<body>
+    
+    <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
+
+    <div class="container">
+        <h2 style="margin:0 0 10px 0; color:var(--neon);">🚀 Uzay Savaşı</h2>
+        
+        <div class="box">
+            <div class="hud">
+                <span style="color:var(--neon)">🪙 Cüzdan: <b id="walletDisplay">...</b></span>
+                <span style="color:var(--green)">🏆 Skor: <b id="scoreDisplay">0</b></span>
+            </div>
+
+            <div style="position:relative;">
+                <canvas id="gameCanvas" width="320" height="480"></canvas>
+                
+                <div id="startScreen" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:10px; z-index:50;">
+                    <h3 style="color:#fff; margin-bottom:5px;">PİLOTA İHTİYAÇ VAR!</h3>
+                    <p style="margin-bottom:15px; font-size:14px; color:#aaa;">Giriş Ücreti: <span style="color:var(--red)">10 Jeton</span></p>
+                    
+                    <div id="userStatusMsg">👤 Üye Girişi Algılandı</div>
+                    <input type="text" id="nicknameInput" class="nick-input" placeholder="Pilot Adı (Nick)" maxlength="12">
+                    
+                    <button id="startBtn" onclick="startGame()">SAVAŞA GİR</button>
+                    <p style="font-size:11px; color:#666; margin-top:15px;">Her gemi +1 Jeton kazandırır.</p>
+                </div>
+
+                <div id="gameOverScreen">
+                    <h2 style="color:var(--red); margin:0 0 10px 0;">GÖREV BAŞARISIZ!</h2>
+                    <p style="font-size:18px;">Skorun: <span id="finalScore" style="color:#fff; font-weight:bold;">0</span></p>
+                    <p style="color:var(--green); margin-bottom:20px;">Kazanılan: +<span id="earnedTokens">0</span> Jeton</p>
+                    <button onclick="location.reload()" style="padding:12px 30px; background:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px;">Tekrar Dene</button>
+                </div>
+            </div>
+
+            <div class="leaderboard">
+                <h3>🏆 EFSANE PİLOTLAR (TOP 15)</h3>
+                <div id="leaderboardList">
+                    <div style="text-align:center; color:#666; font-size:12px;">Sıralama yükleniyor...</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="../index.html#action" style="display:inline-block; margin-top:20px; color:#a8b3bd; text-decoration:none; font-size:14px; border:1px solid #333; padding:8px 15px; border-radius:8px;">← Oyun Lobisine Dön</a>
+    </div>
+
+<script type="module">
+    // --- FIREBASE ENTEGRASYONU ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // --- CONFIG ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyANHre3Yv9RdlGtRPeYH_6ez2PSTaOR-ls",
+      authDomain: "site-c4802.firebaseapp.com",
+      projectId: "site-c4802",
+      storageBucket: "site-c4802.firebasestorage.app",
+      messagingSenderId: "678825640794",
+      appId: "1:678825640794:web:da9846527bfa3a38452963",
+      measurementId: "G-YYJR6G6MM1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // --- 1. OTOMATİK NICK DOLDURMA ---
+    onAuthStateChanged(auth, (user) => {
+        const nickInput = document.getElementById("nicknameInput");
+        const statusMsg = document.getElementById("userStatusMsg");
+        
+        if (user) {
+            const autoNick = user.email.split('@')[0];
+            nickInput.value = autoNick;
+            statusMsg.style.display = "block";
+        } else {
+            nickInput.value = "";
+            statusMsg.style.display = "none";
+        }
+    });
+
+    // --- 2. LİDERLİK TABLOSUNU ÇEKME (TOP 15) ---
+    async function loadLeaderboard() {
+        const listDiv = document.getElementById("leaderboardList");
+        try {
+            // BURASI DEĞİŞTİ: Limit 15 yapıldı
+            const q = query(collection(db, "space_scores"), orderBy("score", "desc"), limit(15));
+            const querySnapshot = await getDocs(q);
+            
+            let html = "";
+            let rank = 1;
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                html += `<div class="score-row">
+                            <span>#${rank} ${data.name}</span>
+                            <span>${data.score} Puan</span>
+                         </div>`;
+                rank++;
+            });
+
+            if(html === "") html = "<div style='text-align:center; color:#666;'>Henüz skor yok. İlk sen ol!</div>";
+            listDiv.innerHTML = html;
+        } catch (e) {
+            console.error("Tablo hatası:", e);
+            listDiv.innerHTML = "<div style='text-align:center; color:#444;'>Sıralama yüklenemedi.</div>";
+        }
+    }
+    loadLeaderboard();
+
+    // --- 3. SKORU KAYDETME ---
+    window.saveScoreToFirebase = async (score, nickname) => {
+        if(score > 0 && nickname) {
+            try {
+                await addDoc(collection(db, "space_scores"), {
+                    name: nickname, 
+                    score: score,
+                    date: new Date()
+                });
+                console.log("Skor veritabanına işlendi.");
+            } catch(e) {
+                console.error("Kayıt hatası:", e);
+            }
+        }
+    }
+</script>
+
+<script>
+    /* === OYUN MOTORU (Canvas) === */
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    
+    // Global Cüzdan
+    let currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
+    document.getElementById("walletDisplay").innerText = currentBalance;
+
+    function updateGlobalWallet(newAmount) {
+        currentBalance = newAmount;
+        document.getElementById("walletDisplay").innerText = currentBalance;
+        localStorage.setItem("huseyin_bakiye", currentBalance);
+    }
+
+    // Oyun Değişkenleri
+    const COST = 10;
+    let score = 0;
+    let isGameOver = false;
+    let animationId;
+    let enemies = [];
+    let bullets = [];
+    let frame = 0;
+    let playerNick = "";
+    
+    const ship = { x: canvas.width/2, y: canvas.height - 50, w: 30, h: 30, speed: 5 };
+    let inputX = canvas.width / 2;
+    
+    function moveShip(e) {
+        const rect = canvas.getBoundingClientRect();
+        let clientX = e.clientX;
+        if(e.touches && e.touches.length > 0) clientX = e.touches[0].clientX;
+        inputX = clientX - rect.left;
+        if(inputX < 0) inputX = 0;
+        if(inputX > canvas.width) inputX = canvas.width;
+    }
+    
+    canvas.addEventListener("mousemove", moveShip);
+    canvas.addEventListener("touchmove", (e) => { e.preventDefault(); moveShip(e); }, {passive: false});
+
+    function startGame() {
+        const nickInput = document.getElementById("nicknameInput");
+        playerNick = nickInput.value.trim();
+
+        if(!playerNick) {
+            alert("Lütfen bir Pilot Adı (Nick) yaz!");
+            nickInput.focus();
+            return;
+        }
+
+        if(currentBalance < COST) { alert("Yetersiz Jeton! En az 10 gerekli."); return; }
+        
+        updateGlobalWallet(currentBalance - COST);
+        
+        document.getElementById("startScreen").style.display = "none";
+        document.getElementById("gameOverScreen").style.display = "none";
+        
+        // Sıfırla
+        score = 0;
+        document.getElementById("scoreDisplay").innerText = score;
+        isGameOver = false;
+        enemies = [];
+        bullets = [];
+        frame = 0;
+        ship.x = canvas.width / 2;
+        inputX = canvas.width / 2;
+        
+        animate();
+    }
+
+    function animate() {
+        if(isGameOver) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        ship.x += (inputX - ship.x) * 0.2;
+
+        // Gemi
+        ctx.fillStyle = "#00eaff";
+        ctx.beginPath();
+        ctx.moveTo(ship.x, ship.y);
+        ctx.lineTo(ship.x - 15, ship.y + 30);
+        ctx.lineTo(ship.x + 15, ship.y + 30);
+        ctx.fill();
+        
+        // Ateş (Seri)
+        if(frame % 10 === 0) bullets.push({ x: ship.x, y: ship.y, w: 4, h: 10, color: "#ff0" });
+        
+        for(let i=0; i<bullets.length; i++) {
+            let b = bullets[i];
+            b.y -= 8;
+            ctx.fillStyle = b.color;
+            ctx.fillRect(b.x - b.w/2, b.y, b.w, b.h);
+            if(b.y < 0) { bullets.splice(i, 1); i--; }
+        }
+        
+        // Düşman
+        if(frame % 50 === 0) {
+            const size = Math.random() * 20 + 20;
+            enemies.push({ x: Math.random() * (canvas.width - size), y: -50, w: size, h: size, speed: Math.random() * 2 + 1 });
+        }
+        
+        for(let i=0; i<enemies.length; i++) {
+            let e = enemies[i];
+            e.y += e.speed;
+            ctx.fillStyle = "#ff4d4d";
+            ctx.fillRect(e.x, e.y, e.w, e.h);
+            
+            for(let j=0; j<bullets.length; j++) {
+                let b = bullets[j];
+                if(b.x > e.x && b.x < e.x + e.w && b.y > e.y && b.y < e.y + e.h) {
+                    enemies.splice(i, 1); i--;
+                    bullets.splice(j, 1); j--;
+                    score += 10;
+                    document.getElementById("scoreDisplay").innerText = score;
+                    break;
+                }
+            }
+            
+            const dist = Math.hypot(ship.x - (e.x + e.w/2), ship.y - (e.y + e.h/2));
+            if(dist < 30) gameOver();
+            if(e.y > canvas.height) { enemies.splice(i, 1); i--; }
+        }
+        
+        frame++;
+        animationId = requestAnimationFrame(animate);
+    }
+
+    function gameOver() {
+        isGameOver = true;
+        cancelAnimationFrame(animationId);
+        
+        const earned = score / 10; 
+        updateGlobalWallet(currentBalance + earned);
+        
+        document.getElementById("finalScore").innerText = score;
+        document.getElementById("earnedTokens").innerText = earned;
+        document.getElementById("gameOverScreen").style.display = "block";
+        
+        // Skoru Kaydet
+        if(window.saveScoreToFirebase) {
+            window.saveScoreToFirebase(score, playerNick);
+        }
+    }
+    
+    const bg=document.getElementById("bg"),bgCtx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:30},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2}));function bgLoop(){bgCtx.clearRect(0,0,bg.width,bg.height);bgCtx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;bgCtx.beginPath();bgCtx.arc(d.x,d.y,1,0,Math.PI*2);bgCtx.fill()});requestAnimationFrame(bgLoop)}bgLoop();
+</script>
+</body>
+</html>
