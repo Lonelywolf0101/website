@@ -8,7 +8,7 @@
 <style>
     :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
     
-    /* Sayfa Ayarları: Dokunma ve seçmeyi kapat */
+    /* Sayfa Ayarları */
     body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
     
     .container { position:relative; z-index:10; width:100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
@@ -23,31 +23,63 @@
         cursor: crosshair; 
         display:block; 
         margin:0 auto;
-        /* Mobil Uyum */
+        /* Masaüstü Varsayılan */
         max-width: 100%;
-        max-height: 70vh; 
+        max-height: 60vh; 
         width: auto;
         height: auto;
         object-fit: contain;
         touch-action: none; 
     }
     
-    @media (max-width: 600px) {
-        .box { padding: 5px; border: none; background: transparent; box-shadow: none; width: 100%; }
-        canvas { max-height: 75vh; width: 100%; }
-        h2 { font-size: 1.2rem; margin-bottom: 5px; }
-        .leaderboard { display: none; } 
-    }
-
     .hud { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; font-size:14px; width: 100%; max-width: 320px; margin: 0 auto 10px auto; }
     .hud span { background:rgba(0,0,0,0.8); padding:5px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); font-size: 12px; }
     
+    .leaderboard { margin-top:10px; text-align:left; background:rgba(0,0,0,0.8); padding:10px; border-radius:10px; border:1px solid #333; max-height: 150px; overflow-y: auto; width: 100%; max-width: 320px; margin: 10px auto; }
+    
+    /* === MOBİL ÖZEL AYARLAR === */
+    @media (max-width: 600px) {
+        .box { 
+            padding: 5px; 
+            border: none; 
+            background: transparent; 
+            box-shadow: none; 
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Canvas'ı biraz küçültüyoruz ki alttaki tabloya yer kalsın */
+        canvas { 
+            max-height: 55vh; 
+            width: 100%; 
+        }
+        
+        h2 { font-size: 1rem; margin: 5px 0; }
+        
+        /* Tabloyu geri getirdik ve boyutunu ayarladık */
+        .leaderboard { 
+            display: block !important; 
+            max-height: 15vh; /* Ekranın %15'i kadar yer kaplasın */
+            font-size: 11px;
+            padding: 5px;
+            margin-top: 5px;
+        } 
+        
+        .back-btn-link {
+            margin-top: 5px;
+            font-size: 11px;
+            padding: 5px 12px;
+            z-index: 1000; /* En üstte olsun */
+        }
+    }
+
     .nick-input { padding: 12px; border-radius: 8px; border: 1px solid var(--neon); background: rgba(0,0,0,0.5); color: #fff; font-size: 16px; text-align: center; width: 70%; margin-bottom: 5px; outline: none; transition: 0.3s; }
     
     #startBtn { padding:15px 40px; font-size:20px; font-weight:bold; background:var(--neon); border:none; border-radius:10px; cursor:pointer; margin-top:10px; box-shadow:0 0 20px var(--neon); color:#000; animation: pulse 1.5s infinite; width: 80%; }
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     
-    .leaderboard { margin-top:10px; text-align:left; background:rgba(0,0,0,0.8); padding:10px; border-radius:10px; border:1px solid #333; max-height: 150px; overflow-y: auto; width: 100%; max-width: 320px; margin: 10px auto; }
     .score-row { display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px; }
     
     #gameOverScreen { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.95); padding:20px; border-radius:15px; border:2px solid var(--red); display:none; text-align:center; z-index:100; width:85%; max-width: 300px; box-shadow: 0 0 30px var(--red); }
@@ -210,7 +242,7 @@
 </script>
 
 <script>
-    /* === OYUN MOTORU (FPS SABİTLEME EKLENDİ) === */
+    /* === OYUN MOTORU (60 FPS FIXED) === */
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     
@@ -235,12 +267,12 @@
     const ship = { x: canvas.width/2, y: canvas.height - 50, w: 30, h: 30, speed: 5 };
     let inputX = canvas.width / 2;
     
-    // --- FPS KONTROL DEĞİŞKENLERİ ---
+    // FPS KONTROL
     let lastTime = 0;
     const fps = 60;
-    const fpsInterval = 1000 / fps; // Yaklaşık 16.6ms
+    const fpsInterval = 1000 / fps;
 
-    // --- DOKUNMATİK KONTROL ---
+    // DOKUNMATİK
     function moveShip(e) {
         if(isGameOver) return;
         const rect = canvas.getBoundingClientRect();
@@ -289,7 +321,7 @@
         frame = 0;
         ship.x = canvas.width / 2;
         inputX = canvas.width / 2;
-        lastTime = 0; // Zamanlayıcıyı sıfırla
+        lastTime = 0;
         
         animate();
     }
@@ -297,26 +329,19 @@
     function animate(currentTime) {
         if(isGameOver) return;
 
-        // Bir sonraki kareyi iste (Ama hemen çizmeyeceğiz)
         animationId = requestAnimationFrame(animate);
 
-        // Zaman kontrolü yap (FPS Sabitleme)
         if (!currentTime) currentTime = performance.now();
         const elapsed = currentTime - lastTime;
 
-        // Eğer yeterince zaman geçmediyse (16ms'den az), bu kareyi atla (ÇİZME)
         if (elapsed < fpsInterval) return;
 
-        // Zamanı ayarla (Gecikmeyi hesaba katarak)
         lastTime = currentTime - (elapsed % fpsInterval);
-
-        // --- BURADAN AŞAĞISI ARTIK HEP SABİT HIZDA ÇALIŞIR ---
         
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         ship.x += (inputX - ship.x) * 0.2;
 
-        // Gemi
         ctx.fillStyle = "#00eaff";
         ctx.beginPath();
         ctx.moveTo(ship.x, ship.y);
@@ -324,7 +349,6 @@
         ctx.lineTo(ship.x + 15, ship.y + 30);
         ctx.fill();
         
-        // Mermi
         if(frame % 18 === 0) bullets.push({ x: ship.x, y: ship.y, w: 4, h: 10, color: "#ff0" });
         for(let i=0; i<bullets.length; i++) {
             let b = bullets[i];
@@ -334,7 +358,6 @@
             if(b.y < 0) { bullets.splice(i, 1); i--; }
         }
         
-        // Zorluk
         let spawnRate = Math.max(20, 50 - Math.floor(score / 50));
         let speedMultiplier = 1 + (score / 1000); 
 
@@ -361,7 +384,7 @@
             if(dist < 30 || e.y > canvas.height) { gameOver(); return; }
         }
         
-        frame++; // Sadece çizim yaptığımızda frame artırıyoruz
+        frame++;
     }
 
     function gameOver() {
