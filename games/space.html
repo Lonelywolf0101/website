@@ -8,13 +8,46 @@
 <style>
     :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
     
-    /* Sayfa Ayarları */
+    /* Temel Ayarlar */
     body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
     
-    .container { position:relative; z-index:10; width:100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .main-container { position:relative; z-index:10; width:100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; }
     
-    .box { background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:20px; box-shadow:0 0 30px rgba(0,0,0,0.5); max-width: 600px; width: 90%; }
-    
+    /* --- YENİ DÜZEN: YAN YANA KUTULAR --- */
+    .game-wrapper {
+        display: flex;
+        flex-direction: row; /* Yan yana diz */
+        align-items: flex-start;
+        justify-content: center;
+        gap: 20px;
+        max-width: 1000px;
+        width: 100%;
+    }
+
+    /* 1. OYUN KUTUSU (SOL) */
+    .game-box { 
+        background:var(--glass); 
+        border:1px solid rgba(255,255,255,.1); 
+        backdrop-filter:blur(10px); 
+        border-radius:20px; 
+        padding:20px; 
+        box-shadow:0 0 30px rgba(0,0,0,0.5); 
+        flex: 0 0 auto; /* Genişliği içeriğe göre */
+    }
+
+    /* 2. SKOR TABLOSU KUTUSU (SAĞ) */
+    .leaderboard-box {
+        background: rgba(0,0,0,0.8);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 15px;
+        padding: 15px;
+        width: 250px; /* Sabit genişlik */
+        max-height: 500px; /* Oyun alanı kadar boy */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* Dışarı taşmayı engelle */
+    }
+
     canvas { 
         background: #000; 
         border: 2px solid var(--neon); 
@@ -22,25 +55,21 @@
         box-shadow: 0 0 20px rgba(0,234,255,0.2); 
         cursor: crosshair; 
         display:block; 
-        margin:0 auto;
-        /* Masaüstü Varsayılan */
-        max-width: 100%;
-        max-height: 60vh; 
-        width: auto;
-        height: auto;
-        object-fit: contain;
-        touch-action: none; 
+        /* Masaüstü Boyut */
+        width: 320px; 
+        height: 480px;
     }
     
-    .hud { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; font-size:14px; width: 100%; max-width: 320px; margin: 0 auto 10px auto; }
-    .hud span { background:rgba(0,0,0,0.8); padding:5px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); font-size: 12px; }
-    
-    .leaderboard { margin-top:10px; text-align:left; background:rgba(0,0,0,0.8); padding:10px; border-radius:10px; border:1px solid #333; max-height: 150px; overflow-y: auto; width: 100%; max-width: 320px; margin: 10px auto; }
-    
-    /* === MOBİL ÖZEL AYARLAR === */
-    @media (max-width: 600px) {
-        .box { 
-            padding: 5px; 
+    /* --- MOBİL UYUM (Medya Sorgusu) --- */
+    @media (max-width: 768px) {
+        .game-wrapper {
+            flex-direction: column; /* Mobilde alt alta dönsün */
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .game-box { 
+            padding: 10px; 
             border: none; 
             background: transparent; 
             box-shadow: none; 
@@ -50,37 +79,45 @@
             align-items: center;
         }
         
-        /* Canvas'ı biraz küçültüyoruz ki alttaki tabloya yer kalsın */
-        canvas { 
-            max-height: 55vh; 
-            width: 100%; 
+        .leaderboard-box {
+            width: 95%; /* Mobilde ekranı kaplasın */
+            max-width: 350px;
+            max-height: 150px; /* Yükseklik sınırı (Scroll çıkacak) */
+            padding: 10px;
+            order: 2; /* Oyunun altında kalsın */
         }
-        
-        h2 { font-size: 1rem; margin: 5px 0; }
-        
-        /* Tabloyu geri getirdik ve boyutunu ayarladık */
-        .leaderboard { 
-            display: block !important; 
-            max-height: 15vh; /* Ekranın %15'i kadar yer kaplasın */
-            font-size: 11px;
-            padding: 5px;
-            margin-top: 5px;
-        } 
-        
-        .back-btn-link {
-            margin-top: 5px;
-            font-size: 11px;
-            padding: 5px 12px;
-            z-index: 1000; /* En üstte olsun */
+
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+            max-height: 55vh; /* Mobilde ekranın yarısı */
+            object-fit: contain;
         }
+
+        h2 { font-size: 1.2rem; margin: 5px 0; }
     }
 
-    .nick-input { padding: 12px; border-radius: 8px; border: 1px solid var(--neon); background: rgba(0,0,0,0.5); color: #fff; font-size: 16px; text-align: center; width: 70%; margin-bottom: 5px; outline: none; transition: 0.3s; }
+    /* İçerik Stilleri */
+    .hud { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; font-size:14px; width: 100%; max-width: 320px; }
+    .hud span { background:rgba(0,0,0,0.8); padding:5px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); font-size: 12px; }
+    
+    .leaderboard-list {
+        overflow-y: auto; /* İÇ SCROLL: Sığmayanlar kaydırılır */
+        flex-grow: 1;
+        margin-top: 10px;
+        padding-right: 5px;
+    }
+    /* Scrollbar Tasarımı */
+    .leaderboard-list::-webkit-scrollbar { width: 5px; }
+    .leaderboard-list::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 10px; }
+    .leaderboard-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+
+    .score-row { display:flex; justify-content:space-between; padding:8px 5px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px; text-align: left; }
+    
+    .nick-input { padding: 12px; border-radius: 8px; border: 1px solid var(--neon); background: rgba(0,0,0,0.5); color: #fff; font-size: 16px; text-align: center; width: 80%; margin-bottom: 5px; outline: none; transition: 0.3s; }
     
     #startBtn { padding:15px 40px; font-size:20px; font-weight:bold; background:var(--neon); border:none; border-radius:10px; cursor:pointer; margin-top:10px; box-shadow:0 0 20px var(--neon); color:#000; animation: pulse 1.5s infinite; width: 80%; }
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-    
-    .score-row { display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px; }
     
     #gameOverScreen { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.95); padding:20px; border-radius:15px; border:2px solid var(--red); display:none; text-align:center; z-index:100; width:85%; max-width: 300px; box-shadow: 0 0 30px var(--red); }
     
@@ -94,44 +131,48 @@
     
     <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
 
-    <div class="container">
-        <h2 style="color:var(--neon);">🚀 Uzay Savaşı</h2>
+    <div class="main-container">
+        <h2 style="color:var(--neon); margin-bottom: 10px;">🚀 Uzay Savaşı</h2>
         
-        <div class="box">
-            <div class="hud">
-                <span style="color:var(--neon)">🪙 <b id="walletDisplay">...</b></span>
-                <span style="color:var(--green)">🏆 <b id="scoreDisplay">0</b></span>
-            </div>
-
-            <div style="position:relative; width: 100%; display:flex; justify-content:center;">
-                <canvas id="gameCanvas" width="320" height="480"></canvas>
-                
-                <div id="startScreen" style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:100%; height:100%; max-width:320px; background:rgba(0,0,0,0.85); display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:10px; z-index:50;">
-                    <h3 style="color:#fff; margin-bottom:5px;">PİLOTA İHTİYAÇ VAR!</h3>
-                    <p style="margin-bottom:15px; font-size:14px; color:#aaa;">Giriş: <span style="color:var(--red)">10 Jeton</span></p>
-                    
-                    <div id="userStatusMsg">👤 Giriş Algılandı</div>
-                    <input type="text" id="nicknameInput" class="nick-input" placeholder="Pilot Adı" maxlength="12">
-                    
-                    <button id="startBtn" onclick="startGame()">SAVAŞA GİR</button>
+        <div class="game-wrapper">
+            
+            <div class="game-box">
+                <div class="hud">
+                    <span style="color:var(--neon)">🪙 <b id="walletDisplay">...</b></span>
+                    <span style="color:var(--green)">🏆 <b id="scoreDisplay">0</b></span>
                 </div>
 
-                <div id="gameOverScreen">
-                    <h2 style="color:var(--red); margin:0 0 10px 0;">GÖREV BAŞARISIZ!</h2>
-                    <p style="font-size:18px;">Skor: <span id="finalScore" style="color:#fff; font-weight:bold;">0</span></p>
-                    <p style="color:var(--green); margin-bottom:10px;">+<span id="earnedTokens">0</span> Jeton</p>
-                    <div id="saveStatus">Kontrol ediliyor...</div>
-                    <br>
-                    <button onclick="restartGame()" style="padding:10px 25px; background:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:14px;">Tekrar Dene</button>
+                <div style="position:relative; width: 100%; display:flex; justify-content:center;">
+                    <canvas id="gameCanvas" width="320" height="480"></canvas>
+                    
+                    <div id="startScreen" style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:100%; height:100%; max-width:320px; background:rgba(0,0,0,0.85); display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:10px; z-index:50;">
+                        <h3 style="color:#fff; margin-bottom:5px;">PİLOTA İHTİYAÇ VAR!</h3>
+                        <p style="margin-bottom:15px; font-size:14px; color:#aaa;">Giriş: <span style="color:var(--red)">10 Jeton</span></p>
+                        
+                        <div id="userStatusMsg">👤 Giriş Algılandı</div>
+                        <input type="text" id="nicknameInput" class="nick-input" placeholder="Pilot Adı" maxlength="12">
+                        
+                        <button id="startBtn" onclick="startGame()">SAVAŞA GİR</button>
+                    </div>
+
+                    <div id="gameOverScreen">
+                        <h2 style="color:var(--red); margin:0 0 10px 0;">GÖREV BAŞARISIZ!</h2>
+                        <p style="font-size:18px;">Skor: <span id="finalScore" style="color:#fff; font-weight:bold;">0</span></p>
+                        <p style="color:var(--green); margin-bottom:10px;">+<span id="earnedTokens">0</span> Jeton</p>
+                        <div id="saveStatus">Kontrol ediliyor...</div>
+                        <br>
+                        <button onclick="restartGame()" style="padding:10px 25px; background:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:14px;">Tekrar Dene</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="leaderboard">
-                <h3 style="margin:0 0 5px 0; color:var(--gold); text-align:center; font-size:14px;">🏆 EFSANE PİLOTLAR</h3>
-                <div id="leaderboardList">
+            <div class="leaderboard-box">
+                <h3 style="margin:0 0 10px 0; color:var(--gold); text-align:center; font-size:14px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">🏆 EFSANE PİLOTLAR</h3>
+                <div id="leaderboardList" class="leaderboard-list">
                     <div style="text-align:center; color:#666; font-size:12px;">Yükleniyor...</div>
                 </div>
             </div>
+
         </div>
 
         <a href="../index.html#action" class="back-btn-link">← Lobiye Dön</a>
@@ -175,7 +216,7 @@
     window.refreshLeaderboard = async function() {
         const listDiv = document.getElementById("leaderboardList");
         try {
-            const q = query(collection(db, "space_scores"), orderBy("score", "desc"), limit(10));
+            const q = query(collection(db, "space_scores"), orderBy("score", "desc"), limit(15)); // 15 Kişi
             const querySnapshot = await getDocs(q);
             let allScores = [];
             querySnapshot.forEach((doc) => { allScores.push(doc.data()); });
@@ -190,7 +231,7 @@
 
             let html = "";
             let rank = 1;
-            allScores.slice(0, 10).forEach((data) => {
+            allScores.slice(0, 15).forEach((data) => {
                 let rowStyle = data.isGuest ? "background:rgba(0, 234, 255, 0.2); border:1px solid var(--neon);" : "";
                 let rankColor = rank === 1 ? "color:#ffd700;" : (rank === 2 ? "color:#c0c0c0;" : (rank === 3 ? "color:#cd7f32;" : ""));
                 html += `<div class="score-row" style="${rowStyle}"><span style="${rankColor}">#${rank} ${data.name}</span><span style="font-weight:bold;">${data.score}</span></div>`;
@@ -272,7 +313,6 @@
     const fps = 60;
     const fpsInterval = 1000 / fps;
 
-    // DOKUNMATİK
     function moveShip(e) {
         if(isGameOver) return;
         const rect = canvas.getBoundingClientRect();
