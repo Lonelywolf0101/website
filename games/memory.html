@@ -48,11 +48,19 @@
     }
 
     .card.flipped { transform: rotateY(180deg); background: rgba(124, 77, 255, 0.2); box-shadow: 0 0 15px var(--neon); }
-    .card.matched { border-color: var(--green); background: rgba(0, 255, 136, 0.1); pointer-events: none; }
+    .card.matched { border-color: var(--green); background: rgba(0, 255, 136, 0.1); pointer-events: none; opacity: 0.6; }
 
     .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; justify-content: center; align-items: center; border-radius: 8px; }
     .card-front { transform: rotateY(180deg); }
     .card-back { background: rgba(0,0,0,0.5); color: var(--neon); font-size: 24px; font-weight: bold; }
+
+    /* SEVİYE BİLDİRİMİ (TOAST) */
+    #levelToast {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.9); border: 2px solid var(--green); color: #fff;
+        padding: 20px; border-radius: 15px; z-index: 200; text-align: center;
+        display: none; box-shadow: 0 0 30px var(--green); pointer-events: none;
+    }
 
     /* MOBİL UYUM */
     @media (max-width: 768px) {
@@ -91,9 +99,16 @@
                 <div class="hud">
                     <span style="color:var(--neon)">🪙 <b id="walletDisplay">...</b></span>
                     <span style="color:var(--gold)">⏳ <b id="timeDisplay">60</b>s</span>
+                    <span style="color:var(--green)">🏆 <b id="scoreDisplay">0</b></span>
                 </div>
 
                 <div id="gameGrid" class="grid-container"></div>
+                
+                <div id="levelToast">
+                    <h2 style="margin:0; color:var(--green)">SEVİYE TAMAMLANDI!</h2>
+                    <p id="levelBonusText" style="margin:5px 0; font-size:14px; color:#ddd">Bonus: +100 Puan</p>
+                    <p style="margin:0; font-size:12px; color:var(--red)">Süre -1 Saniye Azaldı!</p>
+                </div>
 
                 <div id="overlayScreen">
                     <h3 id="screenTitle" style="color:#fff; margin-bottom:5px;">HAFIZANI TEST ET</h3>
@@ -159,7 +174,6 @@
     window.refreshLeaderboard = async function() {
         const listDiv = document.getElementById("leaderboardList");
         try {
-            // BURAYA DİKKAT: memory_scores koleksiyonunu kullanıyoruz
             const q = query(collection(db, "memory_scores"), orderBy("score", "desc"), limit(15));
             const querySnapshot = await getDocs(q);
             let allScores = [];
@@ -186,27 +200,27 @@
     }
     window.refreshLeaderboard();
 
-    // --- KAYIT FONKSİYONU ---
+    // --- KAYIT FONKSİYONU (SADECE OYUN BİTİNCE ÇAĞRILIR) ---
     window.saveScoreToFirebase = async (score, nickname) => {
         const statusEl = document.getElementById("saveStatus");
         
         if (window.isUserLoggedIn) {
             try {
-                statusEl.innerText = "Kaydediliyor...";
+                statusEl.innerText = "Skor kaydediliyor...";
                 const docRef = doc(db, "memory_scores", nickname);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     if (score > docSnap.data().score) {
                         await updateDoc(docRef, { score: score, date: new Date() });
-                        statusEl.innerText = "✅ Yeni REKOR!";
+                        statusEl.innerText = "✅ Yeni REKOR: " + score;
                         statusEl.style.color = "#00ff88";
                     } else {
-                        statusEl.innerText = "⚠️ Eski rekorun daha iyi.";
+                        statusEl.innerText = "⚠️ Eski rekorun ("+docSnap.data().score+") daha iyiydi.";
                         statusEl.style.color = "#ffd700";
                     }
                 } else {
                     await setDoc(docRef, { name: nickname, score: score, date: new Date() });
-                    statusEl.innerText = "✅ Kaydedildi!";
+                    statusEl.innerText = "✅ İlk skorun kaydedildi!";
                     statusEl.style.color = "#00ff88";
                 }
                 window.refreshLeaderboard();
@@ -227,7 +241,7 @@
 </script>
 
 <script>
-    /* === OYUN MANTIĞI === */
+    /* === OYUN MANTIĞI (SURVIVAL MOD) === */
     let currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
     document.getElementById("walletDisplay").innerText = currentBalance;
 
@@ -248,10 +262,17 @@
     let grid = document.getElementById("gameGrid");
     let flippedCards = [];
     let matchedPairs = 0;
+    
+    // YENİ DEĞİŞKENLER
+    let currentLevel = 1;
+    let maxTime = 60; // Başlangıç süresi
     let timer = 60;
     let timerInterval;
     let isGameActive = false;
     let playerNick = "";
+    
+    let totalScore = 0; // Biriken Toplam Puan
+    let sessionEarnings = 0; // Bu turda kazanılan toplam jeton
 
     function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
@@ -266,7 +287,14 @@
         if(!playerNick) { alert("İsim gir!"); return; }
         if(currentBalance < COST) { alert("Yetersiz Jeton!"); return; }
         
+        // Giriş ücretini sadece İLK başta alıyoruz
         updateGlobalWallet(currentBalance - COST);
+        
+        // Değişkenleri Sıfırla
+        currentLevel = 1;
+        maxTime = 60;
+        totalScore = 0;
+        sessionEarnings = 0;
         
         document.getElementById("overlayScreen").style.display = "none";
         document.getElementById("saveStatus").innerText = "";
@@ -278,9 +306,13 @@
         grid.innerHTML = "";
         flippedCards = [];
         matchedPairs = 0;
-        timer = 60;
-        isGameActive = true;
+        
+        // Yeni tur için süreyi ayarla
+        timer = maxTime;
         document.getElementById("timeDisplay").innerText = timer;
+        document.getElementById("scoreDisplay").innerText = totalScore;
+        
+        isGameActive = true;
         
         shuffle(cardsArray);
         
@@ -329,7 +361,11 @@
             c1.classList.add("matched");
             c2.classList.add("matched");
             matchedPairs++;
-            if (matchedPairs === 8) endGame(true);
+            
+            // TÜM KARTLAR BULUNDU MU? (8 Çift)
+            if (matchedPairs === 8) {
+                levelUp();
+            }
         } else {
             c1.classList.remove("flipped");
             c2.classList.remove("flipped");
@@ -337,7 +373,39 @@
         flippedCards = [];
     }
 
+    function levelUp() {
+        clearInterval(timerInterval);
+        isGameActive = false;
+
+        // PUAN HESAPLAMA: Kalan Süre * 10
+        let roundBonus = timer * 10;
+        totalScore += roundBonus;
+        
+        // KAZANÇ HESAPLAMA: Puan / 10 (Örn: 30sn arttıysa 300 Puan -> 30 Jeton)
+        let roundEarnings = Math.floor(roundBonus / 10);
+        sessionEarnings += roundEarnings;
+        
+        // Jetonu hemen cüzdana ekleyelim (Oyuncuyu mutlu et)
+        updateGlobalWallet(currentBalance + roundEarnings);
+        
+        // BİLDİRİM GÖSTER
+        const toast = document.getElementById("levelToast");
+        document.getElementById("levelBonusText").innerText = `Bonus: +${roundBonus} Puan | +${roundEarnings} Jeton`;
+        toast.style.display = "block";
+
+        // ZORLAŞTIRMA: Süreyi 1 saniye kısalt (Min 10 saniye)
+        if(maxTime > 10) maxTime--;
+        currentLevel++;
+
+        // 2 Saniye sonra yeni tura başla
+        setTimeout(() => {
+            toast.style.display = "none";
+            resetGame();
+        }, 2000);
+    }
+
     function endGame(win) {
+        // win parametresi teknik olarak false gelir çünkü süre bitti
         isGameActive = false;
         clearInterval(timerInterval);
         
@@ -349,22 +417,17 @@
         
         btn.innerText = "TEKRAR OYNA";
         
-        if (win) {
-            // Skor Hesabı: Kalan Süre * 10
-            let score = timer * 10;
-            let earned = Math.floor(score / 20); // Örnek ödül
-            updateGlobalWallet(currentBalance + earned);
-            
-            title.innerText = "Tebrikler! 🎉";
-            title.style.color = "var(--green)";
-            desc.innerHTML = `Puan: <b style="color:#fff">${score}</b> <br> Kazanç: <b style="color:var(--green)">+${earned} Jeton</b>`;
-            
-            if(window.saveScoreToFirebase) window.saveScoreToFirebase(score, playerNick);
-        } else {
-            title.innerText = "Süre Doldu! 💀";
-            title.style.color = "var(--red)";
-            desc.innerHTML = "Tüm kartları bulamadın.";
-        }
+        // SÜRE BİTTİ EKRANI
+        title.innerText = "OYUN BİTTİ! 💀";
+        title.style.color = "var(--red)";
+        desc.innerHTML = `
+            Ulaşılan Seviye: <b style="color:#fff">${currentLevel}</b><br>
+            Toplam Puan: <b style="color:var(--neon)">${totalScore}</b><br>
+            Toplam Kazanç: <b style="color:var(--green)">+${sessionEarnings} Jeton</b>
+        `;
+        
+        // Sadece oyun tamamen bittiğinde skoru veritabanına kaydet
+        if(window.saveScoreToFirebase) window.saveScoreToFirebase(totalScore, playerNick);
     }
 
     // Arkaplan efekti
