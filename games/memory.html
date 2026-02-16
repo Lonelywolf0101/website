@@ -435,5 +435,32 @@
     // Arkaplan efekti
     const bg=document.getElementById("bg"),bgCtx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));function bgLoop(){bgCtx.clearRect(0,0,bg.width,bg.height);bgCtx.fillStyle="#7c4dff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;bgCtx.beginPath();bgCtx.arc(d.x,d.y,1.2,0,Math.PI*2);bgCtx.fill()});requestAnimationFrame(bgLoop)}bgLoop();
 </script>
+<section style="max-width:800px; margin: 40px auto; padding: 20px; text-align: left; background: rgba(0,0,0,0.8); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); color: #ccc; line-height: 1.6;">
+    <h2 style="color:var(--neon); border-bottom:1px solid var(--neon); padding-bottom:10px; margin-bottom:20px;">Uzay Hafızası: Zeka ve Odaklanma Oyunu</h2>
+    
+    <article>
+        <h3 style="color:#fff;">Hafızanızı Test Edin</h3>
+        <p>
+            Uzay Hafızası (Memory Match), görsel hafızanızı ve odaklanma yeteneğinizi geliştirmek için tasarlanmış bir zeka oyunudur.
+            Karışık olarak dizilen kartların eşlerini en kısa sürede bularak beyninizi egzersiz yapmaya zorlar.
+        </p>
+
+        <h3 style="color:#fff;">Survival (Hayatta Kalma) Modu</h3>
+        <p>
+            Bu oyun sıradan bir hafıza oyunu değildir. Her seviyeyi tamamladığınızda oyun zorlaşır:
+        </p>
+        <ul style="margin-left:20px;">
+            <li>Süre her turda 1 saniye azalır.</li>
+            <li>Daha hızlı düşünmeniz ve karar vermeniz gerekir.</li>
+            <li>Başarılı olduğunuz her saniye için ekstra Jeton kazanırsınız.</li>
+        </ul>
+
+        <h3 style="color:#fff;">Neden Oynamalısınız?</h3>
+        <p>
+            Bilimsel araştırmalar, düzenli hafıza egzersizlerinin bilişsel yetenekleri artırdığını göstermektedir. 
+            Bu oyun, JavaScript algoritmaları ile rastgele dağıtılan kartlar sayesinde her seferinde benzersiz bir deneyim sunar.
+        </p>
+    </article>
+</section>
 </body>
 </html>
