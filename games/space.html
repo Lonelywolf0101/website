@@ -446,5 +446,32 @@
     
     const bg=document.getElementById("bg"),bgCtx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:30},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2}));function bgLoop(){bgCtx.clearRect(0,0,bg.width,bg.height);bgCtx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;bgCtx.beginPath();bgCtx.arc(d.x,d.y,1,0,Math.PI*2);bgCtx.fill()});requestAnimationFrame(bgLoop)}bgLoop();
 </script>
+<section style="max-width:800px; margin: 40px auto; padding: 20px; text-align: left; background: rgba(0,0,0,0.8); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); color: #ccc; line-height: 1.6;">
+    <h2 style="color:var(--neon); border-bottom:1px solid var(--neon); padding-bottom:10px; margin-bottom:20px;">Uzay Savaşı: Oyun Rehberi ve Teknik Detaylar</h2>
+    
+    <article>
+        <h3 style="color:#fff;">Oyunun Amacı Nedir?</h3>
+        <p>
+            Uzay Savaşı, reflekslerinizi test eden, HTML5 Canvas teknolojisi üzerine kurulu sonsuz bir aksiyon oyunudur. 
+            Amacınız, neon atmosferli derin uzayda geminizle ilerlerken, üzerinize gelen düşman filolarını yok etmek ve hayatta kalmaktır. 
+            Vurduğunuz her düşman size puan ve jeton kazandırırken, kaçırdığınız her düşman oyunun bitmesine neden olabilir.
+        </p>
+
+        <h3 style="color:#fff;">Nasıl Oynanır?</h3>
+        <ul style="margin-left:20px;">
+            <li><strong>Hareket:</strong> Gemiyi kontrol etmek için farenizi veya parmağınızı sağa-sola sürükleyin.</li>
+            <li><strong>Ateş Etme:</strong> Gemi otomatik ateş eder, sizin nişan almanız yeterlidir.</li>
+            <li><strong>Kritik Kural:</strong> Düşman gemilerinin ekranın altına ulaşmasına izin vermeyin!</li>
+        </ul>
+
+        <h3 style="color:#fff;">Teknik Altyapı (Geliştirici Notları)</h3>
+        <p>
+            Bu oyun, modern web teknolojileri kullanılarak <strong>Hüseyin Sedat</strong> tarafından geliştirilmiştir. 
+            Arka planda skor takibi için <strong>Google Firebase Firestore</strong> veritabanı kullanılır. 
+            Bu sayede "Liderlik Tablosu" anlık olarak güncellenir ve dünyanın her yerinden oyuncularla yarışabilirsiniz.
+            Oyun motoru, 60 FPS sabit hızda çalışacak şekilde optimize edilmiş saf JavaScript (Vanilla JS) kodlarından oluşur.
+        </p>
+    </article>
+</section>
 </body>
 </html>
