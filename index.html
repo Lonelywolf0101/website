@@ -1,368 +1,72 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang='tr'>
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4797136451656104"
-     crossorigin="anonymous"></script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hüseyin Sedat | Portfolio</title>
-  <style>
-    :root{ --bg:#05060b; --bg2:#0c0f1a; --text:#eaeaea; --muted:#a8b3bd; --neon:#00eaff; --accent:#7c4dff; --glass: rgba(255,255,255,.06); --br:14px; --max:1200px; }
-    *{ box-sizing:border-box; margin:0; padding:0; }
-    a { text-decoration: none !important; color: inherit; }
-    body{ font-family:"Poppins",sans-serif; background: radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:var(--text); overflow-x:hidden; }
-    nav{ position:sticky;top:0;z-index:50; backdrop-filter: blur(10px); background: rgba(5,6,11,.7); border-bottom:1px solid rgba(255,255,255,.05); }
-    .nav-wrap{ max-width:var(--max); margin:auto; display:flex; justify-content:space-between; align-items:center; padding:14px 20px; }
-    .brand{ font-weight:700; font-size:20px; color:var(--neon); }
-    .hamburger { font-size: 28px; cursor: pointer; color: var(--neon); user-select: none; z-index: 2001; }
-    .mobile-menu { position: fixed; top: 0; right: -100%; width: 280px; height: 100vh; background: rgba(5, 6, 11, 0.98); backdrop-filter: blur(15px); border-left: 1px solid rgba(255,255,255,0.1); padding: 80px 30px; display: flex; flex-direction: column; gap: 20px; transition: right 0.35s ease-in-out; z-index: 3000; box-shadow: -10px 0 30px rgba(0,0,0,0.8); }
-    .mobile-menu.open { right: 0; }
-    .close-btn { position: absolute; top: 20px; right: 25px; font-size: 32px; line-height: 1; color: var(--neon); cursor: pointer; transition: 0.3s; font-weight: 300; z-index: 3001; display: block; }
-    .close-btn:hover { color: #fff; transform: none; }
-    .mobile-menu a.menu-link { font-size: 20px; color: var(--text); border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; transition: 0.3s; }
-    .mobile-menu a.menu-link:hover { color: var(--neon); padding-left: 10px; }
-    header.hero{ min-height:85vh; display:flex; flex-direction: column; justify-content: center; align-items: center; text-align:center; padding: 80px 20px; }
-    .title{ font-size:clamp(35px,6vw,60px); color:var(--neon); font-weight:700; text-shadow:0 0 20px rgba(0,234,255,.6); line-height: 1.2; }
-    .typewriter{ font-size:clamp(16px, 4vw, 22px); margin-top:15px; color:var(--muted); }
-    .cta { margin-top: 35px; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; width: 100%; }
-    .btn{ display: inline-block; padding:12px 24px; border-radius:10px; background:rgba(0,234,255,.1); border:1px solid rgba(0,234,255,.3); color:white; font-weight: 600; transition:.3s; white-space: nowrap; cursor: pointer; }
-    .btn:hover{ background: var(--neon); color: #000; box-shadow:0 0 20px rgba(0,234,255,.5); transform:translateY(-3px); }
-    section{ padding:80px 20px; }
-    .container{ max-width:var(--max); margin:auto; }
-    h2.sec-title{ font-size:32px; font-weight:800; margin-bottom:20px; background:linear-gradient(90deg, #00eaff, #7c4dff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; text-shadow:0 0 15px rgba(0,234,255,.2); }
-    .grid{ display:grid; gap:25px; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); width:100%; margin-bottom: 40px; }
-    .card{ background:var(--glass); padding:25px; border-radius:var(--br); border:1px solid rgba(255,255,255,.08); transition:.3s; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
-    .card:hover{ transform:translateY(-8px); border-color:var(--neon); box-shadow:0 10px 30px rgba(0,234,255,.15); }
-    .card h3 { margin-bottom: 10px; color: #fff; }
-    .card p { color: var(--muted); font-size: 14px; margin-bottom: 15px; }
-    .card img { width: 100%; height: 220px; object-fit: contain; border-radius: 8px; margin-bottom: 15px; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); background: rgba(255,255,255,0.02); }
-    .category-card { cursor: pointer; border: 2px solid rgba(255,255,255,0.1); min-height: 200px; justify-content: center; align-items: center; }
-    .category-card:hover { background: rgba(0, 234, 255, 0.05); }
-    .category-icon { font-size: 50px; margin-bottom: 15px; display: block; }
-    .game-container { display: none; animation: fadeIn 0.5s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .back-btn { background: transparent; border: none; color: var(--muted); font-size: 16px; cursor: pointer; margin-bottom: 20px; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
-    .back-btn:hover { color: var(--neon); padding-left: 5px; }
-    .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
-    .contact-info { background: var(--glass); padding: 30px; border-radius: var(--br); border: 1px solid rgba(255,255,255,0.08); }
-    .info-item { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; color: var(--text); }
-    .info-item i { font-size: 24px; color: var(--neon); font-style: normal; }
-    form input, form textarea { width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 14px; margin-bottom: 15px; border-radius: 8px; color: var(--text); font-family: inherit; font-size: 15px; outline: none; transition: 0.3s; }
-    form input:focus, form textarea:focus { border-color: var(--neon); background: rgba(255, 255, 255, 0.1); }
-    footer{ padding:30px; text-align:center; color:var(--muted); border-top:1px solid rgba(255,255,255,.05); background:#080a12; font-size: 14px; line-height: 2; }
-  </style>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <meta name='description' content='Authority Niche Site modeliyle teknik SEO ve web performansı odaklı pillar ve cluster rehberlerini bir araya getirir.' />
+  <meta name='robots' content='index,follow' />
+  <link rel='canonical' href='https://huseyinsedat.com/' />
+  <meta property='og:type' content='website' />
+  <meta property='og:site_name' content='Hüseyin Sedat' />
+  <meta property='og:title' content='Authority Niche Site | Teknik SEO ve Web Performansı' />
+  <meta property='og:description' content='Pillar + 8 cluster içerikten oluşan authority niche site bilgi merkezi.' />
+  <meta property='og:url' content='https://huseyinsedat.com/' />
+  <meta name='twitter:card' content='summary_large_image' />
+  <meta name='twitter:title' content='Authority Niche Site | Teknik SEO ve Web Performansı' />
+  <meta name='twitter:description' content='Pillar + 8 cluster içerikten oluşan authority niche site bilgi merkezi.' />
+  <title>Authority Niche Site | Teknik SEO ve Web Performansı</title>
+  <link rel='stylesheet' href='styles.css' />
 </head>
 <body>
-
-  <nav>
-    <div class="nav-wrap">
-      <div class="brand">HÜSEYİN SEDAT</div>
-      <div class="hamburger" onclick="toggleMenu()">☰</div>
-    </div>
-  </nav>
-
-  <div id="mobileMenu" class="mobile-menu">
-    <a href="javascript:void(0)" class="close-btn" onclick="toggleMenu()">&times;</a>
-    <div id="user-profile-area" style="display:none; text-align:center; margin-bottom:20px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1);">
-        <div style="font-size:40px; margin-bottom:10px;">👤</div>
-        <div id="user-email-display" style="color:var(--neon); font-weight:bold; font-size:14px; word-break:break-all;">...</div>
-        <div style="color:#aaa; font-size:12px; margin-top:5px;">Hoşgeldin!</div>
-        <button onclick="logoutUser()" style="margin-top:15px; background:rgba(255,0,0,0.2); border:1px solid red; color:white; padding:8px 20px; border-radius:5px; cursor:pointer;">Çıkış Yap</button>
-    </div>
-    <a href="#about" class="menu-link" onclick="toggleMenu()">Hakkımda</a>
-    <a href="#projects" class="menu-link" onclick="toggleMenu()">Projeler</a>
-    <a href="#games" class="menu-link" onclick="toggleMenu()">Oyunlar</a>
-    <a href="#shop" class="menu-link" onclick="toggleMenu()">Ürünler</a>
-    <a href="#contact" class="menu-link" onclick="toggleMenu()">İletişim & Destek</a>
-    <div id="login-btn-area" style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-        <a href="giris.html" style="display: block; text-align: center; background: rgba(0, 234, 255, 0.1); border: 1px solid var(--neon); color: var(--neon) !important; border-radius: 8px; padding: 10px; font-weight: bold;">🔐 Giriş Yap / Kayıt Ol</a>
+<nav>
+  <div class='container nav-inner'>
+    <a class='brand' href='index.html'>Hüseyin Sedat</a>
+    <div class='menu'>
+      <a href='index.html#baslangic'>Başlangıç Rehberi</a>
+      <a href='index.html#derin-analiz'>Derin Analiz</a>
+      <a href='index.html#araclar'>Araçlar & Kaynaklar</a>
+      <a href='yazar/huseyin-sedat.html'>Yazar</a>
     </div>
   </div>
-
-  <header class="hero">
-    <div>
-      <h1 class="title">Hüseyin Sedat</h1>
-      <div class="typewriter">Geliştirici • Tasarımcı • Üretici</div>
-      <div class="cta">
-        <a class="btn" href="#projects">Projeler</a>
-        <a class="btn" href="#games">Oyunlar</a>
-        <a class="btn" href="#shop">Ürünler</a>
-        <a class="btn" href="#contact">İletişim</a>
-      </div>
-    </div>
-  </header>
-
-  <section id="about">
-    <div class="container">
-      <h2 class="sec-title">👤 Hakkımda</h2>
-      <p style="max-width:700px;line-height:1.8; color:#ccc;">
-        Ben Hüseyin Sedat. Yazılım geliştirme, web tasarım, oyun oluşturma
-        ve dijital ürün üretiminde aktif olarak çalışan bir geliştiriciyim.
-        Modern teknolojileri kullanarak sade, hızlı ve etkili projeler üretmeyi seviyorum.
-      </p>
+</nav>
+<header class='container hero'>
+  <h1>Authority Niche Site Merkezi: Teknik SEO + Web Performansı</h1>
+  <p class='lead'>Bu sayfa, tek bir ana konu etrafında derinleşen içerik mimarisini sunar. Pillar rehber ile başlayıp cluster analizlerle ilerleyebilir, araçlar ve kaynaklarla uygulamayı hızlandırabilirsiniz.</p>
+  <div class='ad-slot'>Reklam alanı (üst yerleşim)</div>
+</header>
+<main class='container section'>
+  <section id='baslangic'>
+    <h2>Başlangıç Rehberi</h2>
+    <div class='topic-grid'><article class='card'><p class='meta'>Pillar</p><h3>Pillar Rehber: Teknik SEO ve Web Performansı ile Authority Niche Site Kurulumu</h3><p>Authority niche site modeli için teknik SEO, performans ve içerik operasyonunu tek çerçevede birleştiren kapsamlı başlangıç rehberi.</p><a class='btn' href='web-performans-rehberi.html'>Pillar rehberi aç</a></article><article class='card'><p class='meta'>Cluster</p><h3>Teknik SEO Audit Planı: 30 Günde Taranabilirlik ve İndeks Sağlığı</h3><p>Teknik SEO audit sürecini 30 günlük adımlarla planlayarak taranabilirlik ve indeks sağlığını iyileştirme yöntemleri sunar.</p><a class='btn' href='teknik-seo-audit-plani.html'>Oku</a></article><article class='card'><p class='meta'>Cluster</p><h3>Core Web Vitals Optimizasyon Haritası: LCP, CLS, INP için Uygulama Rehberi</h3><p>Core Web Vitals metriklerini sayfa tipi bazında iyileştirmek için ölçüm, önceliklendirme ve uygulama adımlarını açıklar.</p><a class='btn' href='core-web-vitals-optimizasyon-haritasi.html'>Oku</a></article><article class='card'><p class='meta'>Cluster</p><h3>Bilgi Mimarisi ve Silo Tasarımı: Niche Otoriteyi Yapısal Olarak Kurmak</h3><p>Kategori-silo yapısı, URL stratejisi ve içerik hiyerarşisi ile niche otoriteyi güçlendiren mimari yaklaşımı anlatır.</p><a class='btn' href='bilgi-mimarisi-ve-silo-tasarimi.html'>Oku</a></article></div>
+  </section>
+  <section id='derin-analiz' class='section'>
+    <h2>Derin Analiz</h2>
+    <div class='topic-grid'><article class='card'><p class='meta'>Derin Analiz</p><h3>Search Console Veri Yorumlama: Sorgudan İçerik Kararına</h3><p>Search Console verilerini niyet, CTR ve konum metrikleriyle yorumlayarak içerik güncelleme kararına dönüştürme modelini gösterir.</p><a class='btn' href='search-console-veri-yorumlama.html'>Analizi incele</a></article><article class='card'><p class='meta'>Derin Analiz</p><h3>Log Analizi ve Bot Davranışı: Tarama Bütçesini Doğru Yönlendirmek</h3><p>Bot davranışını log kayıtlarından okuyup tarama bütçesini yüksek değerli URL’lere yönlendirme tekniklerini açıklar.</p><a class='btn' href='log-analizi-ve-bot-davranisi.html'>Analizi incele</a></article><article class='card'><p class='meta'>Derin Analiz</p><h3>İçerik Güncelleme Operasyonu: Eski Yazıları Otoriteye Taşımak</h3><p>Eski içerikleri güncelleme takvimi, niyet eşleşmesi ve iç link optimizasyonu ile yeniden büyüten operasyon planını sunar.</p><a class='btn' href='icerik-guncelleme-operasyonu.html'>Analizi incele</a></article><article class='card'><p class='meta'>Derin Analiz</p><h3>SERP Niyet Modelleme: Başlık, Giriş ve İçerik Akışı Optimizasyonu</h3><p>SERP niyet sinyallerini başlık, giriş, bölüm sırası ve iç link akışına yansıtarak daha yüksek etkileşim üretme yöntemini açıklar.</p><a class='btn' href='serp-niyet-modelleme.html'>Analizi incele</a></article><article class='card'><p class='meta'>Derin Analiz</p><h3>Niche İçerik Üretimi İş Akışı: Brief, Taslak, Revizyon ve Yayın</h3><p>Niche içerik üretiminde brief hazırlama, taslak kontrolü, kalite revizyonu ve yayın sonrası ölçüm akışını standartlaştırır.</p><a class='btn' href='niche-icerik-uretimi-is-akisi.html'>Analizi incele</a></article></div>
+  </section>
+  <section id='araclar' class='section'>
+    <h2>Araçlar & Kaynaklar</h2>
+    <div class='card'>
+      <ul>
+        <li><a href='https://search.google.com/search-console/about' target='_blank' rel='noopener noreferrer'>Google Search Console</a></li>
+        <li><a href='https://pagespeed.web.dev/' target='_blank' rel='noopener noreferrer'>PageSpeed Insights</a></li>
+        <li><a href='https://www.screamingfrog.co.uk/seo-spider/' target='_blank' rel='noopener noreferrer'>Screaming Frog SEO Spider</a></li>
+        <li><a href='https://web.dev/' target='_blank' rel='noopener noreferrer'>web.dev Learn</a></li>
+      </ul>
+      <p>Bu araç seti, teknik denetim, içerik güncelleme ve performans ölçüm adımlarını aynı akışta yönetmek için seçildi.</p>
     </div>
   </section>
-
-  <section id="projects">
-    <div class="container">
-      <h2 class="sec-title">🚀 Projeler</h2>
-      <div class="grid">
-       <div class="card" onclick="window.open('https://sohbet-sitesi-5oqv.onrender.com', '_blank')" style="cursor: pointer;">
-          <h3>Sohbet Uygulaması</h3>
-          <p>Log tutmayan anlık mesajlaşma ve iletişim altyapısı.</p>
-        </div>
-        <div class="card">
-          <h3>Web Altyapıları</h3>
-          <p>Kişisel portfolyo ve kurumsal web sitesi tasarımları.</p>
-        </div>
-        <div class="card">
-          <h3>Otomasyon Sistemleri</h3>
-          <p>Ürün yönetim ve takip sistemleri.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="games">
-    <div class="container">
-      <h2 class="sec-title">🎮 Oyunlar</h2>
-      <div style="text-align:right; margin-bottom:10px; color:var(--neon); font-weight:bold;">
-        Bakiye: <span id="tokens">...</span> Jeton
-      </div>
-
-      <div id="category-selector" class="grid">
-        
-        <div class="card category-card" onclick="location.href='uyari.html'">
-            <span class="category-icon">🎲</span>
-            <h3>Şans Oyunları</h3>
-            <p>Yazı tura, zar, slot ve kart oyunları.</p>
-            <span style="color:var(--neon); font-size:14px;">Görüntüle →</span>
-        </div>
-
-        <div class="card category-card" onclick="openGameCategory('logic')">
-          <span class="category-icon">🧠</span>
-          <h3>Zeka Oyunları</h3>
-          <p>Mantık, hafıza ve strateji oyunları.</p>
-          <span style="color:var(--neon); font-size:14px;">Görüntüle →</span>
-        </div>
-
-        <div class="card category-card" onclick="openGameCategory('action')">
-          <span class="category-icon">⚔️</span>
-          <h3>Aksiyon Oyunları</h3>
-          <p>Hız, refleks ve macera oyunları.</p>
-          <span style="color:var(--neon); font-size:14px;">Görüntüle →</span>
-        </div>
-      </div>
-
-      <div id="logic" class="game-container">
-        <button class="back-btn" onclick="closeGameCategory()">← Kategorilere Dön</button>
-        <div class="grid">
-          
-          <div class="card">
-            <h3>Uzay Hafızası 🧠</h3>
-            <p>Kartları eşleştir, hafızanı zorla ve en kısa sürede bitirip ödülleri kap!</p>
-            <p style="color:var(--neon); font-size:12px;">★ 60 Saniye Süre ★</p>
-            <a class="btn" href="games/memory.html">Oyna</a>
-          </div>
-
-          <div class="card">
-            <h3>Yakında...</h3>
-            <p>Yeni zeka oyunları geliştiriliyor.</p>
-          </div>
-          
-        </div>
-      </div>
-
-     <div id="action" class="game-container">
-        <button class="back-btn" onclick="closeGameCategory()">← Kategorilere Dön</button>
-        <div class="grid">
-           
-           <div class="card">
-            <h3>Uzay Savaşı 🚀</h3>
-            <p>Sonsuz uzayda düşmanları vur, en yüksek skoru yap!</p>
-            <p style="color:var(--neon); font-size:12px;">★ Online Liderlik Tablosu ★</p>
-            <a class="btn" href="games/space.html">Oyna</a>
-          </div>
-
-           <div class="card">
-            <h3>Yakında...</h3>
-            <p>Daha fazla aksiyon yolda.</p>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <section id="shop">
-    <div class="container">
-      <h2 class="sec-title">🛒 Doğal Ürünler</h2>
-      <div class="grid">
-        <div class="card">
-          <img src="images/zeytinyagi.png" alt="Zeytinyağı">
-          <h3>Soğuk Sıkım Zeytinyağı</h3>
-          <p>1 Litre, tamamen doğal ve katkısız.</p>
-          <strong style="font-size:20px;display:block;margin:10px 0;color:var(--neon);">400 TL</strong>
-          <a class="btn" href="odeme/zeytinyagi.html" style="width:100%">Satın Al</a>
-        </div>
-        <div class="card">
-          <img src="images/bal.png" alt="Bal">
-          <h3>Hakiki Çiçek Balı</h3>
-          <p>Saf, organik köy balı.</p>
-          <strong style="font-size:20px;display:block;margin:10px 0;color:var(--neon);">300 TL</strong>
-          <a class="btn" href="odeme/bal.html" style="width:100%">Satın Al</a>
-        </div>
-        <div class="card">
-          <img src="images/kuner.png" alt="Çam Fıstığı">
-          <h3>Çam Fıstığı</h3>
-          <p>Doğal, yüksek kalite, 100 gram.</p>
-          <strong style="font-size:20px;display:block;margin:10px 0;color:var(--neon);">450 TL</strong>
-          <a class="btn" href="odeme/camfistigi.html" style="width:100%">Satın Al</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <div class="container">
-      <h2 class="sec-title">📬 İletişim & Destek</h2>
-      <div class="contact-grid">
-        <div class="contact-info">
-          <h3 style="margin-bottom:25px; color:#fff;">İletişim Bilgileri</h3>
-          <div class="info-item"><i>📧</i> <span>info@huseyinsedat.com</span></div>
-          <div class="info-item"><i>📞</i> <span>+90 555 000 00 00</span></div>
-          <div class="info-item"><i>📍</i> <span>İzmir / Türkiye</span></div>
-        </div>
-        <form action="https://formspree.io/f/KODUNUZ" method="POST">
-           <h3 style="margin-bottom:20px; color:#fff;">Bize Yazın</h3>
-          <input type="text" name="name" placeholder="Ad Soyad" required>
-          <input type="email" name="email" placeholder="E-posta" required>
-          <textarea name="message" placeholder="Mesajınız..." rows="5" required></textarea>
-          <button class="btn" style="width:100%; margin-top:10px;">Gönder</button>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <section id="blog-preview" style="padding: 40px 20px; background: #080a12;">
-    <div class="container">
-        <h2 class="sec-title">📝 Geliştirici Notları</h2>
-        <div class="grid">
-            <div class="card" style="text-align:left;">
-                <h3 style="font-size:18px;">Firebase ile Skor Tablosu Yapımı</h3>
-                <p style="font-size:13px;">JavaScript ve Firestore kullanarak gerçek zamanlı veritabanı bağlantısı nasıl kurulur?</p>
-                <a href="games/space.html" style="color:var(--neon); font-size:12px;">İncele →</a>
-            </div>
-            <div class="card" style="text-align:left;">
-                <h3 style="font-size:18px;">Canvas Oyun Motoru Mantığı</h3>
-                <p style="font-size:13px;">HTML5 Canvas ile 60 FPS oyun döngüsü ve çarpışma testleri nasıl kodlanır?</p>
-                <a href="games/space.html" style="color:var(--neon); font-size:12px;">İncele →</a>
-            </div>
-            <div class="card" style="text-align:left;">
-                <h3 style="font-size:18px;">Algoritmik Bot Ticareti</h3>
-                <p style="font-size:13px;">Otomatik al-sat yapan botların çalışma mantığı ve BIST entegrasyonu.</p>
-                <a href="#about" style="color:var(--neon); font-size:12px;">Detaylar →</a>
-            </div>
-        </div>
-    </div>
-</section>
-  
-  <footer>
-    © 2025 Hüseyin Sedat — Tüm hakları saklıdır.
-    <br><br>
-    <a href="kvkk.html">KVKK</a> •
-    <a href="iade-politikasi.html">İade Politikası</a> •
-    <a href="mesafeli-satis-sozlesmesi.html">Satış Sözleşmesi</a>
-  </footer>
-
-  <div id="walletModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:5000; align-items:center; justify-content:center;">
-    <div style="background:#0c0f1a; padding:30px; border-radius:15px; border:1px solid #00eaff; max-width:500px; width:90%; text-align:center; position:relative;">
-      <span onclick="closeWallet()" style="position:absolute; top:10px; right:15px; color:#fff; cursor:pointer; font-size:30px;">&times;</span>
-      <h2 style="color:#00eaff; margin-bottom:20px;">💰 Cüzdan & Market</h2>
-      <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px;">
-        <button onclick="showTab('load')" style="padding:10px 20px; background:#00eaff; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Jeton Yükle</button>
-        <button onclick="showTab('spend')" style="padding:10px 20px; background:#7c4dff; border:none; border-radius:5px; color:#fff; cursor:pointer;">Kupon Al</button>
-      </div>
-      <div id="tab-load">
-        <p style="color:#ccc; font-size:14px;">Shopier kodunu buraya gir:</p>
-        <input type="text" id="epinInput" placeholder="KODU GİRİN (Örn: JETON1000)" style="width:100%; padding:12px; margin:15px 0; background:rgba(255,255,255,0.1); border:1px solid #333; color:#fff; text-align:center; border-radius:5px;">
-        <button onclick="window.redeemCodeFirebase()" style="width:100%; padding:12px; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer; font-size:16px;">KODU KULLAN</button>
-        <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-          <a href="https://www.shopier.com/huseyinsedatshop/41943378" target="_blank" style="color:#00eaff; text-decoration:underline; font-size:14px;">Shopier Mağazasından Satın Al</a>
-        </div>
-      </div>
-      <div id="tab-spend" style="display:none;">
-        <p style="color:#ccc; margin-bottom:15px;">Jetonlarınla indirim al.</p>
-        <div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
-          <div style="text-align:left;">
-            <h4 style="color:#fff; margin:0;">%10 İndirim</h4>
-            <span style="color:#00eaff; font-size:12px;">5.000 Jeton</span>
-          </div>
-          <button onclick="buyCoupon(5000, 'INDIRIM10')" style="padding:5px 15px; background:rgba(0,234,255,0.2); border:1px solid #00eaff; color:#fff; border-radius:5px; cursor:pointer;">AL</button>
-        </div>
-      </div>
+</main>
+<footer>
+  <div class='container'>
+    © 2026 Hüseyin Sedat
+    <div class='footer-links'>
+      <a href='hakkimda.html'>Hakkımızda</a>•
+      <a href='iletisim.html'>İletişim</a>•
+      <a href='gizlilik-politikasi.html'>Gizlilik Politikası</a>•
+      <a href='cerez-politikasi.html'>Çerez Politikası</a>•
+      <a href='kvkk.html'>KVKK</a>
     </div>
   </div>
-
-  <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
-
-  <script>
-    const bg = document.getElementById("bg");
-    const ctx = bg.getContext("2d");
-    function resize(){ bg.width = window.innerWidth; bg.height = window.innerHeight; }
-    resize(); window.addEventListener("resize", resize);
-    const dots = Array.from({length:60}, () => ({ x: Math.random()*bg.width, y: Math.random()*bg.height, vx: (Math.random()-.5)*0.5, vy: (Math.random()-.5)*0.5 }));
-    function loop(){
-      ctx.clearRect(0,0,bg.width,bg.height); ctx.fillStyle = "#00eaff";
-      dots.forEach(d => { d.x += d.vx; d.y += d.vy; if (d.x < 0 || d.x > bg.width) d.vx *= -1; if (d.y < 0 || d.y > bg.height) d.vy *= -1; ctx.beginPath(); ctx.arc(d.x, d.y, 1.5, 0, Math.PI*2); ctx.fill(); });
-      requestAnimationFrame(loop);
-    }
-    loop();
-    function toggleMenu() { document.getElementById("mobileMenu").classList.toggle("open"); }
-    document.addEventListener("click", function(e) { const menu = document.getElementById("mobileMenu"); const hamburger = document.querySelector(".hamburger"); if (menu.classList.contains("open") && !menu.contains(e.target) && !hamburger.contains(e.target)) { menu.classList.remove("open"); } });
-    function openGameCategory(categoryId) { document.getElementById('category-selector').style.display = 'none'; document.getElementById(categoryId).style.display = 'block'; }
-    function closeGameCategory() { document.querySelectorAll('.game-container').forEach(el => el.style.display = 'none'); document.getElementById('category-selector').style.display = 'grid'; }
-    
-    // HATALI KOD SİLİNDİ: Artık #chance kontrolü yapmıyoruz, çünkü o bölümü kaldırdık.
-    
-    function openWallet() { document.getElementById("walletModal").style.display = "flex"; }
-    function closeWallet() { document.getElementById("walletModal").style.display = "none"; }
-    function showTab(tab) { document.getElementById("tab-load").style.display = "none"; document.getElementById("tab-spend").style.display = "none"; document.getElementById("tab-"+tab).style.display = "block"; }
-    window.buyCoupon = function(cost, code){ let cur = parseInt(localStorage.getItem("huseyin_bakiye"))||0; if(cur>=cost){ if(confirm(cost+" Jeton harcansın mı?")){ let newBal = cur-cost; localStorage.setItem("huseyin_bakiye", newBal); document.getElementById("tokens").innerText = newBal; alert("Kodun: " + code); } } else { alert("Yetersiz Jeton!"); } }
-  </script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    const firebaseConfig = { apiKey: "AIzaSyANHre3Yv9RdlGtRPeYH_6ez2PSTaOR-ls", authDomain: "site-c4802.firebaseapp.com", projectId: "site-c4802", storageBucket: "site-c4802.firebasestorage.app", messagingSenderId: "678825640794", appId: "1:678825640794:web:da9846527bfa3a38452963", measurementId: "G-YYJR6G6MM1" };
-    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-    window.currentUserUID = null;
-    onAuthStateChanged(auth, async (user) => {
-      const loginArea = document.getElementById('login-btn-area'); const profileArea = document.getElementById('user-profile-area'); const emailDisplay = document.getElementById('user-email-display'); const tokenDisplay = document.getElementById("tokens");
-      if (user) {
-        window.currentUserUID = user.uid; loginArea.style.display = 'none'; profileArea.style.display = 'block'; emailDisplay.textContent = user.email;
-        const userRef = doc(db, "users", user.uid); const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-            const serverData = userSnap.data(); const serverTokens = serverData.tokens;
-            const localTokens = parseInt(localStorage.getItem("huseyin_bakiye"));
-            if (!isNaN(localTokens) && localTokens !== serverTokens) { console.log("Oyun kazancı tespit edildi.", localTokens); tokenDisplay.innerText = localTokens; await updateDoc(userRef, { tokens: localTokens }); } else { tokenDisplay.innerText = serverTokens; localStorage.setItem("huseyin_bakiye", serverTokens); }
-        } else { await setDoc(userRef, { email: user.email, tokens: 100 }); tokenDisplay.innerText = 100; localStorage.setItem("huseyin_bakiye", 100); }
-      } else {
-        window.currentUserUID = null; loginArea.style.display = 'block'; profileArea.style.display = 'none'; tokenDisplay.innerText = localStorage.getItem("huseyin_bakiye") || 100;
-      }
-    });
-    window.logoutUser = () => { signOut(auth).then(() => { alert("Çıkış yapıldı."); localStorage.removeItem("huseyin_bakiye"); location.reload(); }); }
-    window.redeemCodeFirebase = async function() {
-      const input = document.getElementById("epinInput"); const code = input.value.trim().toUpperCase();
-      if (!window.currentUserUID) { if(confirm("Giriş yapmalısın. Gitmek ister misin?")) window.location.href = "giris.html"; return; }
-      if(!code) { alert("Lütfen kod girin!"); return; }
-      const btn = document.querySelector("button[onclick='window.redeemCodeFirebase()']"); btn.innerText = "⏳..."; btn.disabled = true;
-      try {
-        const codeRef = doc(db, "codes", code); const codeSnap = await getDoc(codeRef);
-        if (codeSnap.exists()) { const data = codeSnap.data(); if (data.isUsed === true) { alert("❌ Bu kod kullanılmış!"); } else { const amount = data.amount; await updateDoc(codeRef, { isUsed: true, usedBy: window.currentUserUID, usedAt: new Date() }); const userRef = doc(db, "users", window.currentUserUID); const userSnap = await getDoc(userRef); let currentTokens = userSnap.data().tokens || 0; let newBalance = currentTokens + amount; await updateDoc(userRef, { tokens: newBalance }); document.getElementById("tokens").innerText = newBalance; localStorage.setItem("huseyin_bakiye", newBalance); alert("✅ " + amount + " Jeton yüklendi!"); input.value = ""; closeWallet(); } } else { alert("❌ Geçersiz Kod!"); }
-      } catch (error) { console.error(error); alert("Hata: " + error.message); } btn.innerText = "KODU KULLAN"; btn.disabled = false;
-    }
-  </script>
+</footer>
 </body>
 </html>

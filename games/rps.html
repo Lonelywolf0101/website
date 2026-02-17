@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4797136451656104"
-     crossorigin="anonymous"></script>
+    <link rel="canonical" href="https://huseyinsedat.com/games/rps.html">
+    <meta property="og:title" content="rps.html">
+    <meta property="og:description" content="Politika riski nedeniyle indekslenmeyen sayfa.">
+    <meta name="twitter:card" content="summary">
 <meta charset="UTF-8">
 <title>Taş Kağıt Makas | Hüseyin Sedat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
     :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
@@ -67,7 +70,7 @@
             <button id="resetBtn" onclick="resetGame()" style="display:none; margin:20px auto; padding:10px 30px; background:var(--neon); border:none; border-radius:8px; font-weight:bold; cursor:pointer;">Tekrar Oyna</button>
         </div>
         
-        <a href="../index.html#chance" style="position: absolute; top: 20px; left: 20px; color: #a8b3bd; font-weight: bold; text-decoration: none; border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 8px; font-family: sans-serif; transition: 0.3s;">
+        <a href="../oyunlar.html" style="position: absolute; top: 20px; left: 20px; color: #a8b3bd; font-weight: bold; text-decoration: none; border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 8px; font-family: sans-serif; transition: 0.3s;">
            ← Oyun Lobisine Dön
         </a>
     </div>
@@ -118,12 +121,12 @@
             pHand.classList.remove("shake-l");
             cHand.classList.remove("shake-r");
 
-            // --- AKILLI KASA MANTIĞI (%35 Kasa / %32.5 Berabere / %32.5 Oyuncu) ---
+            // --- DENGELİ OYUN MANTIĞI (%35 sistem avantajı / %32.5 berabere / %32.5 oyuncu) ---
             const luck = Math.random(); // 0 ile 1 arasında sayı üretir
             let cpuChoice;
 
             if (luck < 0.35) { 
-                // %35 İhtimalle: KASA KAZANIR (Oyuncu Kaybeder)
+                // %35 İhtimalle: SİSTEM ÜSTÜN GELİR (Oyuncu Kaybeder)
                 // Oyuncu ne seçtiyse onu yenen hamleyi yap
                 if (choice === 'rock') cpuChoice = 'paper';
                 else if (choice === 'paper') cpuChoice = 'scissors';
