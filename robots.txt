@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /games/
+Disallow: /oyunlar.html
+Disallow: /uyari.html
+Disallow: /giris.html
+
+Sitemap: https://huseyinsedat.com/sitemap.xml
