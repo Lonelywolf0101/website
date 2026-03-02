@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4797136451656104"
+     crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<title>Hafıza Oyunu | Hüseyin Sedat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+    :root{ --bg:#05060b; --neon:#7c4dff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
+    
+    body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 80% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+    
+    .main-container { position:relative; z-index:10; width:100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; }
+    
+    .game-wrapper { display: flex; flex-direction: row; align-items: flex-start; justify-content: center; gap: 20px; max-width: 1000px; width: 100%; }
+
+    /* OYUN ALANI */
+    .game-box { 
+        background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:20px; box-shadow:0 0 30px rgba(0,0,0,0.5); 
+        flex: 0 0 auto; width: 340px; min-height: 480px; display: flex; flex-direction: column; align-items: center; position: relative;
+    }
+
+    /* SKOR TABLOSU */
+    .leaderboard-box {
+        background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; width: 250px; max-height: 500px; display: flex; flex-direction: column; overflow: hidden;
+    }
+
+    /* KART IZGARASI */
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        width: 100%;
+        margin-top: 10px;
+        perspective: 1000px;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.1);
+        border: 1px solid var(--neon);
+        border-radius: 8px;
+        height: 70px;
+        cursor: pointer;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.5s;
+        display: flex; justify-content: center; align-items: center; font-size: 30px;
+    }
+
+    .card.flipped { transform: rotateY(180deg); background: rgba(124, 77, 255, 0.2); box-shadow: 0 0 15px var(--neon); }
+    .card.matched { border-color: var(--green); background: rgba(0, 255, 136, 0.1); pointer-events: none; opacity: 0.6; }
+
+    .card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; justify-content: center; align-items: center; border-radius: 8px; }
+    .card-front { transform: rotateY(180deg); }
+    .card-back { background: rgba(0,0,0,0.5); color: var(--neon); font-size: 24px; font-weight: bold; }
+
+    /* SEVİYE BİLDİRİMİ (TOAST) */
+    #levelToast {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.9); border: 2px solid var(--green); color: #fff;
+        padding: 20px; border-radius: 15px; z-index: 200; text-align: center;
+        display: none; box-shadow: 0 0 30px var(--green); pointer-events: none;
+    }
+
+    /* MOBİL UYUM */
+    @media (max-width: 768px) {
+        .game-wrapper { flex-direction: column; align-items: center; gap: 10px; }
+        .game-box { width: 100%; padding: 10px; border: none; background: transparent; box-shadow: none; min-height: auto; }
+        .leaderboard-box { width: 95%; max-width: 350px; max-height: 150px; padding: 10px; order: 2; }
+        .grid-container { gap: 5px; }
+        .card { height: 60px; font-size: 24px; }
+        h2 { font-size: 1.2rem; margin: 5px 0; }
+    }
+
+    .hud { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; font-size:14px; width: 100%; }
+    .hud span { background:rgba(0,0,0,0.8); padding:5px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); font-size: 12px; }
+
+    .leaderboard-list { overflow-y: auto; flex-grow: 1; margin-top: 10px; padding-right: 5px; }
+    .score-row { display:flex; justify-content:space-between; padding:8px 5px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px; }
+    
+    .nick-input { padding: 12px; border-radius: 8px; border: 1px solid var(--neon); background: rgba(0,0,0,0.5); color: #fff; font-size: 16px; text-align: center; width: 80%; margin-bottom: 5px; outline: none; }
+    #startBtn { padding:15px 40px; font-size:18px; font-weight:bold; background:var(--neon); border:none; border-radius:10px; cursor:pointer; margin-top:10px; box-shadow:0 0 20px var(--neon); color:#fff; width: 80%; }
+    
+    #overlayScreen { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:50; display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius: 20px; }
+    
+    .back-btn-link { display:inline-block; margin-top:10px; color:#a8b3bd; text-decoration:none; font-size:12px; border:1px solid #333; padding:8px 15px; border-radius:20px; background: rgba(0,0,0,0.5); }
+</style>
+</head>
+<body>
+    
+    <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
+
+    <div class="main-container">
+        <h2 style="color:var(--neon); margin-bottom: 10px;">🧠 Uzay Hafızası</h2>
+        
+        <div class="game-wrapper">
+            
+            <div class="game-box">
+                <div class="hud">
+                    <span style="color:var(--neon)">🪙 <b id="walletDisplay">...</b></span>
+                    <span style="color:var(--gold)">⏳ <b id="timeDisplay">60</b>s</span>
+                    <span style="color:var(--green)">🏆 <b id="scoreDisplay">0</b></span>
+                </div>
+
+                <div id="gameGrid" class="grid-container"></div>
+                
+                <div id="levelToast">
+                    <h2 style="margin:0; color:var(--green)">SEVİYE TAMAMLANDI!</h2>
+                    <p id="levelBonusText" style="margin:5px 0; font-size:14px; color:#ddd">Bonus: +100 Puan</p>
+                    <p style="margin:0; font-size:12px; color:var(--red)">Süre -1 Saniye Azaldı!</p>
+                </div>
+
+                <div id="overlayScreen">
+                    <h3 id="screenTitle" style="color:#fff; margin-bottom:5px;">HAFIZANI TEST ET</h3>
+                    <p id="screenDesc" style="margin-bottom:15px; font-size:14px; color:#aaa;">Giriş: <span style="color:var(--red)">10 Jeton</span></p>
+                    
+                    <div id="userStatusMsg" style="color:var(--green); font-size:12px; display:none;">👤 Giriş Algılandı</div>
+                    <input type="text" id="nicknameInput" class="nick-input" placeholder="İsim Giriniz" maxlength="12">
+                    
+                    <button id="startBtn" onclick="startGame()">BAŞLA</button>
+                    <div id="saveStatus" style="margin-top:10px; font-size:12px; color:#aaa; font-style:italic;"></div>
+                </div>
+            </div>
+
+            <div class="leaderboard-box">
+                <h3 style="margin:0 0 10px 0; color:var(--gold); text-align:center; font-size:14px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">🏆 ZEKİ PİLOTLAR</h3>
+                <div id="leaderboardList" class="leaderboard-list">
+                    <div style="text-align:center; color:#666; font-size:12px;">Yükleniyor...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <a href="../index.html" onclick="location.href='../index.html#games'" class="back-btn-link">← Lobiye Dön</a>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyANHre3Yv9RdlGtRPeYH_6ez2PSTaOR-ls",
+      authDomain: "site-c4802.firebaseapp.com",
+      projectId: "site-c4802",
+      storageBucket: "site-c4802.firebasestorage.app",
+      messagingSenderId: "678825640794",
+      appId: "1:678825640794:web:da9846527bfa3a38452963",
+      measurementId: "G-YYJR6G6MM1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    window.isUserLoggedIn = false;
+
+    // --- KULLANICI KONTROLÜ ---
+    onAuthStateChanged(auth, (user) => {
+        const nickInput = document.getElementById("nicknameInput");
+        const statusMsg = document.getElementById("userStatusMsg");
+        if (user) {
+            window.isUserLoggedIn = true;
+            nickInput.value = user.email.split('@')[0];
+            statusMsg.style.display = "block";
+        } else {
+            window.isUserLoggedIn = false;
+            nickInput.value = "";
+            statusMsg.style.display = "none";
+        }
+    });
+
+    // --- SKOR TABLOSU ---
+    window.refreshLeaderboard = async function() {
+        const listDiv = document.getElementById("leaderboardList");
+        try {
+            const q = query(collection(db, "memory_scores"), orderBy("score", "desc"), limit(15));
+            const querySnapshot = await getDocs(q);
+            let allScores = [];
+            querySnapshot.forEach((doc) => { allScores.push(doc.data()); });
+
+            const guestScore = sessionStorage.getItem("memory_last_score");
+            const guestName = sessionStorage.getItem("memory_last_name");
+            if (guestScore && guestName) {
+                allScores.push({ name: guestName + " (Sen)", score: parseInt(guestScore), isGuest: true });
+            }
+
+            allScores.sort((a, b) => b.score - a.score);
+
+            let html = "";
+            let rank = 1;
+            allScores.slice(0, 15).forEach((data) => {
+                let rowStyle = data.isGuest ? "background:rgba(124, 77, 255, 0.2); border:1px solid var(--neon);" : "";
+                let rankColor = rank === 1 ? "color:#ffd700;" : (rank === 2 ? "color:#c0c0c0;" : (rank === 3 ? "color:#cd7f32;" : ""));
+                html += `<div class="score-row" style="${rowStyle}"><span style="${rankColor}">#${rank} ${data.name}</span><span style="font-weight:bold;">${data.score} P</span></div>`;
+                rank++;
+            });
+            listDiv.innerHTML = html || "<div style='text-align:center; color:#666;'>Kayıt yok.</div>";
+        } catch (e) { console.error(e); }
+    }
+    window.refreshLeaderboard();
+
+    // --- KAYIT FONKSİYONU (SADECE OYUN BİTİNCE ÇAĞRILIR) ---
+    window.saveScoreToFirebase = async (score, nickname) => {
+        const statusEl = document.getElementById("saveStatus");
+        
+        if (window.isUserLoggedIn) {
+            try {
+                statusEl.innerText = "Skor kaydediliyor...";
+                const docRef = doc(db, "memory_scores", nickname);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    if (score > docSnap.data().score) {
+                        await updateDoc(docRef, { score: score, date: new Date() });
+                        statusEl.innerText = "✅ Yeni REKOR: " + score;
+                        statusEl.style.color = "#00ff88";
+                    } else {
+                        statusEl.innerText = "⚠️ Eski rekorun ("+docSnap.data().score+") daha iyiydi.";
+                        statusEl.style.color = "#ffd700";
+                    }
+                } else {
+                    await setDoc(docRef, { name: nickname, score: score, date: new Date() });
+                    statusEl.innerText = "✅ İlk skorun kaydedildi!";
+                    statusEl.style.color = "#00ff88";
+                }
+                window.refreshLeaderboard();
+            } catch(e) { console.error(e); statusEl.innerText = "Hata oluştu."; }
+        } else {
+            const old = sessionStorage.getItem("memory_last_score") || 0;
+            if (score > old) {
+                sessionStorage.setItem("memory_last_score", score);
+                sessionStorage.setItem("memory_last_name", nickname);
+                statusEl.innerText = "⚠️ Misafir Rekoru!";
+            } else {
+                statusEl.innerText = "⚠️ Rekor kırılamadı.";
+            }
+            statusEl.style.color = "#ffd700";
+            window.refreshLeaderboard();
+        }
+    }
+</script>
+
+<script>
+    /* === OYUN MANTIĞI (SURVIVAL MOD) === */
+    let currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
+    document.getElementById("walletDisplay").innerText = currentBalance;
+
+    function updateGlobalWallet(newAmount) {
+        currentBalance = Math.floor(newAmount);
+        document.getElementById("walletDisplay").innerText = currentBalance;
+        localStorage.setItem("huseyin_bakiye", currentBalance);
+    }
+
+    const COST = 10;
+    const cardsArray = [
+        '🚀', '🚀', '👽', '👽', 
+        '🪐', '🪐', '🤖', '🤖', 
+        '☄️', '☄️', '🛰️', '🛰️', 
+        '🌌', '🌌', '🛸', '🛸'
+    ];
+    
+    let grid = document.getElementById("gameGrid");
+    let flippedCards = [];
+    let matchedPairs = 0;
+    
+    // YENİ DEĞİŞKENLER
+    let currentLevel = 1;
+    let maxTime = 60; // Başlangıç süresi
+    let timer = 60;
+    let timerInterval;
+    let isGameActive = false;
+    let playerNick = "";
+    
+    let totalScore = 0; // Biriken Toplam Puan
+    let sessionEarnings = 0; // Bu turda kazanılan toplam jeton
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    window.startGame = function() {
+        const nickInput = document.getElementById("nicknameInput");
+        playerNick = nickInput.value.trim();
+        if(!playerNick) { alert("İsim gir!"); return; }
+        if(currentBalance < COST) { alert("Yetersiz Jeton!"); return; }
+        
+        // Giriş ücretini sadece İLK başta alıyoruz
+        updateGlobalWallet(currentBalance - COST);
+        
+        // Değişkenleri Sıfırla
+        currentLevel = 1;
+        maxTime = 60;
+        totalScore = 0;
+        sessionEarnings = 0;
+        
+        document.getElementById("overlayScreen").style.display = "none";
+        document.getElementById("saveStatus").innerText = "";
+        
+        resetGame();
+    }
+
+    function resetGame() {
+        grid.innerHTML = "";
+        flippedCards = [];
+        matchedPairs = 0;
+        
+        // Yeni tur için süreyi ayarla
+        timer = maxTime;
+        document.getElementById("timeDisplay").innerText = timer;
+        document.getElementById("scoreDisplay").innerText = totalScore;
+        
+        isGameActive = true;
+        
+        shuffle(cardsArray);
+        
+        cardsArray.forEach(val => {
+            let card = document.createElement("div");
+            card.classList.add("card");
+            card.dataset.value = val;
+            
+            let front = document.createElement("div");
+            front.classList.add("card-front");
+            front.innerText = val;
+            
+            let back = document.createElement("div");
+            back.classList.add("card-back");
+            back.innerText = "?";
+            
+            card.appendChild(front);
+            card.appendChild(back);
+            card.addEventListener("click", flipCard);
+            
+            grid.appendChild(card);
+        });
+
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timer--;
+            document.getElementById("timeDisplay").innerText = timer;
+            if(timer <= 0) endGame(false);
+        }, 1000);
+    }
+
+    function flipCard() {
+        if (!isGameActive || flippedCards.length >= 2 || this.classList.contains("flipped") || this.classList.contains("matched")) return;
+        
+        this.classList.add("flipped");
+        flippedCards.push(this);
+        
+        if (flippedCards.length === 2) {
+            setTimeout(checkMatch, 800);
+        }
+    }
+
+    function checkMatch() {
+        const [c1, c2] = flippedCards;
+        if (c1.dataset.value === c2.dataset.value) {
+            c1.classList.add("matched");
+            c2.classList.add("matched");
+            matchedPairs++;
+            
+            // TÜM KARTLAR BULUNDU MU? (8 Çift)
+            if (matchedPairs === 8) {
+                levelUp();
+            }
+        } else {
+            c1.classList.remove("flipped");
+            c2.classList.remove("flipped");
+        }
+        flippedCards = [];
+    }
+
+    function levelUp() {
+        clearInterval(timerInterval);
+        isGameActive = false;
+
+        // PUAN HESAPLAMA: Kalan Süre * 10
+        let roundBonus = timer * 10;
+        totalScore += roundBonus;
+        
+        // KAZANÇ HESAPLAMA: Puan / 10 (Örn: 30sn arttıysa 300 Puan -> 30 Jeton)
+        let roundEarnings = Math.floor(roundBonus / 10);
+        sessionEarnings += roundEarnings;
+        
+        // Jetonu hemen cüzdana ekleyelim (Oyuncuyu mutlu et)
+        updateGlobalWallet(currentBalance + roundEarnings);
+        
+        // BİLDİRİM GÖSTER
+        const toast = document.getElementById("levelToast");
+        document.getElementById("levelBonusText").innerText = `Bonus: +${roundBonus} Puan | +${roundEarnings} Jeton`;
+        toast.style.display = "block";
+
+        // ZORLAŞTIRMA: Süreyi 1 saniye kısalt (Min 10 saniye)
+        if(maxTime > 10) maxTime--;
+        currentLevel++;
+
+        // 2 Saniye sonra yeni tura başla
+        setTimeout(() => {
+            toast.style.display = "none";
+            resetGame();
+        }, 2000);
+    }
+
+    function endGame(win) {
+        // win parametresi teknik olarak false gelir çünkü süre bitti
+        isGameActive = false;
+        clearInterval(timerInterval);
+        
+        const overlay = document.getElementById("overlayScreen");
+        overlay.style.display = "flex";
+        const btn = document.getElementById("startBtn");
+        const title = document.getElementById("screenTitle");
+        const desc = document.getElementById("screenDesc");
+        
+        btn.innerText = "TEKRAR OYNA";
+        
+        // SÜRE BİTTİ EKRANI
+        title.innerText = "OYUN BİTTİ! 💀";
+        title.style.color = "var(--red)";
+        desc.innerHTML = `
+            Ulaşılan Seviye: <b style="color:#fff">${currentLevel}</b><br>
+            Toplam Puan: <b style="color:var(--neon)">${totalScore}</b><br>
+            Toplam Kazanç: <b style="color:var(--green)">+${sessionEarnings} Jeton</b>
+        `;
+        
+        // Sadece oyun tamamen bittiğinde skoru veritabanına kaydet
+        if(window.saveScoreToFirebase) window.saveScoreToFirebase(totalScore, playerNick);
+    }
+
+    // Arkaplan efekti
+    const bg=document.getElementById("bg"),bgCtx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));function bgLoop(){bgCtx.clearRect(0,0,bg.width,bg.height);bgCtx.fillStyle="#7c4dff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;bgCtx.beginPath();bgCtx.arc(d.x,d.y,1.2,0,Math.PI*2);bgCtx.fill()});requestAnimationFrame(bgLoop)}bgLoop();
+</script>
+</body>
+</html>

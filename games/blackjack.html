@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4797136451656104"
+     crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<title>Blackjack | Hüseyin Sedat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+    :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; --muted:#a8b3bd; }
+    body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow-x:hidden; }
+    h1 { color:var(--neon); text-shadow:0 0 20px rgba(0, 234, 255, 0.6); margin-bottom:5px; font-size:2.5rem; }
+    .container { position:relative; z-index:10; width:100%; max-width:800px; padding:20px; }
+    .box { background:var(--glass); border:1px solid rgba(255,255,255,.1); backdrop-filter:blur(10px); border-radius:20px; padding:30px; box-shadow:0 0 30px rgba(0,0,0,0.5); }
+    .token-display { font-size:20px; background:rgba(0,0,0,0.3); padding:8px 20px; border-radius:50px; display:inline-block; margin-bottom:20px; border:1px solid rgba(255,255,255,0.1); }
+    .game-area { display:flex; flex-direction:column; gap:30px; margin-bottom:20px; }
+    .hand-area { min-height:160px; }
+    .hand-title { font-size:18px; color:var(--muted); margin-bottom:10px; display:flex; justify-content:center; gap:10px; }
+    .score-badge { background:var(--neon); color:#000; padding:2px 8px; border-radius:10px; font-weight:bold; font-size:14px; }
+    .cards-container { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+    .playing-card { width:80px; height:110px; background:white; border-radius:8px; color:#000; display:flex; flex-direction:column; justify-content:space-between; padding:5px; font-weight:bold; font-size:20px; box-shadow:0 5px 15px rgba(0,0,0,0.5); position:relative; animation:dealCard 0.5s ease-out; user-select:none; }
+    .playing-card.red { color:#d00000; }
+    .playing-card.black { color:#000; }
+    .card-center { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-size:32px; }
+    .card-bottom { align-self:flex-end; transform:rotate(180deg); line-height:1; }
+    @keyframes dealCard { from { opacity:0; transform:translateY(-50px) rotateY(90deg); } to { opacity:1; transform:translateY(0) rotateY(0); } }
+    .controls { display:flex; justify-content:center; gap:15px; flex-wrap:wrap; }
+    button { padding:12px 24px; font-size:16px; font-weight:600; border-radius:10px; border:1px solid rgba(255,255,255,.2); cursor:pointer; transition:.3s; color:white; background:rgba(255,255,255,.1); }
+    button:hover { background:var(--neon); color:#000; box-shadow:0 0 15px rgba(0,234,255,.4); }
+    .btn-hit { background:rgba(0,100,255,.3); border-color:#0080ff; }
+    .btn-stand { background:rgba(255,100,0,.3); border-color:#ff6600; }
+    .btn-deal { background:var(--green); color:#000; width:100%; max-width:200px; }
+    #status { font-size:22px; margin-top:20px; height:30px; font-weight:bold; }
+    #back-btn { margin-top:30px; color:#a8b3bd; text-decoration:none; font-size:14px; transition:.3s; display:inline-block; }
+    #back-btn:hover { color:var(--neon); }
+</style>
+</head>
+<body>
+    <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
+    <div class="container">
+        <h1>♠ Blackjack ♦</h1>
+        <p style="color:#aaa; margin-bottom:20px;">Giriş: <span style="color:var(--red)">20 Jeton</span> | Kazanç: <span style="color:var(--green)">40 Jeton</span></p>
+        <div class="box">
+            <div class="token-display">🪙 <span id="tokens">...</span></div>
+            <div class="game-area">
+                <div class="hand-area">
+                    <div class="hand-title">KRUPİYE <span id="dealerScore" class="score-badge">0</span></div>
+                    <div class="cards-container" id="dealerCards"></div>
+                </div>
+                <div class="hand-area">
+                    <div class="hand-title">SEN <span id="playerScore" class="score-badge">0</span></div>
+                    <div class="cards-container" id="playerCards"></div>
+                </div>
+            </div>
+            <h2 id="status"></h2>
+            <div class="controls" id="gameControls" style="display:none;">
+                <button class="btn-hit" onclick="hit()">➕ KART ÇEK</button>
+                <button class="btn-stand" onclick="stand()">✋ DUR (STAND)</button>
+            </div>
+            <div class="controls">
+                <button id="startBtn" class="btn-deal" onclick="startGame()">OYUNA BAŞLA</button>
+            </div>
+        </div>
+        <a href="../oyunlar.html" style="position: absolute; top: 20px; left: 20px; color: #a8b3bd; font-weight: bold; text-decoration: none; border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 8px; font-family: sans-serif; transition: 0.3s;">
+    ← Oyun Lobisine Dön
+</a>
+    </div>
+
+<script>
+    /* === 1. ORTAK CÜZDAN BAĞLANTISI === */
+    // Sayfa açılır açılmaz LocalStorage'dan (Ana Kasadan) veriyi çekiyoruz
+    var currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
+    
+    // Ekrana yazdır
+    document.getElementById("tokens").innerText = currentBalance;
+
+    // Bakiyeyi güncelleyen ve kaydeden fonksiyon
+    function updateGlobalWallet(newAmount) {
+        currentBalance = newAmount;
+        document.getElementById("tokens").innerText = currentBalance;
+        // En önemlisi: Tarayıcı hafızasına yazıyoruz ki index.html okuyabilsin
+        localStorage.setItem("huseyin_bakiye", currentBalance);
+    }
+
+    /* === OYUN LOJİĞİ === */
+    const COST = 20;
+    const REWARD = 40; 
+    const BLACKJACK_REWARD = 50; 
+    
+    let deck = [];
+    let playerHand = [];
+    let dealerHand = [];
+    let playCount = 0;
+    let gameActive = false;
+    const suits = ["♠", "♥", "♣", "♦"];
+    const values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
+
+    function createDeck() {
+        let newDeck = [];
+        for (let suit of suits) {
+            for (let value of values) {
+                let weight = parseInt(value);
+                if (value === "J" || value === "Q" || value === "K") weight = 10;
+                if (value === "A") weight = 11;
+                newDeck.push({ value, suit, weight });
+            }
+        }
+        return newDeck;
+    }
+    function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
+    function drawCard() { return deck.pop(); }
+    
+    function calculateHand(hand) {
+        let sum = 0; let aces = 0;
+        for (let card of hand) { sum += card.weight; if (card.value === "A") aces++; }
+        while (sum > 21 && aces > 0) { sum -= 10; aces--; }
+        return sum;
+    }
+
+    function renderCard(card, container) {
+        const div = document.createElement("div");
+        div.className = "playing-card " + (card.suit === "♥" || card.suit === "♦" ? "red" : "black");
+        div.innerHTML = `<div class="card-top">${card.value}<br>${card.suit}</div><div class="card-center">${card.suit}</div><div class="card-bottom">${card.value}<br>${card.suit}</div>`;
+        container.appendChild(div);
+    }
+
+    function updateUI(showDealerHidden = false) {
+        const pCont = document.getElementById("playerCards");
+        const dCont = document.getElementById("dealerCards");
+        pCont.innerHTML = ""; dCont.innerHTML = "";
+        
+        playerHand.forEach(c => renderCard(c, pCont));
+        document.getElementById("playerScore").innerText = calculateHand(playerHand);
+        
+        if (showDealerHidden) {
+            dealerHand.forEach(c => renderCard(c, dCont));
+            document.getElementById("dealerScore").innerText = calculateHand(dealerHand);
+        } else {
+            if (dealerHand.length > 0) renderCard(dealerHand[0], dCont);
+            if (dealerHand.length > 1) {
+                const hidden = document.createElement("div");
+                hidden.className = "playing-card";
+                hidden.style.background = "linear-gradient(45deg, #222, #000)";
+                hidden.style.border = "2px solid #555";
+                hidden.innerHTML = `<div class="card-center" style="color:#555; font-size:40px;">?</div>`;
+                dCont.appendChild(hidden);
+            }
+            if(dealerHand.length > 0) document.getElementById("dealerScore").innerText = dealerHand[0].weight; 
+        }
+    }
+
+    function startGame() {
+        // Bakiye Kontrolü (Global değişkenden)
+        if (currentBalance < COST) { 
+            document.getElementById("status").innerText = "Yetersiz Jeton!"; 
+            document.getElementById("status").style.color = "var(--red)"; 
+            return; 
+        }
+        
+        // Parayı düş ve kaydet
+        updateGlobalWallet(currentBalance - COST);
+
+        deck = shuffle(createDeck());
+        playerHand = []; dealerHand = [];
+        gameActive = true; playCount++;
+        document.getElementById("status").innerText = "";
+        document.getElementById("startBtn").style.display = "none";
+        document.getElementById("gameControls").style.display = "flex";
+
+        // Küçük bir hile (İlk ellerde oyuncuya kıyak geçelim)
+        if (playCount <= 3) {
+            let goodCardIndex = deck.findIndex(c => c.weight >= 10);
+            if (goodCardIndex > -1) deck.push(deck.splice(goodCardIndex, 1)[0]);
+        }
+        
+        playerHand.push(drawCard()); dealerHand.push(drawCard());
+        playerHand.push(drawCard()); dealerHand.push(drawCard());
+        
+        updateUI(false);
+        
+        if (calculateHand(playerHand) === 21) gameOver("BLACKJACK! 2.5 Katı Kazandın!", "blackjack");
+    }
+
+    function hit() {
+        if (!gameActive) return;
+        playerHand.push(drawCard());
+        updateUI(false);
+        if (calculateHand(playerHand) > 21) gameOver("BATTIN! (21'i geçtin)", "lose");
+    }
+
+    function stand() {
+        if (!gameActive) return;
+        updateUI(true);
+        let dealerLoop = setInterval(() => {
+            let dScore = calculateHand(dealerHand);
+            if (dScore < 17) {
+                let newCard = drawCard();
+                dealerHand.push(newCard);
+                updateUI(true);
+            } else {
+                clearInterval(dealerLoop);
+                determineWinner();
+            }
+        }, 800);
+    }
+
+    function determineWinner() {
+        let pScore = calculateHand(playerHand);
+        let dScore = calculateHand(dealerHand);
+        if (dScore > 21) gameOver("KRUPİYE BATTI! Kazandın!", "win");
+        else if (pScore > dScore) gameOver("KAZANDIN!", "win");
+        else if (pScore === dScore) gameOver("BERABERE (İade)", "push");
+        else gameOver("KAYBETTİN...", "lose");
+    }
+
+    function gameOver(msg, type) {
+        gameActive = false;
+        document.getElementById("status").innerText = msg;
+        document.getElementById("gameControls").style.display = "none";
+        document.getElementById("startBtn").style.display = "block";
+        document.getElementById("startBtn").innerText = "TEKRAR OYNA";
+        
+        if (type === "win") { 
+            document.getElementById("status").style.color = "var(--green)"; 
+            updateGlobalWallet(currentBalance + REWARD); 
+        }
+        else if (type === "blackjack") { 
+            document.getElementById("status").style.color = "var(--gold)"; 
+            updateGlobalWallet(currentBalance + BLACKJACK_REWARD); 
+        }
+        else if (type === "push") { 
+            document.getElementById("status").style.color = "#fff"; 
+            updateGlobalWallet(currentBalance + COST); 
+        }
+        else { 
+            document.getElementById("status").style.color = "var(--red)"; 
+            // Kaybedince zaten başta düşmüştük, bir şey yapmaya gerek yok
+        }
+    }
+
+    // Arka Plan Efekti
+    const bg=document.getElementById("bg"),ctx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:40},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));function loop(){ctx.clearRect(0,0,bg.width,bg.height);ctx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;ctx.beginPath();ctx.arc(d.x,d.y,1.5,0,Math.PI*2);ctx.fill()});requestAnimationFrame(loop)}loop();
+</script>
+</body>
+</html>

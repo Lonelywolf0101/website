@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4797136451656104"
+     crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<title>Uzay Savaşı | Hüseyin Sedat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+    :root{ --bg:#05060b; --neon:#00eaff; --glass:rgba(255,255,255,.06); --red:#ff4d4d; --green:#00ff88; --gold:#ffd700; }
+    
+    /* Temel Ayarlar */
+    body { margin:0; padding:0; font-family:"Poppins",sans-serif; background:radial-gradient(1200px 600px at 20% 10%, #0c1022 0%, var(--bg) 40%) fixed; color:#eaeaea; text-align:center; height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
+    
+    .main-container { position:relative; z-index:10; width:100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px; }
+    
+    /* --- YENİ DÜZEN: YAN YANA KUTULAR --- */
+    .game-wrapper {
+        display: flex;
+        flex-direction: row; /* Yan yana diz */
+        align-items: flex-start;
+        justify-content: center;
+        gap: 20px;
+        max-width: 1000px;
+        width: 100%;
+    }
+
+    /* 1. OYUN KUTUSU (SOL) */
+    .game-box { 
+        background:var(--glass); 
+        border:1px solid rgba(255,255,255,.1); 
+        backdrop-filter:blur(10px); 
+        border-radius:20px; 
+        padding:20px; 
+        box-shadow:0 0 30px rgba(0,0,0,0.5); 
+        flex: 0 0 auto; /* Genişliği içeriğe göre */
+    }
+
+    /* 2. SKOR TABLOSU KUTUSU (SAĞ) */
+    .leaderboard-box {
+        background: rgba(0,0,0,0.8);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 15px;
+        padding: 15px;
+        width: 250px; /* Sabit genişlik */
+        max-height: 500px; /* Oyun alanı kadar boy */
+        display: flex;
+        flex-direction: column;
+        overflow: hidden; /* Dışarı taşmayı engelle */
+    }
+
+    canvas { 
+        background: #000; 
+        border: 2px solid var(--neon); 
+        border-radius: 10px; 
+        box-shadow: 0 0 20px rgba(0,234,255,0.2); 
+        cursor: crosshair; 
+        display:block; 
+        /* Masaüstü Boyut */
+        width: 320px; 
+        height: 480px;
+    }
+    
+    /* --- MOBİL UYUM (Medya Sorgusu) --- */
+    @media (max-width: 768px) {
+        .game-wrapper {
+            flex-direction: column; /* Mobilde alt alta dönsün */
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .game-box { 
+            padding: 10px; 
+            border: none; 
+            background: transparent; 
+            box-shadow: none; 
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .leaderboard-box {
+            width: 95%; /* Mobilde ekranı kaplasın */
+            max-width: 350px;
+            max-height: 150px; /* Yükseklik sınırı (Scroll çıkacak) */
+            padding: 10px;
+            order: 2; /* Oyunun altında kalsın */
+        }
+
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+            max-height: 55vh; /* Mobilde ekranın yarısı */
+            object-fit: contain;
+        }
+
+        h2 { font-size: 1.2rem; margin: 5px 0; }
+    }
+
+    /* İçerik Stilleri */
+    .hud { display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold; font-size:14px; width: 100%; max-width: 320px; }
+    .hud span { background:rgba(0,0,0,0.8); padding:5px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); font-size: 12px; }
+    
+    .leaderboard-list {
+        overflow-y: auto; /* İÇ SCROLL: Sığmayanlar kaydırılır */
+        flex-grow: 1;
+        margin-top: 10px;
+        padding-right: 5px;
+    }
+    /* Scrollbar Tasarımı */
+    .leaderboard-list::-webkit-scrollbar { width: 5px; }
+    .leaderboard-list::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 10px; }
+    .leaderboard-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+
+    .score-row { display:flex; justify-content:space-between; padding:8px 5px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:12px; text-align: left; }
+    
+    .nick-input { padding: 12px; border-radius: 8px; border: 1px solid var(--neon); background: rgba(0,0,0,0.5); color: #fff; font-size: 16px; text-align: center; width: 80%; margin-bottom: 5px; outline: none; transition: 0.3s; }
+    
+    #startBtn { padding:15px 40px; font-size:20px; font-weight:bold; background:var(--neon); border:none; border-radius:10px; cursor:pointer; margin-top:10px; box-shadow:0 0 20px var(--neon); color:#000; animation: pulse 1.5s infinite; width: 80%; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    
+    #gameOverScreen { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.95); padding:20px; border-radius:15px; border:2px solid var(--red); display:none; text-align:center; z-index:100; width:85%; max-width: 300px; box-shadow: 0 0 30px var(--red); }
+    
+    #userStatusMsg { font-size: 12px; color: var(--green); margin-bottom: 10px; display: none; }
+    #saveStatus { font-size: 12px; color: #aaa; margin-top: 5px; font-style: italic; }
+    
+    .back-btn-link { display:inline-block; margin-top:10px; color:#a8b3bd; text-decoration:none; font-size:12px; border:1px solid #333; padding:8px 15px; border-radius:20px; background: rgba(0,0,0,0.5); }
+</style>
+</head>
+<body>
+    
+    <canvas id="bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
+
+    <div class="main-container">
+        <h2 style="color:var(--neon); margin-bottom: 10px;">🚀 Uzay Savaşı</h2>
+        
+        <div class="game-wrapper">
+            
+            <div class="game-box">
+                <div class="hud">
+                    <span style="color:var(--neon)">🪙 <b id="walletDisplay">...</b></span>
+                    <span style="color:var(--green)">🏆 <b id="scoreDisplay">0</b></span>
+                </div>
+
+                <div style="position:relative; width: 100%; display:flex; justify-content:center;">
+                    <canvas id="gameCanvas" width="320" height="480"></canvas>
+                    
+                    <div id="startScreen" style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:100%; height:100%; max-width:320px; background:rgba(0,0,0,0.85); display:flex; flex-direction:column; justify-content:center; align-items:center; border-radius:10px; z-index:50;">
+                        <h3 style="color:#fff; margin-bottom:5px;">PİLOTA İHTİYAÇ VAR!</h3>
+                        <p style="margin-bottom:15px; font-size:14px; color:#aaa;">Giriş: <span style="color:var(--red)">10 Jeton</span></p>
+                        
+                        <div id="userStatusMsg">👤 Giriş Algılandı</div>
+                        <input type="text" id="nicknameInput" class="nick-input" placeholder="Pilot Adı" maxlength="12">
+                        
+                        <button id="startBtn" onclick="startGame()">SAVAŞA GİR</button>
+                    </div>
+
+                    <div id="gameOverScreen">
+                        <h2 style="color:var(--red); margin:0 0 10px 0;">GÖREV BAŞARISIZ!</h2>
+                        <p style="font-size:18px;">Skor: <span id="finalScore" style="color:#fff; font-weight:bold;">0</span></p>
+                        <p style="color:var(--green); margin-bottom:10px;">+<span id="earnedTokens">0</span> Jeton</p>
+                        <div id="saveStatus">Kontrol ediliyor...</div>
+                        <br>
+                        <button onclick="restartGame()" style="padding:10px 25px; background:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:14px;">Tekrar Dene</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="leaderboard-box">
+                <h3 style="margin:0 0 10px 0; color:var(--gold); text-align:center; font-size:14px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">🏆 EFSANE PİLOTLAR</h3>
+                <div id="leaderboardList" class="leaderboard-list">
+                    <div style="text-align:center; color:#666; font-size:12px;">Yükleniyor...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <a href="../index.html#action" class="back-btn-link">← Lobiye Dön</a>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyANHre3Yv9RdlGtRPeYH_6ez2PSTaOR-ls",
+      authDomain: "site-c4802.firebaseapp.com",
+      projectId: "site-c4802",
+      storageBucket: "site-c4802.firebasestorage.app",
+      messagingSenderId: "678825640794",
+      appId: "1:678825640794:web:da9846527bfa3a38452963",
+      measurementId: "G-YYJR6G6MM1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    window.isUserLoggedIn = false;
+
+    onAuthStateChanged(auth, (user) => {
+        const nickInput = document.getElementById("nicknameInput");
+        const statusMsg = document.getElementById("userStatusMsg");
+        if (user) {
+            window.isUserLoggedIn = true;
+            nickInput.value = user.email.split('@')[0];
+            statusMsg.style.display = "block";
+        } else {
+            window.isUserLoggedIn = false;
+            nickInput.value = "";
+            statusMsg.style.display = "none";
+        }
+    });
+
+    window.refreshLeaderboard = async function() {
+        const listDiv = document.getElementById("leaderboardList");
+        try {
+            const q = query(collection(db, "space_scores"), orderBy("score", "desc"), limit(15)); // 15 Kişi
+            const querySnapshot = await getDocs(q);
+            let allScores = [];
+            querySnapshot.forEach((doc) => { allScores.push(doc.data()); });
+
+            const guestScore = sessionStorage.getItem("guest_last_score");
+            const guestName = sessionStorage.getItem("guest_last_name");
+            if (guestScore && guestName) {
+                allScores.push({ name: guestName + " (Sen)", score: parseInt(guestScore), isGuest: true });
+            }
+
+            allScores.sort((a, b) => b.score - a.score);
+
+            let html = "";
+            let rank = 1;
+            allScores.slice(0, 15).forEach((data) => {
+                let rowStyle = data.isGuest ? "background:rgba(0, 234, 255, 0.2); border:1px solid var(--neon);" : "";
+                let rankColor = rank === 1 ? "color:#ffd700;" : (rank === 2 ? "color:#c0c0c0;" : (rank === 3 ? "color:#cd7f32;" : ""));
+                html += `<div class="score-row" style="${rowStyle}"><span style="${rankColor}">#${rank} ${data.name}</span><span style="font-weight:bold;">${data.score}</span></div>`;
+                rank++;
+            });
+            listDiv.innerHTML = html || "<div style='text-align:center; color:#666;'>Kayıt yok.</div>";
+        } catch (e) { console.error(e); }
+    }
+    window.refreshLeaderboard();
+
+    window.saveScoreToFirebase = async (score, nickname) => {
+        const statusEl = document.getElementById("saveStatus");
+        if(score <= 0) return;
+
+        if (window.isUserLoggedIn) {
+            try {
+                statusEl.innerText = "Kaydediliyor...";
+                const docRef = doc(db, "space_scores", nickname);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    if (score > docSnap.data().score) {
+                        await updateDoc(docRef, { score: score, date: new Date() });
+                        statusEl.innerText = "✅ Yeni REKOR!";
+                        statusEl.style.color = "#00ff88";
+                    } else {
+                        statusEl.innerText = "⚠️ Eski rekorun daha iyi.";
+                        statusEl.style.color = "#ffd700";
+                    }
+                } else {
+                    await setDoc(docRef, { name: nickname, score: score, date: new Date() });
+                    statusEl.innerText = "✅ Kaydedildi!";
+                    statusEl.style.color = "#00ff88";
+                }
+                window.refreshLeaderboard();
+            } catch(e) { console.error(e); statusEl.innerText = "Hata oluştu."; }
+        } else {
+            const old = sessionStorage.getItem("guest_last_score") || 0;
+            if (score > old) {
+                sessionStorage.setItem("guest_last_score", score);
+                sessionStorage.setItem("guest_last_name", nickname);
+                statusEl.innerText = "⚠️ Misafir Rekoru!";
+            } else {
+                statusEl.innerText = "⚠️ Rekor kırılamadı.";
+            }
+            statusEl.style.color = "#ffd700";
+            window.refreshLeaderboard();
+        }
+    }
+</script>
+
+<script>
+    /* === OYUN MOTORU (60 FPS FIXED) === */
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    
+    let currentBalance = parseInt(localStorage.getItem("huseyin_bakiye")) || 100;
+    document.getElementById("walletDisplay").innerText = currentBalance;
+
+    function updateGlobalWallet(newAmount) {
+        currentBalance = Math.floor(newAmount);
+        document.getElementById("walletDisplay").innerText = currentBalance;
+        localStorage.setItem("huseyin_bakiye", currentBalance);
+    }
+
+    const COST = 10;
+    let score = 0;
+    let isGameOver = false;
+    let animationId = null;
+    let enemies = [];
+    let bullets = [];
+    let frame = 0;
+    let playerNick = "";
+    
+    const ship = { x: canvas.width/2, y: canvas.height - 50, w: 30, h: 30, speed: 5 };
+    let inputX = canvas.width / 2;
+    
+    // FPS KONTROL
+    let lastTime = 0;
+    const fps = 60;
+    const fpsInterval = 1000 / fps;
+
+    function moveShip(e) {
+        if(isGameOver) return;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        let clientX = e.clientX;
+        if(e.touches && e.touches.length > 0) clientX = e.touches[0].clientX;
+        inputX = (clientX - rect.left) * scaleX;
+        if(inputX < 0) inputX = 0;
+        if(inputX > canvas.width) inputX = canvas.width;
+    }
+    
+    canvas.addEventListener("mousemove", moveShip);
+    canvas.addEventListener("touchmove", (e) => { e.preventDefault(); moveShip(e); }, {passive: false});
+    canvas.addEventListener("touchstart", (e) => { e.preventDefault(); moveShip(e); }, {passive: false});
+
+    function startGame() {
+        const nickInput = document.getElementById("nicknameInput");
+        playerNick = nickInput.value.trim();
+        if(!playerNick) { alert("Pilot ismi gir!"); return; }
+        if(currentBalance < COST) { alert("Yetersiz Jeton!"); return; }
+        
+        updateGlobalWallet(currentBalance - COST);
+        document.getElementById("startScreen").style.display = "none";
+        document.getElementById("gameOverScreen").style.display = "none";
+        document.getElementById("saveStatus").innerText = "...";
+        
+        resetGameLogic();
+    }
+
+    window.restartGame = function() {
+        if(currentBalance < COST) { alert("Yetersiz Jeton!"); return; }
+        updateGlobalWallet(currentBalance - COST);
+        document.getElementById("gameOverScreen").style.display = "none";
+        document.getElementById("saveStatus").innerText = "...";
+        resetGameLogic();
+    }
+
+    function resetGameLogic() {
+        if(animationId) cancelAnimationFrame(animationId);
+
+        score = 0;
+        document.getElementById("scoreDisplay").innerText = score;
+        isGameOver = false;
+        enemies = [];
+        bullets = [];
+        frame = 0;
+        ship.x = canvas.width / 2;
+        inputX = canvas.width / 2;
+        lastTime = 0;
+        
+        animate();
+    }
+
+    function animate(currentTime) {
+        if(isGameOver) return;
+
+        animationId = requestAnimationFrame(animate);
+
+        if (!currentTime) currentTime = performance.now();
+        const elapsed = currentTime - lastTime;
+
+        if (elapsed < fpsInterval) return;
+
+        lastTime = currentTime - (elapsed % fpsInterval);
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        ship.x += (inputX - ship.x) * 0.2;
+
+        ctx.fillStyle = "#00eaff";
+        ctx.beginPath();
+        ctx.moveTo(ship.x, ship.y);
+        ctx.lineTo(ship.x - 15, ship.y + 30);
+        ctx.lineTo(ship.x + 15, ship.y + 30);
+        ctx.fill();
+        
+        if(frame % 18 === 0) bullets.push({ x: ship.x, y: ship.y, w: 4, h: 10, color: "#ff0" });
+        for(let i=0; i<bullets.length; i++) {
+            let b = bullets[i];
+            b.y -= 8;
+            ctx.fillStyle = b.color;
+            ctx.fillRect(b.x - b.w/2, b.y, b.w, b.h);
+            if(b.y < 0) { bullets.splice(i, 1); i--; }
+        }
+        
+        let spawnRate = Math.max(20, 50 - Math.floor(score / 50));
+        let speedMultiplier = 1 + (score / 1000); 
+
+        if(frame % spawnRate === 0) {
+            const size = Math.random() * 20 + 20;
+            let enemySpeed = (Math.random() * 2 + 1) * speedMultiplier;
+            enemies.push({ x: Math.random() * (canvas.width - size), y: -50, w: size, h: size, speed: enemySpeed });
+        }
+        
+        for(let i=0; i<enemies.length; i++) {
+            let e = enemies[i];
+            e.y += e.speed;
+            ctx.fillStyle = "#ff4d4d";
+            ctx.fillRect(e.x, e.y, e.w, e.h);
+            
+            for(let j=0; j<bullets.length; j++) {
+                let b = bullets[j];
+                if(b.x > e.x && b.x < e.x + e.w && b.y > e.y && b.y < e.y + e.h) {
+                    enemies.splice(i, 1); i--; bullets.splice(j, 1); j--; score += 10;
+                    document.getElementById("scoreDisplay").innerText = score; break;
+                }
+            }
+            const dist = Math.hypot(ship.x - (e.x + e.w/2), ship.y - (e.y + e.h/2));
+            if(dist < 30 || e.y > canvas.height) { gameOver(); return; }
+        }
+        
+        frame++;
+    }
+
+    function gameOver() {
+        if(isGameOver) return;
+        isGameOver = true;
+        cancelAnimationFrame(animationId);
+        
+        const earned = Math.floor(score / 100);
+        updateGlobalWallet(currentBalance + earned);
+        
+        document.getElementById("finalScore").innerText = score;
+        document.getElementById("earnedTokens").innerText = earned;
+        document.getElementById("gameOverScreen").style.display = "block";
+        
+        if(window.saveScoreToFirebase) window.saveScoreToFirebase(score, playerNick);
+    }
+    
+    const bg=document.getElementById("bg"),bgCtx=bg.getContext("2d");function resize(){bg.width=window.innerWidth;bg.height=window.innerHeight}resize();window.addEventListener("resize",resize);const dots=Array.from({length:30},()=>({x:Math.random()*bg.width,y:Math.random()*bg.height,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2}));function bgLoop(){bgCtx.clearRect(0,0,bg.width,bg.height);bgCtx.fillStyle="#00eaff";dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0||d.x>bg.width)d.vx*=-1;if(d.y<0||d.y>bg.height)d.vy*=-1;bgCtx.beginPath();bgCtx.arc(d.x,d.y,1,0,Math.PI*2);bgCtx.fill()});requestAnimationFrame(bgLoop)}bgLoop();
+</script>
+</body>
+</html>
